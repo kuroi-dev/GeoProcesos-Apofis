@@ -14,6 +14,7 @@ from controller import bp as controller_bp
 def create_app():
 	app = Flask(__name__)
 	app.register_blueprint(controller_bp, url_prefix='/api')
+	print("App created and controller blueprint registered.")
 	return app
 
 
