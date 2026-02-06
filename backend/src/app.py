@@ -1,6 +1,7 @@
 import os
 import sys
 from flask import Flask, send_from_directory
+from flask_cors import CORS
 
 # Ensure `src` is on sys.path so sibling packages (controller, models, views)
 # can be imported whether this file is run as a script or as a module.
@@ -19,6 +20,10 @@ def create_app():
 	# Serve the backend/static directory as static files if it exists
 	static_folder = STATIC_DIR if os.path.isdir(STATIC_DIR) else None
 	app = Flask(__name__, static_folder=static_folder, static_url_path='')
+	
+	# Configure CORS to allow requests from frontend
+	CORS(app, origins=["http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:3000", "http://127.0.0.1:5173"])
+	
 	app.register_blueprint(controller_bp, url_prefix='/api')
 	# Register site blueprint at app root to serve static content
 	if static_folder:

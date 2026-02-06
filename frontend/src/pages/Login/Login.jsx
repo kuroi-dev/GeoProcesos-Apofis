@@ -1,8 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';import { useNavigate } from 'react-router-dom';import Map from '@arcgis/core/Map';
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Map from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
-import loginImage from '../assets/logo/logogeo.svg'; // Imagen del login
-import logoImage from '../assets/logo/logoL.svg'; // Logo superior izquierda
-import infoImage from '../assets/logo/info.svg'; // Icono de información
+import loginImage from '../../assets/logo/logogeo.svg'; // Imagen del login
+import logoImage from '../../assets/logo/logoL.svg'; // Logo superior izquierda
+import infoImage from '../../assets/logo/info.svg'; // Icono de información
 import './Login.css';
 
 const Login = () => {
@@ -14,13 +16,10 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Prevenir acceso mientras está en construcción
-    setEmailError('El aplicativo está actualmente en construcción. Pronto estará disponible.');
-    return;
     
     // Validar email
     if (!email.trim()) {
@@ -40,9 +39,34 @@ const Login = () => {
       return;
     }
     
-    // Si el email es válido, navegar a la página en construcción pasando el email
+    // Enviar email al backend
+    setLoading(true);
     setEmailError('');
-    navigate('/en-construccion', { state: { userEmail: email } });
+    
+    try {
+      const response = await fetch('http://127.0.0.1:5000/api/access', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ mail: email }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.ACCESS) {
+        // Si el acceso es exitoso, navegar al dashboard
+        navigate('/dashboard', { state: { userEmail: email, token: data.token } });
+      } else {
+        // Si el acceso es denegado, mostrar error
+        setEmailError(data.error || 'Acceso denegado. Verifica tu correo electrónico.');
+      }
+    } catch (error) {
+      console.error('Error conectando con el servidor:', error);
+      setEmailError('Error de conexión. Por favor, inténtalo de nuevo.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -72,7 +96,7 @@ const Login = () => {
                   animate: true
                 });
               }
-            }, zoom); // 200ms entre cada nivel de zoom
+            }, zoom * 200); // 200ms entre cada nivel de zoom
           }
         }, 1000); // Esperar 1 segundo después de cargar
       });
@@ -108,9 +132,9 @@ const Login = () => {
           {showInfoPopup && (
             <div className="info-popup">
               <div className="info-popup-content">
-                <h4>🚧 Aplicativo en Construcción</h4>
-                <p>Estamos desarrollando una plataforma especializada en análisis geoespacial.</p>
-                <p><strong>Pronto podrás acceder con tu correo electrónico y disfrutar de 30 minutos de prueba gratuita.</strong></p>
+                <h4>¿Cómo acceder?</h4>
+                <p>Ingresa tu correo en la casilla Email y podrás acceder al aplicativo.</p>
+                <p><strong>Tendrás un límite de 30 minutos para probar el aplicativo.</strong></p>
                 <button 
                   className="info-popup-close" 
                   onClick={() => setShowInfoPopup(false)}
@@ -148,12 +172,12 @@ const Login = () => {
               </div>
               
               <div className="app-info">
-                <p>🚧 <strong>Aplicativo en construcción:</strong> Estamos trabajando para traerte la mejor experiencia.</p>
-                <p>Mientras tanto, puedes revisar los términos y condiciones preparándote para el lanzamiento.</p>
+                <p>El uso del aplicativo queda asociado a tu correo electrónico.</p>
+                <p>Límite de sesión: 30 minutos. Después de este tiempo, el mismo correo será bloqueado temporalmente.</p>
               </div>
               
-              <button type="submit" className="login-button" disabled={true}>
-                🚧 Aplicativo en Construcción
+              <button type="submit" className="login-button" disabled={loading}>
+                {loading ? 'Conectando...' : 'Acceder al Aplicativo'}
               </button>
               
               <button 

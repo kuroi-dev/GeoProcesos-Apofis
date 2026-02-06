@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import logoImage from '../assets/logo/logoD.png'; // Logo superior izquierda
 import './EnConstruccion.css';
 
 const EnConstruccion = () => {
@@ -23,7 +22,7 @@ const EnConstruccion = () => {
     <div className="construccion-container">
       <div className="construccion-content">
         <div className="logo-section">
-          <img src={logoImage} alt="Logo Apofis" className="construccion-logo" />
+          <img src="" alt="Logo Apofis" className="construccion-logo" />
         </div>
         
         <div className="status-section">
