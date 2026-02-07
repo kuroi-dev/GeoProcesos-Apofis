@@ -196,10 +196,9 @@
   justify-content: center;
 }
 
-.tool-header .tool-icon svg {
-  width: 20px;
-  height: 20px;
-  fill: currentColor;
+.tool-header .tool-icon calcite-icon {
+  --calcite-ui-icon-color: white;
+  color: white;
 }
 
 .tool-content h4 {
