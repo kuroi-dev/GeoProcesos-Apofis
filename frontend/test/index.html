@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Mapa Esri - HTML Local</title>
+
+  <!-- ArcGIS JS API -->
+  <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.29/"></script>
+
+  <style>
+    html, body {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    #viewDiv {
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+
+  <script>
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/widgets/BasemapGallery",
+      "esri/widgets/LayerList",
+      "esri/layers/FeatureLayer"
+    ], function (
+      Map,
+      MapView,
+      BasemapGallery,
+      LayerList,
+      FeatureLayer
+    ) {
+
+      // 🗺️ Mapa base
+      const map = new Map({
+        basemap: "streets-navigation-vector"
+      });
+
+      // 👀 Vista del mapa
+      const view = new MapView({
+        container: "viewDiv",
+        map: map,
+        center: [-70.65, -33.45], // Santiago
+        zoom: 10
+      });
+
+      // 🧱 Widget: Galería de mapas base
+      const basemapGallery = new BasemapGallery({
+        view: view
+      });
+
+      view.ui.add(basemapGallery, {
+        position: "top-right"
+      });
+
+      // 📂 Widget: Lista de capas
+      const layerList = new LayerList({
+        view: view
+      });
+
+      view.ui.add(layerList, {
+        position: "top-left"
+      });
+
+      // 📊 Capa de ejemplo (FeatureLayer)
+      const featureLayer = new FeatureLayer({
+        url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/Earthquakes_since1970/FeatureServer/0",
+        title: "Terremotos"
+      });
+
+      map.add(featureLayer);
+
+    });
+  </script>
+</body>
+</html>
