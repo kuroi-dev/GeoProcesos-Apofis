@@ -1,0 +1,225 @@
+/* Estilo base para todos los widgets personalizados */
+.base-widget {
+  position: relative;
+  background: rgba(16, 16, 16, 0.92);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.base-widget:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
+}
+
+/* Header del widget */
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.widget-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.widget-icon {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4CAF50;
+}
+
+.widget-icon calcite-icon {
+  --calcite-ui-icon-color: #4CAF50;
+}
+
+.widget-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Controles del header */
+.widget-header-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.widget-control-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.widget-control-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+.widget-close-btn:hover {
+  background: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+}
+
+.widget-close-btn:hover calcite-icon {
+  --calcite-ui-icon-color: #f44336;
+}
+
+/* Contenido del widget */
+.widget-content {
+  padding: 16px;
+  max-height: calc(70vh - 60px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Scrollbar personalizado */
+.widget-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.widget-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.widget-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.widget-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Estados especiales */
+.base-widget.collapsed .widget-content {
+  display: none;
+}
+
+.base-widget.floating {
+  position: absolute;
+  z-index: 1000;
+  min-width: 280px;
+  max-width: 480px;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .base-widget {
+    width: 95% !important;
+    max-width: none;
+  }
+  
+  .widget-content {
+    max-height: 50vh;
+  }
+  
+  .widget-title {
+    font-size: 13px;
+  }
+}
+
+/* Animaciones */
+@keyframes widgetSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.base-widget {
+  animation: widgetSlideIn 0.3s ease-out;
+}
+
+/* Elementos comunes dentro de widgets */
+.widget-section {
+  margin-bottom: 16px;
+}
+
+.widget-section:last-child {
+  margin-bottom: 0;
+}
+
+.widget-section-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.widget-button {
+  background: rgba(76, 175, 80, 0.15);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  color: #4CAF50;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  justify-content: center;
+}
+
+.widget-button:hover {
+  background: rgba(76, 175, 80, 0.25);
+  transform: translateY(-1px);
+}
+
+.widget-button:active {
+  transform: translateY(0);
+}
+
+.widget-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  width: 100%;
+  transition: border-color 0.2s ease;
+}
+
+.widget-input:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.widget-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}

@@ -1,159 +1,168 @@
 import React, { useEffect, useRef, useState } from 'react';
+import esriConfig from '@arcgis/core/config';
 import Map from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
-import BasemapToggle from '@arcgis/core/widgets/BasemapToggle';
-import ScaleBar from '@arcgis/core/widgets/ScaleBar';
-import Compass from '@arcgis/core/widgets/Compass';
-import Home from '@arcgis/core/widgets/Home';
-import Locate from '@arcgis/core/widgets/Locate';
-import Search from '@arcgis/core/widgets/Search';
-import Legend from '@arcgis/core/widgets/Legend';
+import BasemapGallery from '@arcgis/core/widgets/BasemapGallery';
 import LayerList from '@arcgis/core/widgets/LayerList';
+import Legend from '@arcgis/core/widgets/Legend';
+import Search from '@arcgis/core/widgets/Search';
+import Home from '@arcgis/core/widgets/Home';
 import Measurement from '@arcgis/core/widgets/Measurement';
-import DistanceMeasurement2D from '@arcgis/core/widgets/DistanceMeasurement2D';
-import AreaMeasurement2D from '@arcgis/core/widgets/AreaMeasurement2D';
+import Compass from '@arcgis/core/widgets/Compass';
+import ScaleBar from '@arcgis/core/widgets/ScaleBar';
+import Sketch from '@arcgis/core/widgets/Sketch';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import './EsriWidgetManager.css';
+import { GeoProcesosWindow, ApofisWindow, EstadoWindow } from './SpecialToolWindows';
 
 const EsriWidgetManager = ({ onMapReady }) => {
   const mapDiv = useRef(null);
   const mapView = useRef(null);
-  const [activeWidgets, setActiveWidgets] = useState({
-    basemapToggle: true,
-    scaleBar: true,
-    compass: true,
-    home: true,
-    locate: false,
-    search: false,
-    legend: false,
+  const widgetsRef = useRef({});
+  // Estados para controlar la visibilidad de los widgets
+  const [widgetStates, setWidgetStates] = useState({
+    basemapGallery: false,
     layerList: false,
-    measurement: false
+    legend: false,
+    measurement: false,
+    sketch: false
   });
 
-  const [widgets, setWidgets] = useState({});
-
-  // Configuración de widgets disponibles con iconos SVG profesionales
-  const availableWidgets = [
-    {
-      id: 'basemapToggle',
-      name: 'Selector de Mapas Base',
-      icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-          <path d="M1 3h14v10H1V3zm1 1v8h12V4H2zm1 1h10v6H3V5zm1 1v4h8V6H4z"/>
-        </svg>
-      ),
-      description: 'Alterna entre diferentes tipos de mapas base'
-    },
-    {
-      id: 'scaleBar',
-      name: 'Escala',
-      icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-          <path d="M1 7h14v2H1V7zm0-2h3v6H1V5zm13 0h2v6h-2V5z"/>
-        </svg>
-      ),
-      description: 'Muestra la escala del mapa'
-    },
-    {
-      id: 'compass',
-      name: 'Brújula',
-      icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-          <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zM8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zm0 2.5L6.5 8 8 13.5 9.5 8 8 2.5z"/>
-        </svg>
-      ),
-      description: 'Indica la orientación norte del mapa'
-    },
-    {
-      id: 'home',
-      name: 'Inicio',
-      icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-          <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5Z"/>
-          <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6Z"/>
-        </svg>
-      ),
-      description: 'Vuelve a la vista inicial del mapa'
-    },
-    {
-      id: 'locate',
-      name: 'Mi Ubicación',
-      icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-          <path d="M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.414a.5.5 0 1 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L2.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.464a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707z"/>
-          <circle cx="8" cy="8" r="3"/>
-        </svg>
-      ),
-      description: 'Centra el mapa en tu ubicación actual'
-    },
-    {
-      id: 'search',
-      name: 'Búsqueda',
-      icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-        </svg>
-      ),
-      description: 'Busca lugares, direcciones y coordenadas'
-    },
-    {
-      id: 'legend',
-      name: 'Leyenda',
-      icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-          <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
-          <path d="M4.603 14.087a.81.81 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.68 7.68 0 0 1 1.482-.645 19.697 19.697 0 0 0 1.062-.33 2.688 2.688 0 0 0 .491-.3c.115-.113.194-.272.194-.51 0-.075-.016-.45-.097-.518-.166-.14-.402-.2-.762-.116-.266.061-.51.152-.688.201-.264.073-.12.061-.383.061h-.108c-.264 0-.402-.077-.402-.77 0-.23.071-.421.212-.573.25-.272.620-.42.982-.51.407-.105.834-.14 1.295-.14.939 0 1.31.17 1.538.339.273.204.49.67.49 1.282 0 .597-.4 1.272-.906 1.538-.284.149-.66.269-1.069.343-.646.117-1.04.21-1.04.21-.104-.012-.826.04-.826.04-.104 0-.164-.012-.104.061v-.061z"/>
-        </svg>
-      ),
-      description: 'Muestra la simbología de las capas'
-    },
-    {
-      id: 'layerList',
-      name: 'Listado de Capas',
-      icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-          <path d="M8 0a1 1 0 0 1 .665.247L14.974 6.25a1 1 0 0 1 0 1.5L8.665 13.753a1 1 0 0 1-1.33 0L1.026 7.75a1 1 0 0 1 0-1.5L7.335.247A1 1 0 0 1 8 0z"/>
-          <path d="M2.51 7.75 8 12.084 13.49 7.75 8 3.416 2.51 7.75z"/>
-          <path d="M1.735 9.35a.5.5 0 0 1 .93.4L8 14.084l5.335-4.334a.5.5 0 0 1 .93-.4L8 15.916 1.735 9.35z"/>
-        </svg>
-      ),
-      description: 'Administra la visibilidad de capas'
-    },
-    {
-      id: 'measurement',
-      name: 'Herramientas de Medición',
-      icon: (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-          <path d="M10.854 6.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 8.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
-          <path d="M3 0a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3 3 3 0 0 1-3-3V3a3 3 0 0 1 3-3zm0 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2 2 2 0 0 0 2-2V3a2 2 0 0 0-2-2z"/>
-          <path d="M13 2a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/>
-        </svg>
-      ),
-      description: 'Mide distancias y áreas en el mapa'
-    }
-  ];
+  // Función para alternar la visibilidad de un widget
+  const toggleWidget = (widgetName) => {
+    setWidgetStates(prev => ({
+      ...prev,
+      [widgetName]: !prev[widgetName]
+    }));
+  };
 
   useEffect(() => {
+    // Configurar idioma global a español y cargar recursos
+    esriConfig.locale = 'es';
+    // Forzar carga de recursos de idioma español
+    const script = document.createElement('script');
+    script.src = 'https://js.arcgis.com/4.34/esri/themes/base/nls/es/core.js';
+    script.async = true;
+    document.head.appendChild(script);
     if (mapDiv.current && !mapView.current) {
-      // Crear el mapa
+      console.log('🗺️ Creando mapa...');
+      
+      // Crear capa de gráficos para dibujo
+      const graphicsLayer = new GraphicsLayer({
+        title: 'Sketches'
+      });
+
+      // Crear el mapa 
       const map = new Map({
-        basemap: 'satellite'
+        basemap: 'satellite',
+        layers: [graphicsLayer]
       });
 
       // Crear la vista del mapa
       const view = new MapView({
         container: mapDiv.current,
         map: map,
-        center: [-72.210533, -39.2902], // Chile central
-        zoom: 13
+        center: [-72.2322, -39.2764], // Villarrica, Chile
+        zoom: 12
       });
 
       mapView.current = view;
+      console.log('🗺️ Mapa satelital creado');
 
-      // Esperar a que la vista esté lista antes de inicializar widgets
+      // Esperar a que la vista esté lista
       view.when(() => {
-        // Inicializar widgets por defecto
-        initializeDefaultWidgets(view);
+        console.log('✅ MapView está listo');
 
+        // SOLO WIDGETS BÁSICOS SIEMPRE VISIBLES
+        
+        // HOME - Vista inicial (icono simple)
+        const homeWidget = new Home({
+          view: view
+        });
+        view.ui.add(homeWidget, {
+          position: 'bottom-right',
+          index: 0
+        });
+
+        // COMPASS - Brújula (siempre visible)
+        const compass = new Compass({
+          view: view
+        });
+        view.ui.add(compass, {
+          position: 'bottom-right',
+          index: 1
+        });
+
+        // SCALE BAR - Escala (siempre visible)
+        const scaleBar = new ScaleBar({
+          view: view,
+          unit: 'metric'
+        });
+        view.ui.add(scaleBar, {
+          position: 'bottom-left',
+          index: 0
+        });
+
+        // SEARCH - Búsqueda (siempre visible en top-right)
+        const searchWidget = new Search({
+          view: view,
+          searchButtonTooltip: 'Buscar',
+          searchButtonText: 'Buscar'
+        });
+        widgetsRef.current.search = searchWidget;
+        view.ui.add(searchWidget, {
+          position: 'top-right',
+          index: 0
+        });
+
+        // Hack: Forzar el texto del botón a 'Buscar' tras renderizar el widget
+        // Forzar cambio de texto y placeholder varias veces para asegurar que el DOM esté listo
+        let tries = 0;
+        const interval = setInterval(() => {
+          const btn = document.querySelector('.esri-search__submit-button');
+          if (btn) btn.textContent = 'Buscar';
+          // Buscar el input por el placeholder original en inglés
+          const input = document.querySelector('input[placeholder="Find address or place"]');
+          if (input) input.placeholder = 'Buscar dirección o lugar';
+          tries++;
+          if ((btn && input) || tries > 15) clearInterval(interval);
+        }, 300);
+
+        // WIDGETS CONTROLADOS POR MANAGER (creados pero no agregados al UI)
+        
+        // SEARCH - Búsqueda
+        widgetsRef.current.search = new Search({
+          view: view
+        });
+
+        // BASEMAP GALLERY
+        widgetsRef.current.basemapGallery = new BasemapGallery({
+          view: view
+        });
+
+        // LAYER LIST
+        widgetsRef.current.layerList = new LayerList({
+          view: view
+        });
+
+        // LEGEND
+        widgetsRef.current.legend = new Legend({
+          view: view
+        });
+
+        // MEASUREMENT
+        widgetsRef.current.measurement = new Measurement({
+          view: view
+        });
+
+        // SKETCH
+        widgetsRef.current.sketch = new Sketch({
+          layer: graphicsLayer,
+          view: view
+        });
+
+        console.log('✅ Todos los widgets creados y listos para el manager');
+        
         // Notificar que el mapa está listo
         if (onMapReady) {
           onMapReady(view, map);
@@ -167,146 +176,104 @@ const EsriWidgetManager = ({ onMapReady }) => {
         mapView.current = null;
       }
     };
-  }, []);
+  }, [onMapReady]);
 
-  const initializeDefaultWidgets = (view) => {
-    const newWidgets = {};
+  // Efecto para manejar la visibilidad de los widgets
+  useEffect(() => {
+    if (mapView.current && widgetsRef.current) {
+      const view = mapView.current;
 
-    // BasemapToggle (activo por defecto)
-    if (activeWidgets.basemapToggle) {
-      newWidgets.basemapToggle = new BasemapToggle({
-        view: view,
-        nextBasemap: 'streets-vector'
-      });
-      view.ui.add(newWidgets.basemapToggle, 'bottom-right');
-    }
-
-    // ScaleBar (activo por defecto)
-    if (activeWidgets.scaleBar) {
-      newWidgets.scaleBar = new ScaleBar({
-        view: view,
-        unit: 'dual'
-      });
-      view.ui.add(newWidgets.scaleBar, 'bottom-left');
-    }
-
-    // Compass (activo por defecto)
-    if (activeWidgets.compass) {
-      newWidgets.compass = new Compass({
-        view: view
-      });
-      view.ui.add(newWidgets.compass, 'top-left');
-    }
-
-    // Home (activo por defecto)
-    if (activeWidgets.home) {
-      newWidgets.home = new Home({
-        view: view
-      });
-      view.ui.add(newWidgets.home, 'top-left');
-    }
-
-    setWidgets(newWidgets);
-  };
-
-  const toggleWidget = (widgetId) => {
-    if (!mapView.current) return;
-
-    const newActiveWidgets = { ...activeWidgets };
-    const newWidgets = { ...widgets };
-
-    if (activeWidgets[widgetId]) {
-      // Desactivar widget
-      if (widgets[widgetId]) {
-        mapView.current.ui.remove(widgets[widgetId]);
-        widgets[widgetId].destroy();
-        delete newWidgets[widgetId];
+      // Search SIEMPRE visible en top-right (solo si existe el widget)
+      if (widgetsRef.current.search && !view.ui.find('searchWidget')) {
+        widgetsRef.current.search.id = 'searchWidget';
+        view.ui.add(widgetsRef.current.search, 'top-right');
       }
-      newActiveWidgets[widgetId] = false;
-    } else {
-      // Activar widget
-      newActiveWidgets[widgetId] = true;
-      
-      switch (widgetId) {
-        case 'locate':
-          newWidgets.locate = new Locate({
-            view: mapView.current
-          });
-          mapView.current.ui.add(newWidgets.locate, 'top-left');
-          break;
-        
-        case 'search':
-          newWidgets.search = new Search({
-            view: mapView.current
-          });
-          mapView.current.ui.add(newWidgets.search, 'top-right');
-          break;
-        
-        case 'legend':
-          newWidgets.legend = new Legend({
-            view: mapView.current
-          });
-          mapView.current.ui.add(newWidgets.legend, 'bottom-right');
-          break;
-        
-        case 'layerList':
-          newWidgets.layerList = new LayerList({
-            view: mapView.current
-          });
-          mapView.current.ui.add(newWidgets.layerList, 'top-right');
-          break;
-        
-        case 'measurement':
-          newWidgets.measurement = new Measurement({
-            view: mapView.current
-          });
-          mapView.current.ui.add(newWidgets.measurement, 'top-right');
-          break;
-        
-        default:
-          break;
+
+      // BasemapGallery
+      if (widgetStates.basemapGallery) {
+        view.ui.add(widgetsRef.current.basemapGallery, 'top-right');
+      } else {
+        view.ui.remove(widgetsRef.current.basemapGallery);
+      }
+
+      // LayerList
+      if (widgetStates.layerList) {
+        view.ui.add(widgetsRef.current.layerList, 'bottom-left');
+      } else {
+        view.ui.remove(widgetsRef.current.layerList);
+      }
+
+      // Legend
+      if (widgetStates.legend) {
+        view.ui.add(widgetsRef.current.legend, 'bottom-left');
+      } else {
+        view.ui.remove(widgetsRef.current.legend);
+      }
+
+      // Measurement
+      if (widgetStates.measurement) {
+        view.ui.add(widgetsRef.current.measurement, 'top-right');
+      } else {
+        view.ui.remove(widgetsRef.current.measurement);
+      }
+
+      // Sketch
+      if (widgetStates.sketch) {
+        view.ui.add(widgetsRef.current.sketch, 'bottom-right');
+      } else {
+        view.ui.remove(widgetsRef.current.sketch);
       }
     }
-
-    setActiveWidgets(newActiveWidgets);
-    setWidgets(newWidgets);
-  };
+  }, [widgetStates]);
 
   return (
-    <>
-      {/* Contenedor del mapa */}
+    <div className="esri-widget-manager">
       <div ref={mapDiv} className="esri-map-container"></div>
-      
-      {/* Panel de control de widgets */}
-      <div className="widget-manager-panel">
-        <div> 
-          <h3>Widgets Analisis espacial</h3>
-        </div>
-        
-        <div className="widget-list">
-          {availableWidgets.map(widget => (
-            <div 
-              key={widget.id}
-              className={`widget-item ${activeWidgets[widget.id] ? 'active' : ''}`}
-              onClick={() => toggleWidget(widget.id)}
-              title={widget.description}
-            >
-              <span className="widget-icon">{widget.icon}</span>
-              <div className="widget-info">
-                <span className="widget-name">{widget.name}</span>
-                <span className="widget-status">
-                  {activeWidgets[widget.id] ? 'Activo' : 'Inactivo'}
-                </span>
-              </div>
-              <div className="widget-toggle">
-                {activeWidgets[widget.id] ? '🟢' : '⚪'}
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* Paneles de herramientas especializadas */}
+      <GeoProcesosWindow />
+      <ApofisWindow />
+      <EstadoWindow estado={null} />
+      {/* WIDGET MANAGER - CENTRO INFERIOR */}
+      <div className="custom-widget-manager">
+        <button 
+          className={`manager-btn ${widgetStates.basemapGallery ? 'active' : ''}`}
+          onClick={() => toggleWidget('basemapGallery')}
+          title="Galería de Mapas Base"
+        >
+          🗺️
+        </button>
+        <button 
+          className={`manager-btn ${widgetStates.layerList ? 'active' : ''}`}
+          onClick={() => toggleWidget('layerList')}
+          title="Lista de Capas"
+        >
+          📋
+        </button>
+        <button 
+          className={`manager-btn ${widgetStates.legend ? 'active' : ''}`}
+          onClick={() => toggleWidget('legend')}
+          title="Leyenda"
+        >
+          📊
+        </button>
+        <button 
+          className={`manager-btn ${widgetStates.measurement ? 'active' : ''}`}
+          onClick={() => toggleWidget('measurement')}
+          title="Herramientas de Medición"
+        >
+          📏
+        </button>
+        <button 
+          className={`manager-btn ${widgetStates.sketch ? 'active' : ''}`}
+          onClick={() => toggleWidget('sketch')}
+          title="Herramientas de Dibujo"
+        >
+          ✏️
+        </button>
       </div>
-    </>
+    </div>
   );
+  
 };
 
 export default EsriWidgetManager;

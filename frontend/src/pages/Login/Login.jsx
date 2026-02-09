@@ -96,7 +96,7 @@ const Login = () => {
                   animate: true
                 });
               }
-            }, zoom * 200); // 200ms entre cada nivel de zoom
+            }, zoom * 0); // 200ms entre cada nivel de zoom
           }
         }, 1000); // Esperar 1 segundo después de cargar
       });
