@@ -187,19 +187,29 @@ const Login = () => {
               >
                 📋 Términos y Condiciones
               </button>
+              <label className="terms-checkbox-container-inline">
+                <input 
+                  type="checkbox" 
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                  className="terms-checkbox"
+                />
+                <span className="terms-checkmark"></span>
+                <span className="terms-checkbox-text">
+                  Acepto los <strong>Términos y Condiciones de Uso</strong>
+                </span>
+              </label>
             </form>
             </div>
             
             {showTerms && (
               <div className="terms-content">
                 <h3>Términos y Condiciones de Uso</h3>
-                
                 <div className="terms-section">
                   <h4>1. Aceptación de Términos</h4>
                   <p>Al utilizar este aplicativo, usted acepta estar sujeto a estos términos y condiciones de uso completos.</p>
                   <p>El uso del servicio constituye la aceptación automática de todas las políticas aquí establecidas.</p>
                 </div>
-                
                 <div className="terms-section">
                   <h4>2. Uso del Servicio</h4>
                   <p>• El acceso está limitado a 30 minutos por sesión por correo electrónico.</p>
@@ -207,7 +217,6 @@ const Login = () => {
                   <p>• El usuario es responsable de mantener la confidencialidad de su cuenta.</p>
                   <p>• No se permite el uso automatizado o mediante bots del servicio.</p>
                 </div>
-                
                 <div className="terms-section">
                   <h4>3. Registro y Almacenamiento de Datos</h4>
                   <p><strong>Su dirección de correo electrónico será registrada y almacenada</strong> en nuestra base de datos del backend con los siguientes propósitos:</p>
@@ -216,52 +225,32 @@ const Login = () => {
                   <p>• Prevenir el uso abusivo mediante intentos repetidos de acceso con el mismo correo.</p>
                   <p>• Generar logs de auditoría y estadísticas de uso del sistema.</p>
                 </div>
-                
                 <div className="terms-section">
                   <h4>4. Sistema de Bloqueos y Restricciones</h4>
                   <p>Al superar el límite de 30 minutos de uso, su correo electrónico será marcado como <strong>"bloqueado temporalmente"</strong> en nuestro sistema backend.</p>
                   <p>Los intentos posteriores de acceso con el mismo correo resultarán en denegación automática de acceso.</p>
                   <p>El tiempo de bloqueo y las condiciones de reactivación están sujetos a políticas internas del sistema.</p>
                 </div>
-                
                 <div className="terms-section">
                   <h4>5. Tecnología de Mapas</h4>
                   <p>Este aplicativo utiliza tecnología de mapas proporcionada por <strong>Esri</strong> para la generación y visualización cartográfica. Los datos geoespaciales y servicios de mapas están sujetos a las condiciones de licencia de Esri.</p>
                   <p>El usuario acepta cumplir con los términos de uso de servicios de terceros integrados en la plataforma.</p>
                 </div>
-                
                 <div className="terms-section">
                   <h4>6. Protección de Datos Personales</h4>
                   <p>Sus datos son procesados conforme a las normativas de protección de datos aplicables.</p>
                   <p>No compartimos su información con terceros salvo lo requerido por las tecnologías integradas (Esri).</p>
                   <p>Los datos se mantienen el tiempo necesario para cumplir con el propósito del control de acceso.</p>
                 </div>
-                
                 <div className="terms-section">
                   <h4>7. Limitación de Responsabilidad</h4>
                   <p>El servicio se proporciona "tal como está" sin garantías de ningún tipo.</p>
                   <p>No nos responsabilizamos por interrupciones del servicio, pérdida de datos o problemas técnicos.</p>
                 </div>
-                
                 <div className="terms-section">
                   <h4>8. Modificaciones</h4>
                   <p>Nos reservamos el derecho de modificar estos términos en cualquier momento.</p>
                   <p>El uso continuado del servicio constituye aceptación de las modificaciones.</p>
-                </div>
-                
-                <div className="terms-acceptance">
-                  <label className="terms-checkbox-container">
-                    <input 
-                      type="checkbox" 
-                      checked={termsAccepted}
-                      onChange={(e) => setTermsAccepted(e.target.checked)}
-                      className="terms-checkbox"
-                    />
-                    <span className="terms-checkmark"></span>
-                    <span className="terms-checkbox-text">
-                      He leído y acepto los <strong>Términos y Condiciones de Uso</strong>
-                    </span>
-                  </label>
                 </div>
               </div>
             )}

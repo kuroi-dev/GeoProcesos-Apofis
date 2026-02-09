@@ -1,0 +1,56 @@
+/* Card bonita con hover y selección, borde y sombra roja, animación suave */
+.special-tool-card {
+    display: block !important;
+  background: black;
+  border: 2px solid #e0e0e0;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  align-items: center;
+  gap: 18px;
+  padding: 18px 24px;
+  margin: 18px 0;
+  cursor: pointer;
+  transition: border 0.3s, box-shadow 0.3s, transform 0.3s;
+  color: #fff;
+  position: relative;
+}
+.special-tool-card:hover {
+  border: 2.5px solid #b30000;
+  box-shadow: 0 8px 32px rgba(179,0,0,0.18);
+  transform: translateX(16px);
+}
+.special-tool-card.selected {
+  border: 2.5px solid #b30000;
+  box-shadow: 0 8px 32px rgba(179,0,0,0.28);
+  transform: translateX(24px);
+}
+.special-tool-img-container {
+
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(179,0,0,0.08);
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.special-tool-img {
+  width: 60px;
+  font-size: 2.4rem;
+  object-fit: cover;
+}
+.special-tool-content {
+  font-size: 2rem;
+}
+.special-tool-title {
+  font-size: 1cap;
+  color: #b30000;
+  width: 128px;
+  height: 128px;
+}
+.special-tool-summary {
+  font-size: 1rem;
+  color: #fff;
+  margin: 0;
+  opacity: 0.85;
+}

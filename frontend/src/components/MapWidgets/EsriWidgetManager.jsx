@@ -13,7 +13,8 @@ import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 import Sketch from '@arcgis/core/widgets/Sketch';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import './EsriWidgetManager.css';
-import { GeoProcesosWindow, ApofisWindow, EstadoWindow } from './SpecialToolWindows';
+import { GeoProcesosWindow, ApofisWindow, EstadoWindow, NuevoPanelWindow } from './SpecialToolWindows';
+import { createPortal } from 'react-dom';
 
 const EsriWidgetManager = ({ onMapReady }) => {
   const mapDiv = useRef(null);
@@ -130,10 +131,11 @@ const EsriWidgetManager = ({ onMapReady }) => {
 
         // WIDGETS CONTROLADOS POR MANAGER (creados pero no agregados al UI)
         
-        // SEARCH - Búsqueda
-        widgetsRef.current.search = new Search({
-          view: view
-        });
+          // SEARCH - Búsqueda (solo uno, siempre visible en top-right)
+          view.ui.add(widgetsRef.current.search, {
+            position: 'top-right',
+            index: 0
+          });
 
         // BASEMAP GALLERY
         widgetsRef.current.basemapGallery = new BasemapGallery({
@@ -229,10 +231,16 @@ const EsriWidgetManager = ({ onMapReady }) => {
   return (
     <div className="esri-widget-manager">
       <div ref={mapDiv} className="esri-map-container"></div>
-      {/* Paneles de herramientas especializadas */}
-      <GeoProcesosWindow />
-      <ApofisWindow />
-      <EstadoWindow estado={null} />
+      {/* Paneles de herramientas especializadas en el body usando Portal */}
+      {createPortal(
+        <>
+          <GeoProcesosWindow />
+          <ApofisWindow />
+          <EstadoWindow estado={null} />
+          <NuevoPanelWindow />
+        </>,
+        document.body
+      )}
       {/* WIDGET MANAGER - CENTRO INFERIOR */}
       <div className="custom-widget-manager">
         <button 

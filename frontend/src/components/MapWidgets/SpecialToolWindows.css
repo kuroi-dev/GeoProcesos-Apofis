@@ -1,65 +1,220 @@
+/* =============================
+   ESTILOS GENERALES
+   ============================= */
 .special-window {
-  position: fixed;
-  background: rgba(30, 30, 40, 0.97);
+  display: flex;
+  z-index: 2147483647 !important;
+}
+
+/* =============================
+   PANEL 1: GEOPROCESOS (title-windows)
+   ============================= */
+.title-windows {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  min-height: 70px;
+}
+.title-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  cursor: pointer;
+  user-select: none;
+  font-size: 17px;
+  font-weight: 400;
   color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.25);
-  padding: 18px 24px 16px 24px;
-  z-index: 3000;
-  min-width: 220px;
-  max-width: 340px;
-  font-family: inherit;
+  padding: 8px 12px 8px 8px;
+  background: rgba(0,0,0,0.7);
+  border-radius: 6px;
+  position: relative;
+}
+.title-logo-container {
+  display: flex;
+  align-items: center;
+  margin-right: 4px;
+}
+.title-logo-img {
+  width: 42px;
+  height: 42px;
+}
+.title-content-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  position: relative;
+  min-height: 53px;
+}
+.modo-flecha-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  justify-content: flex-end;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+.title-text {
+  font-size: 16px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.1;
+  text-align: left;
+}
+.title-label {
+  font-size: 8px;
+  color: #ff2222;
+  font-weight: 600;
+  margin-bottom: 0;
+  display: block;
+}
+.title-arrow {
+  margin-left: 0;
+  margin-top: 0;
+  font-size: 8px;
+  color: red;
+  transition: transform 0.2s;
+  display: block;
+  position: static;
+}
+.title-arrow.open {
+  transform: rotate(180deg);
+}
+.title-info {
+  background: #333;
+  color: #fff;
+  border-radius: 0 0 6px 6px;
+  padding: 10px 14px 12px 14px;
+  font-size: 13px;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  min-width: 100%;
+  max-width: 320px;
+  z-index: 2;
+  opacity: 1;
+  transition: opacity 0.3s cubic-bezier(0.4,0,0.2,1), max-height 0.3s cubic-bezier(0.4,0,0.2,1);
+  max-height: 200px;
+  pointer-events: auto;
+}
+.title-info.closed {
+  opacity: 0;
+  max-height: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.title-info.open {
+  opacity: 1;
+  max-height: 400px;
+  pointer-events: auto;
+  overflow: visible;
+}
+.info-label {
+  font-weight: 600;
+  color: #ffd700;
+  display: block;
+  margin-bottom: 4px;
+}
+.info-text {
+  margin: 0;
+  color: #eee;
 }
 
-.geo-procesos-window {
-  position: fixed;
-  top: 20px;
-  right: 30px;
+/* =============================
+   PANEL 2: APOFIS (marca-windows)
+   ============================= */
+.marca-windows {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  height: 20px;
+}
+.apofis-container {
+  position: relative;
+  left: 10px;
+  bottom: 10px;
+  background: rgba(0,0,0,0.7);
+  height: auto;
+  padding: 4% 7px;
+  height: 25px;
+}
+.apofis-logo {
+  height: 18px;
+}
+
+/* =============================
+   PANEL 3: ESTADO (status-windows)
+   ============================= */
+.status-windows {
+  height: 90px;
+  width: 125px;
+  background: rgba(0,0,0,0.8);
+  border-radius: 7px;
+  position: absolute;
+  bottom: 25px;
+  right: 10px;
+}
+.estado-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 15px;
+  width: 100%;
+}
+.estadoTitle{
+  font-size: 12px;
+  color: #fff;
+  text-align: left;
+  font-weight: 600;
+}
+.estado-item {
   display: flex;
   align-items: center;
-  background: rgba(30, 30, 40, 0.97);
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.25);
-  padding: 8px 18px;
-  z-index: 3000;
+  gap: 12px;
+}
+.estado-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  background: #bbb;
+  border: 2px solid #fff;
+  box-shadow: 0 0 4px #0002;
+}
+.estado-ok {
+  background: #2ecc40;
+}
+.estado-label {
+  font-size: 10px;
+  color: #fff;
+  font-weight: 400;
 }
 
-.apofis-window {
-  position: fixed;
-  left: 20px;
-  bottom: 20px;
-  background: transparent;
+/* =============================
+   PANEL 4: TOOLS (tools-windows)
+   ============================= */
+.tools-windows {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 300px;
+  height: 90%;
+  background: rgba(0,0,0,0.8);
+  border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 18px 24px 16px 24px;
   z-index: 3000;
+  display: block;
 }
 
-.estado-window {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  min-width: 180px;
-  background: rgba(20, 20, 30, 0.97);
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.25);
-  padding: 12px 18px;
-  z-index: 3000;
-}
-
+/* =============================
+   UTILIDADES Y LIMPIEZA
+   ============================= */
 .window-logo {
-  width: 48px;
-  height: 48px;
-  margin-bottom: 10px;
-}
-/* Nuevos estilos para logos y títulos en línea */
-.window-logo-inline {
-  width: 32px;
-  height: 32px;
-  margin-right: 10px;
-}
-.window-title-inline {
-  font-size: 1.2em;
   font-weight: bold;
   color: #fff;
 }
@@ -78,10 +233,4 @@
   box-shadow: 0 4px 24px rgba(0,0,0,0.25);
   padding: 18px 24px 16px 24px;
   z-index: 3000;
-}
-.estado-content {
-  margin-top: 8px;
-  font-size: 1.1em;
-  color: #ffd700;
-  text-align: center;
 }

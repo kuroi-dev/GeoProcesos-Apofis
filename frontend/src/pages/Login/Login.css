@@ -1,3 +1,11 @@
+/* Checkbox de términos en línea al lado del botón */
+.terms-checkbox-container-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 10px;
+  margin-top: 0;
+}
 /* Contenedor exterior */
 .container-outer {
   width: 100%;
