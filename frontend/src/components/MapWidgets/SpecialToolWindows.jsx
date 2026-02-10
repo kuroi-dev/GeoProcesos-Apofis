@@ -69,17 +69,7 @@ export function EstadoWindow({ estado }) {
 export function NuevoPanelWindow() {
   return (
     <div className="special-window tools-windows">
-      <h2 style={{
-        color: '#fff',
-        fontSize: '1.4rem',
-        fontWeight: 400,
-        letterSpacing: '0.01em',
-        marginBottom: 20,
-        fontFamily: 'inherit',
-        lineHeight: 1.1
-      }}>
-        Herramientas Especializadas
-      </h2>
+      <h2 className="tools-panel-title">Herramientas Especializadas</h2>
       <SpecialToolCard
         imgSrc={logoGeo}
         title="Análisis Espacial"
