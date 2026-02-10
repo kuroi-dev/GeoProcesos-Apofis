@@ -8,12 +8,15 @@ export function SpecialToolCard({ imgSrc, title, summary }) {
       className={`special-tool-card${selected ? " selected" : ""}`}
       onClick={() => setSelected(!selected)}
     >
-      <div className="special-tool-img-container">
-        <img src={imgSrc} alt={title} className="special-tool-img" />
-        <h3 className="special-tool-title">{title}</h3>
+      <div className="special-tool-header ">
+        <div className="special-tool-header-icon ">
+          <img src={imgSrc} alt="icono" className="special-tool-logo" />
+        </div>
+        <div className="special-tool-header-title ">
+          <h3 className="special-tool-title">{title}</h3>
+        </div>
       </div>
-      <div className="special-tool-content">
-        
+      <div className="special-tool-content ">
         <p className="special-tool-summary">{summary}</p>
       </div>
     </div>

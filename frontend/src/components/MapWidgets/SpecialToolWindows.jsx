@@ -69,26 +69,36 @@ export function EstadoWindow({ estado }) {
 export function NuevoPanelWindow() {
   return (
     <div className="special-window tools-windows">
-      <h2 style={{color: '#fff', fontSize: '1.5rem', fontWeight: 700, marginBottom: 24}}>Herramienta Personalizada</h2>
+      <h2 style={{
+        color: '#fff',
+        fontSize: '1.4rem',
+        fontWeight: 400,
+        letterSpacing: '0.01em',
+        marginBottom: 20,
+        fontFamily: 'inherit',
+        lineHeight: 1.1
+      }}>
+        Herramientas Especializadas
+      </h2>
       <SpecialToolCard
         imgSrc={logoGeo}
-        title="Satélite NDVI/NWDI"
-        summary="Con esta herramienta podrás utilizar imágenes satelitales y agregar NDVI, NWDI u otros índices, y trabajar con capas."
+        title="Análisis Espacial"
+        summary="Realiza buffers, intersecciones, uniones y recortes sobre capas vectoriales. Analiza relaciones espaciales y áreas de influencia."
       />
       <SpecialToolCard
         imgSrc={logoGeo}
-        title="Geoprocesos Avanzados"
-        summary="Realiza análisis espacial, buffers, intersecciones y operaciones complejas sobre capas geográficas."
+        title="Visualización Avanzada"
+        summary="Crea mapas temáticos y gráficos interactivos para explorar y comunicar datos geoespaciales."
       />
       <SpecialToolCard
         imgSrc={logoGeo}
-        title="Automatización de Descargas"
-        summary="Descarga automáticamente datos geoespaciales, imágenes y reportes para tu área de interés."
+        title="Imágenes Satelitales"
+        summary="Procesa imágenes multiespectrales, calcula NDVI y realiza clasificaciones para monitoreo ambiental."
       />
       <SpecialToolCard
         imgSrc={logoGeo}
-        title="IA para Mapas"
-        summary="Utiliza inteligencia artificial para clasificar, segmentar y analizar datos geográficos en tiempo real."
+        title="Automatización"
+        summary="Automatiza flujos de trabajo GIS, integra datos y genera reportes de forma eficiente."
       />
     </div>
   );

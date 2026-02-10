@@ -12,6 +12,7 @@ import Compass from '@arcgis/core/widgets/Compass';
 import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 import Sketch from '@arcgis/core/widgets/Sketch';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import Zoom from '@arcgis/core/widgets/Zoom';
 import './EsriWidgetManager.css';
 import { GeoProcesosWindow, ApofisWindow, EstadoWindow, NuevoPanelWindow } from './SpecialToolWindows';
 import { createPortal } from 'react-dom';
@@ -92,6 +93,15 @@ const EsriWidgetManager = ({ onMapReady }) => {
         view.ui.add(compass, {
           position: 'bottom-right',
           index: 1
+        });
+
+        // ZOOM - Controles de zoom (siempre visible)
+        const zoom = new Zoom({
+          view: view
+        });
+        view.ui.add(zoom, {
+          position: 'bottom-right',
+          index: 2
         });
 
         // SCALE BAR - Escala (siempre visible)

@@ -1,3 +1,50 @@
+/* Fijar la atribución de Esri en la esquina inferior derecha */
+.esri-attribution.esri-widget {
+  position: fixed !important;
+  right: 10px !important;
+  bottom: 10px !important;
+  left: auto !important;
+  top: auto !important;
+  z-index: 3000 !important;
+  background: rgba(0,0,0,0.5) !important;
+  color: #fff !important;
+  border-radius: 2px !important;
+  padding: 2px 6px !important;
+  font-size: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18) !important;
+}
+.esri-attribution__sources, .esri-attribution__powered-by, .esri-attribution__link {
+  color: #fff !important;
+  background: none !important;
+  font-size: 8px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+   display: flex !important;
+   gap: 4px;
+  text-shadow: none !important;
+}
+/* Forzar el widget de zoom a la esquina inferior derecha */
+.esri-zoom.esri-widget {
+  position: fixed !important;
+  right: 20px !important;
+  bottom: 20px !important;
+  left: auto !important;
+  top: auto !important;
+  z-index: 3000 !important;
+  opacity: 1 !important;
+  display: flex !important;
+  bottom: 120px !important;
+}
+/* Forzar visibilidad y prioridad del widget de zoom */
+.esri-ui-bottom-right .esri-zoom {
+  z-index: 3000 !important;
+  opacity: 1 !important;
+  display: flex !important;
+  position: relative !important;
+}
 /* SEARCH - Reposicionar y asegurar visibilidad */
 .esri-search {
   position: fixed !important;
@@ -76,13 +123,15 @@
   position: absolute !important;
 }
 
+/* Mover el widget de zoom a la esquina inferior derecha */
 .esri-zoom {
+  position: fixed !important;
+  right: 20px !important;
+  bottom: 20px !important;
+  z-index: 2000 !important;
   display: flex !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  position: relative !important;
-  pointer-events: auto !important;
-  z-index: 1001 !important;
+  flex-direction: column !important;
+  gap: 4px !important;
 }
 
 .esri-attribution {

@@ -1,3 +1,6 @@
+.special-window.tools-windows {
+  overflow: auto !important;
+}
 /* =============================
    ESTILOS GENERALES
    ============================= */
@@ -147,7 +150,6 @@
    PANEL 3: ESTADO (status-windows)
    ============================= */
 .status-windows {
-  height: 90px;
   width: 125px;
   background: rgba(0,0,0,0.8);
   border-radius: 7px;
@@ -199,7 +201,7 @@
   top: 10px;
   left: 10px;
   width: 300px;
-  height: 90%;
+  max-height: 90%;
   background: rgba(0,0,0,0.8);
   border-radius: 10px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.18);
