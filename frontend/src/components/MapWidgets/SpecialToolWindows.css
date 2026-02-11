@@ -1,15 +1,13 @@
 /* === Stylized title for Herramientas Especializadas panel === */
 .tools-panel-title {
-  font-size: 1.45rem;
-  font-weight: 400;
+  font-size: 1.1rem;
+  font-weight: 300;
   color: white;
-  text-shadow: 0 0 3px white, 0 0 2px #fff;
   letter-spacing: 0.06em;
   margin-bottom: 22px;
   font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
   text-transform: uppercase;
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   background-clip: text;
   border-bottom: 2px solid rgba(0,255,255,0.18);
   padding-bottom: 6px;
@@ -217,7 +215,7 @@
   position: absolute;
   top: 10px;
   left: 10px;
-  width: 300px;
+  width: 270px;
   max-height: 90%;
   background: rgba(0,0,0,0.8);
   border-radius: 10px;
@@ -235,10 +233,10 @@
   position: absolute;
   top: 10px;
   left: 10px;
-  width: 320px;
+  width: 270px;
   max-height: 90%;
   background: rgba(20, 25, 35, 0.82);
-  border-radius: 18px;
+  border-radius: 4px;
   box-shadow: 0 8px 32px 0 rgba(0,255,255,0.12), 0 2px 24px 0 rgba(0,0,0,0.32);
   border: 1.5px solid rgba(0,255,255,0.32);
   backdrop-filter: blur(8px) saturate(1.2);
@@ -291,7 +289,7 @@
   min-width: 220px;
   max-width: 340px;
   background: rgba(20, 25, 35, 0.92);
-  border-radius: 18px;
+  border-radius: 2px;
   box-shadow: 0 8px 32px 0 rgba(0,255,255,0.10), 0 2px 24px 0 rgba(0,0,0,0.32);
   border: 1.5px solid rgba(0,255,255,0.22);
   backdrop-filter: blur(10px) saturate(1.2);
@@ -305,10 +303,7 @@
 }
 
 /* Neon border hover effect */
-.tools-windows:hover, .main-panel-window:hover {
-  box-shadow: 0 0 24px 2px #00fff7cc, 0 8px 32px 0 rgba(0,255,255,0.18), 0 2px 24px 0 rgba(0,0,0,0.32);
-  border: 2px solid #00fff7;
-}
+
 
 /* Scrollbar styling for floating panels */
 .tools-windows::-webkit-scrollbar, .main-panel-window::-webkit-scrollbar {
