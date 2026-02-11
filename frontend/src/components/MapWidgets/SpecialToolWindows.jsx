@@ -3,6 +3,7 @@ import './SpecialToolWindows.css';
 import logoPro from '../../assets/logo/logoL.svg';
 import logoGeo from '../../assets/logo/logogeo.svg';
 import { SpecialToolCard } from './SpecialToolCard';
+
 export function GeoProcesosWindow() {
   const [open, setOpen] = React.useState(false);
   return (

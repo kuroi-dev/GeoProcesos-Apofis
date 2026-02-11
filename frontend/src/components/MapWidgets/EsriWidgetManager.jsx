@@ -258,35 +258,35 @@ const EsriWidgetManager = ({ onMapReady }) => {
           onClick={() => toggleWidget('basemapGallery')}
           title="Galería de Mapas Base"
         >
-          🗺️
+          <calcite-icon icon="basemap" scale="l"></calcite-icon>
         </button>
         <button 
           className={`manager-btn ${widgetStates.layerList ? 'active' : ''}`}
           onClick={() => toggleWidget('layerList')}
           title="Lista de Capas"
         >
-          📋
+          <calcite-icon icon="layers" scale="l"></calcite-icon>
         </button>
         <button 
           className={`manager-btn ${widgetStates.legend ? 'active' : ''}`}
           onClick={() => toggleWidget('legend')}
           title="Leyenda"
         >
-          📊
+          <calcite-icon icon="legend" scale="l"></calcite-icon>
         </button>
         <button 
           className={`manager-btn ${widgetStates.measurement ? 'active' : ''}`}
           onClick={() => toggleWidget('measurement')}
           title="Herramientas de Medición"
         >
-          📏
+          <calcite-icon icon="measure" scale="l"></calcite-icon>
         </button>
         <button 
           className={`manager-btn ${widgetStates.sketch ? 'active' : ''}`}
           onClick={() => toggleWidget('sketch')}
           title="Herramientas de Dibujo"
         >
-          ✏️
+          <calcite-icon icon="pencil" scale="l"></calcite-icon>
         </button>
       </div>
     </div>

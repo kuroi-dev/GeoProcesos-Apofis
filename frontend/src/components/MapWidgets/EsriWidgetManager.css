@@ -182,13 +182,13 @@
   position: fixed !important;
   left: 50% !important;
   bottom: 70px !important;
-  margin-left: -110px !important;
+  margin-left: -130px !important;
   right: auto !important;
   transform: translateX(-50%) !important;
   z-index: -30 !important;
-  border-bottom: solid 2px rgb(145, 2, 2) !important;
-  border-right: solid 2px rgb(145, 2, 2) !important;
-  border-left: solid 2px rgb(145, 2, 2) !important;
+  border-bottom: solid 2px #72fffa !important;
+  border-right: solid 2px #72fffa  !important;
+  border-left: solid 2px #72fffa  !important;
   padding: 2.5px 5px !important;
   color: white !important;
   background: rgba(0, 0, 0, 0.5) !important;
@@ -201,7 +201,7 @@
 .esri-scale-bar__label {
   color: white !important;
   font-weight: bold !important;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .esri-compass .esri-widget--button {
@@ -254,7 +254,7 @@
   gap: 12px;
   z-index: 2000;
   background-color: rgba(0, 0, 0, 0.8);
-  padding: 8px 16px;
+  padding: 4px 16px;
   border-radius: 25px;
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -263,8 +263,8 @@
 
 /* BOTONES DEL MANAGER */
 .manager-btn {
-  width: 48px;
-  height: 48px;
+  width: 60px;
+  height: 60px;
   background-color: rgba(255, 255, 255, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
@@ -310,7 +310,7 @@
 /* WIDGET MANAGER PERSONALIZADO - CENTRO INFERIOR */
 .custom-widget-manager {
   position: absolute;
-  bottom: 20px;
+  bottom: 15px;
   left: 50%;
   transform: translateX(-50%) scale(0.7);
   transform-origin: bottom center;
@@ -318,20 +318,20 @@
   flex-direction: row;
   gap: 12px;
   z-index: 2000;
-  background-color: rgba(0, 0, 0, 0.8);
-  padding: 8px 16px;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 6px 14px;
   border-radius: 25px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 /* BOTONES DEL MANAGER */
 .manager-btn {
-  width: 48px;
-  height: 48px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  width: 60px;
+  height: 60px;
+  background-color: rgb(31, 31, 31);
+  border: 2px solid #65e6e2;;
   border-radius: 50%;
   color: white;
   font-size: 20px;
