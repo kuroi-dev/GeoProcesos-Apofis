@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import "./SpecialToolCard.css";
 
-export function SpecialToolCard({ imgSrc, title, summary }) {
-  const [selected, setSelected] = useState(false);
+export function SpecialToolCard({ imgSrc, title, summary, selected, onSelect }) {
   return (
     <div
       className={`special-tool-card${selected ? " selected" : ""}`}
-      onClick={() => setSelected(!selected)}
+      onClick={onSelect}
     >
       <div className="special-tool-header ">
         <div className="special-tool-header-icon ">

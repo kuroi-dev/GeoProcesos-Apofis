@@ -67,29 +67,80 @@ export function EstadoWindow({ estado }) {
 }
 
 export function NuevoPanelWindow() {
+  const [visible, setVisible] = React.useState(true);
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const tools = [
+    {
+      imgSrc: logoGeo,
+      title: "Análisis Espacial",
+      summary: "Realiza buffers, intersecciones, uniones y recortes sobre capas vectoriales. Analiza relaciones espaciales y áreas de influencia."
+    },
+    {
+      imgSrc: logoGeo,
+      title: "Visualización Avanzada",
+      summary: "Crea mapas temáticos y gráficos interactivos para explorar y comunicar datos geoespaciales."
+    },
+    {
+      imgSrc: logoGeo,
+      title: "Imágenes Satelitales",
+      summary: "Procesa imágenes multiespectrales, calcula NDVI y realiza clasificaciones para monitoreo ambiental."
+    },
+    {
+      imgSrc: logoGeo,
+      title: "Automatización",
+      summary: "Automatiza flujos de trabajo GIS, integra datos y genera reportes de forma eficiente."
+    }
+  ];
   return (
-    <div className="special-window tools-windows">
-      <h2 className="tools-panel-title">Herramientas Especializadas</h2>
-      <SpecialToolCard
-        imgSrc={logoGeo}
-        title="Análisis Espacial"
-        summary="Realiza buffers, intersecciones, uniones y recortes sobre capas vectoriales. Analiza relaciones espaciales y áreas de influencia."
-      />
-      <SpecialToolCard
-        imgSrc={logoGeo}
-        title="Visualización Avanzada"
-        summary="Crea mapas temáticos y gráficos interactivos para explorar y comunicar datos geoespaciales."
-      />
-      <SpecialToolCard
-        imgSrc={logoGeo}
-        title="Imágenes Satelitales"
-        summary="Procesa imágenes multiespectrales, calcula NDVI y realiza clasificaciones para monitoreo ambiental."
-      />
-      <SpecialToolCard
-        imgSrc={logoGeo}
-        title="Automatización"
-        summary="Automatiza flujos de trabajo GIS, integra datos y genera reportes de forma eficiente."
-      />
-    </div>
+    <>
+      <div
+        className={`special-window tools-windows${visible ? '' : ' hidden'}`}
+        style={{ transition: 'transform 0.4s cubic-bezier(.77,0,.18,1)', transform: visible ? 'translateX(0)' : 'translateX(-110%)' }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <h2 className="tools-panel-title" style={{ marginBottom: 0 }}>Herramientas Especializadas</h2>
+          <button
+            className="close-tools-panel-btn"
+            title="Cerrar panel"
+            onClick={() => {
+              setVisible(false);
+              setSelectedIndex(-1);
+            }}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#fff',
+              fontSize: '1.3rem',
+              cursor: 'pointer',
+              marginLeft: 8,
+              padding: 0,
+              lineHeight: 1
+            }}
+          >
+            ×
+          </button>
+        </div>
+        <div style={{ height: 18 }} />
+        {tools.map((tool, idx) => (
+          <SpecialToolCard
+            key={tool.title}
+            imgSrc={tool.imgSrc}
+            title={tool.title}
+            summary={tool.summary}
+            selected={selectedIndex === idx}
+            onSelect={() => setSelectedIndex(idx)}
+          />
+        ))}
+      </div>
+      {!visible && (
+        <button
+          className="show-tools-panel-btn"
+          title="Mostrar herramientas"
+          onClick={() => setVisible(true)}
+        >
+          ▶
+        </button>
+      )}
+    </>
   );
 }
