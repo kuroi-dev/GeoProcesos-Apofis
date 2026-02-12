@@ -144,7 +144,7 @@
    ============================= */
 .marca-windows {
   position: absolute;
-  bottom: 10px;
+  bottom: 15px;
   left: 10px;
   height: 20px;
 }
@@ -167,20 +167,20 @@
 .status-windows {
   width: 115px;
   background: rgba(0,0,0,0.8);
-  border-radius: 7px;
+  border-radius: 2px;
   position: absolute;
-  bottom: 30px;
-  right: 10px;
+  bottom: 20px;
+  right: 88px;
 }
 .estado-panel {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 10px 15px;
+  padding: 8px 8px;
   width: 100%;
 }
 .estadoTitle{
-  font-size: 11px;
+  font-size: 9px;
   color: #65e6e2;
   text-align: left;
   font-weight: 600;
@@ -188,11 +188,11 @@
 .estado-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 .estado-dot {
-  width: 10px;
-  height: 10px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   display: inline-block;
   background: #bbb;
@@ -203,7 +203,7 @@
   background: #00ff1e;
 }
 .estado-label {
-  font-size: 9px;
+  font-size: 10px;
   color: #fff;
   font-weight: 400;
 }
@@ -217,7 +217,7 @@
   top: 10px;
   left: 10px;
   width: 270px;
-  max-height: 90%;
+  max-height: 85vh;
   background: rgba(20, 25, 35, 0.82);
   border-radius: 10px;
   box-shadow: 0 8px 32px 0 rgba(0,255,255,0.12), 0 2px 24px 0 rgba(0,0,0,0.32);

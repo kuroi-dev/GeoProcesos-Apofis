@@ -1,7 +1,11 @@
 import React from 'react';
 import './SpecialToolWindows.css';
-import logoPro from '../../assets/logo/logoL.svg';
-import logoGeo from '../../assets/logo/logogeo.svg';
+import logoApofis from '../../assets/logo/logoL.svg';
+import logoPro from '../../assets/logo/logogeo.svg';
+import logoGeo1 from '../../assets/logo/logoTools/logogeo3.png';
+import logoGeo2 from '../../assets/logo/logoTools/logogeo1.png';
+import logoGeo3 from '../../assets/logo/logoTools/logogeo4.png';
+import logoGeo4 from '../../assets/logo/logoTools/logogeo2.png';
 import { SpecialToolCard } from './SpecialToolCard';
 
 export function GeoProcesosWindow() {
@@ -10,7 +14,7 @@ export function GeoProcesosWindow() {
     <div className="special-window title-windows">
       <div className={`title-header${open ? ' open' : ' closed'}`} onClick={() => setOpen(o => !o)}>
         <div className="title-logo-container">
-          <img src={logoGeo} alt="GeoProcesos Logo" className="title-logo-img" />
+          <img src={logoPro} alt="GeoProcesos Logo" className="title-logo-img" />
         </div>
         <div className="title-content-container">
           <span className="title-text">Geoprocesos<br />en línea</span>
@@ -37,7 +41,7 @@ export function ApofisWindow() {
   return (
     <div className="special-window marca-windows">
       <div className="apofis-container">
-        <img src={logoPro} className='apofis-logo' />
+        <img src={logoApofis} className='apofis-logo' />
       </div>
     </div>
   );
@@ -72,22 +76,22 @@ export function NuevoPanelWindow() {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const tools = [
     {
-      imgSrc: logoGeo,
+      imgSrc: logoGeo1,
       title: "Análisis Espacial",
       summary: "Realiza buffers, intersecciones, uniones y recortes sobre capas vectoriales. Analiza relaciones espaciales y áreas de influencia."
     },
     {
-      imgSrc: logoGeo,
+      imgSrc: logoGeo2,
       title: "Visualización Avanzada",
       summary: "Crea mapas temáticos y gráficos interactivos para explorar y comunicar datos geoespaciales."
     },
     {
-      imgSrc: logoGeo,
+      imgSrc: logoGeo3,
       title: "Imágenes Satelitales",
       summary: "Procesa imágenes multiespectrales, calcula NDVI y realiza clasificaciones para monitoreo ambiental."
     },
     {
-      imgSrc: logoGeo,
+      imgSrc: logoGeo4,
       title: "Automatización",
       summary: "Automatiza flujos de trabajo GIS, integra datos y genera reportes de forma eficiente."
     }

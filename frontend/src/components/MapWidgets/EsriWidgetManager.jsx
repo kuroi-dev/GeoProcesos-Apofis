@@ -1,257 +1,122 @@
-import React, { useEffect, useRef, useState } from 'react';
-import esriConfig from '@arcgis/core/config';
-import Map from '@arcgis/core/Map';
-import MapView from '@arcgis/core/views/MapView';
-import BasemapGallery from '@arcgis/core/widgets/BasemapGallery';
-import LayerList from '@arcgis/core/widgets/LayerList';
-import Legend from '@arcgis/core/widgets/Legend';
-import Search from '@arcgis/core/widgets/Search';
-import Home from '@arcgis/core/widgets/Home';
-import Measurement from '@arcgis/core/widgets/Measurement';
-import Compass from '@arcgis/core/widgets/Compass';
-import ScaleBar from '@arcgis/core/widgets/ScaleBar';
-import Sketch from '@arcgis/core/widgets/Sketch';
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import Zoom from '@arcgis/core/widgets/Zoom';
+import React, { useRef, useEffect, useState } from 'react';
+
+import "@arcgis/map-components/components/arcgis-map";
+import "@arcgis/map-components/components/arcgis-search";
+import "@arcgis/map-components/components/arcgis-basemap-gallery";
+import "@arcgis/map-components/components/arcgis-layer-list";
+import "@arcgis/map-components/components/arcgis-legend";
+import "@arcgis/map-components/components/arcgis-compass";
+import "@arcgis/map-components/components/arcgis-home";
+import "@arcgis/map-components/components/arcgis-zoom";
+import "@arcgis/map-components/components/arcgis-scale-bar";
+import "@arcgis/map-components/components/arcgis-sketch";
+import "@arcgis/map-components/components/arcgis-area-measurement-2d";
+import "@arcgis/map-components/components/arcgis-basemap-toggle";
+
+
 import './EsriWidgetManager.css';
 import { GeoProcesosWindow, ApofisWindow, EstadoWindow, NuevoPanelWindow } from './SpecialToolWindows';
 import { createPortal } from 'react-dom';
 
+
 const EsriWidgetManager = ({ onMapReady }) => {
-  const mapDiv = useRef(null);
-  const mapView = useRef(null);
-  const widgetsRef = useRef({});
-  // Estados para controlar la visibilidad de los widgets
+
+  const [showSketch, setShowSketch] = React.useState(false);
+
+  // No widget refs needed for map-components
+  // Widget visibility state
   const [widgetStates, setWidgetStates] = useState({
     basemapGallery: false,
     layerList: false,
     legend: false,
     measurement: false,
-    sketch: false
+    sketch: false,
+    print: false
   });
 
-  // Función para alternar la visibilidad de un widget
+  // Función para alternar la visibilidad de un widget (solo uno activo a la vez)
   const toggleWidget = (widgetName) => {
-    setWidgetStates(prev => ({
-      ...prev,
-      [widgetName]: !prev[widgetName]
-    }));
+    setWidgetStates(prev => {
+      const newState = {};
+      Object.keys(prev).forEach(name => {
+        newState[name] = false;
+      });
+      newState[widgetName] = !prev[widgetName];
+      return newState;
+    });
+    // If toggling a widget other than sketch, close sketch
+    if (widgetName !== 'sketch') {
+      setShowSketch(false);
+    }
   };
 
-  useEffect(() => {
-    // Configurar idioma global a español y cargar recursos
-    esriConfig.locale = 'es';
-    // Forzar carga de recursos de idioma español
-    const script = document.createElement('script');
-    script.src = 'https://js.arcgis.com/4.34/esri/themes/base/nls/es/core.js';
-    script.async = true;
-    document.head.appendChild(script);
-    if (mapDiv.current && !mapView.current) {
-      console.log('🗺️ Creando mapa...');
-      
-      // Crear capa de gráficos para dibujo
-      const graphicsLayer = new GraphicsLayer({
-        title: 'Sketches'
-      });
-
-      // Crear el mapa 
-      const map = new Map({
-        basemap: 'satellite',
-        layers: [graphicsLayer]
-      });
-
-      // Crear la vista del mapa
-      const view = new MapView({
-        container: mapDiv.current,
-        map: map,
-        center: [-72.2322, -39.2764], // Villarrica, Chile
-        zoom: 12
-      });
-
-      mapView.current = view;
-      console.log('🗺️ Mapa satelital creado');
-
-      // Esperar a que la vista esté lista
-      view.when(() => {
-        console.log('✅ MapView está listo');
-
-        // SOLO WIDGETS BÁSICOS SIEMPRE VISIBLES
-        
-        // HOME - Vista inicial (icono simple)
-        const homeWidget = new Home({
-          view: view
-        });
-        view.ui.add(homeWidget, {
-          position: 'bottom-right',
-          index: 0
-        });
-
-        // COMPASS - Brújula (siempre visible)
-        const compass = new Compass({
-          view: view
-        });
-        view.ui.add(compass, {
-          position: 'bottom-right',
-          index: 1
-        });
-
-        // ZOOM - Controles de zoom (siempre visible)
-        const zoom = new Zoom({
-          view: view
-        });
-        view.ui.add(zoom, {
-          position: 'bottom-right',
-          index: 2
-        });
-
-        // SCALE BAR - Escala (siempre visible)
-        const scaleBar = new ScaleBar({
-          view: view,
-          unit: 'metric'
-        });
-        view.ui.add(scaleBar, {
-          position: 'bottom-left',
-          index: 0
-        });
-
-        // SEARCH - Búsqueda (siempre visible en top-right)
-        const searchWidget = new Search({
-          view: view,
-          searchButtonTooltip: 'Buscar',
-          searchButtonText: 'Buscar'
-        });
-        widgetsRef.current.search = searchWidget;
-        view.ui.add(searchWidget, {
-          position: 'top-right',
-          index: 0
-        });
-
-        // Hack: Forzar el texto del botón a 'Buscar' tras renderizar el widget
-        // Forzar cambio de texto y placeholder varias veces para asegurar que el DOM esté listo
-        let tries = 0;
-        const interval = setInterval(() => {
-          const btn = document.querySelector('.esri-search__submit-button');
-          if (btn) btn.textContent = 'Buscar';
-          // Buscar el input por el placeholder original en inglés
-          const input = document.querySelector('input[placeholder="Find address or place"]');
-          if (input) input.placeholder = 'Buscar dirección o lugar';
-          tries++;
-          if ((btn && input) || tries > 15) clearInterval(interval);
-        }, 300);
-
-        // WIDGETS CONTROLADOS POR MANAGER (creados pero no agregados al UI)
-        
-          // SEARCH - Búsqueda (solo uno, siempre visible en top-right)
-          view.ui.add(widgetsRef.current.search, {
-            position: 'top-right',
-            index: 0
-          });
-
-        // BASEMAP GALLERY
-        widgetsRef.current.basemapGallery = new BasemapGallery({
-          view: view
-        });
-
-        // LAYER LIST
-        widgetsRef.current.layerList = new LayerList({
-          view: view
-        });
-
-        // LEGEND
-        widgetsRef.current.legend = new Legend({
-          view: view
-        });
-
-        // MEASUREMENT
-        widgetsRef.current.measurement = new Measurement({
-          view: view
-        });
-
-        // SKETCH
-        widgetsRef.current.sketch = new Sketch({
-          layer: graphicsLayer,
-          view: view
-        });
-
-        console.log('✅ Todos los widgets creados y listos para el manager');
-        
-        // Notificar que el mapa está listo
-        if (onMapReady) {
-          onMapReady(view, map);
-        }
-      });
-    }
-
-    return () => {
-      if (mapView.current) {
-        mapView.current.destroy();
-        mapView.current = null;
-      }
-    };
-  }, [onMapReady]);
-
-  // Efecto para manejar la visibilidad de los widgets
-  useEffect(() => {
-    if (mapView.current && widgetsRef.current) {
-      const view = mapView.current;
-
-      // Search SIEMPRE visible en top-right (solo si existe el widget)
-      if (widgetsRef.current.search && !view.ui.find('searchWidget')) {
-        widgetsRef.current.search.id = 'searchWidget';
-        view.ui.add(widgetsRef.current.search, 'top-right');
-      }
-
-      // BasemapGallery
-      if (widgetStates.basemapGallery) {
-        view.ui.add(widgetsRef.current.basemapGallery, 'top-right');
-      } else {
-        view.ui.remove(widgetsRef.current.basemapGallery);
-      }
-
-      // LayerList
-      if (widgetStates.layerList) {
-        view.ui.add(widgetsRef.current.layerList, 'bottom-left');
-      } else {
-        view.ui.remove(widgetsRef.current.layerList);
-      }
-
-      // Legend
-      if (widgetStates.legend) {
-        view.ui.add(widgetsRef.current.legend, 'bottom-left');
-      } else {
-        view.ui.remove(widgetsRef.current.legend);
-      }
-
-      // Measurement
-      if (widgetStates.measurement) {
-        view.ui.add(widgetsRef.current.measurement, 'top-right');
-      } else {
-        view.ui.remove(widgetsRef.current.measurement);
-      }
-
-      // Sketch
-      if (widgetStates.sketch) {
-        view.ui.add(widgetsRef.current.sketch, 'bottom-right');
-      } else {
-        view.ui.remove(widgetsRef.current.sketch);
-      }
-    }
-  }, [widgetStates]);
+  const mostrarSketch = () => {
+    // Close all other widgets when opening sketch
+    setWidgetStates({
+      basemapGallery: false,
+      layerList: false,
+      legend: false,
+      measurement: false,
+      sketch: false,
+      print: false
+    });
+    setShowSketch(prev => !prev);
+  };
 
   return (
     <div className="esri-widget-manager">
-      <div ref={mapDiv} className="esri-map-container"></div>
-      {/* Paneles de herramientas especializadas en el body usando Portal */}
-      {createPortal(
-        <>
-          <GeoProcesosWindow />
-          <ApofisWindow />
-          <EstadoWindow estado={null} />
-          <NuevoPanelWindow />
-        </>,
-        document.body
-      )}
-      {/* WIDGET MANAGER - CENTRO INFERIOR */}
+      
+      <arcgis-map 
+        basemap="satellite" 
+        center="-72.2322, -39.2764" 
+        zoom="12" 
+        style={{ width: '100%', height: '100vh', display: 'block' }}
+      >
+        <arcgis-search 
+          slot="top-right"
+          style={{ position: 'absolute', top: '10px', right: '165px', zIndex: 1100, width: '320px' }}
+        ></arcgis-search>
+
+        <arcgis-compass 
+          slot="bottom-right"
+          style={{ position: 'absolute', bottom: '180px', right: '10px', zIndex: 1100 }}
+        ></arcgis-compass>
+
+        <arcgis-home 
+          slot="bottom-right"
+          style={{ position: 'absolute', bottom: '140px', right: '10px', zIndex: 1100 }}
+        ></arcgis-home>
+
+
+        <arcgis-zoom 
+          slot="bottom-right"
+          style={{ position: 'absolute', bottom: '70px', right: '10px', zIndex: 1100 }}
+        ></arcgis-zoom>
+
+        <arcgis-scale-bar 
+          slot="bottom-left" 
+          unit="metric"
+          style={{ position: 'absolute', bottom: '-12px', left: '110px', zIndex: 1100 }}
+        ></arcgis-scale-bar>
+
+        <arcgis-sketch
+          slot="top-right"
+          creation-mode="continuous"
+          layout="horizontal"
+          scale="s"
+          style={{ position: 'absolute', top: '45px', right: '180px', zIndex: 1100}}
+          hide-undo-redo-menu
+          hide-settings-menu
+          className={showSketch ? 'panel-visible' : 'panel-hidden'}
+        ></arcgis-sketch>
+
+        <arcgis-basemap-toggle 
+          slot="bottom-right" 
+          style={{ position: 'absolute', bottom: '-10px', right: '0px', zIndex: 1100 }}
+          next-basemap="topo"
+        ></arcgis-basemap-toggle>
+        
+      
       <div className="custom-widget-manager">
         <button 
           className={`manager-btn ${widgetStates.basemapGallery ? 'active' : ''}`}
@@ -283,15 +148,67 @@ const EsriWidgetManager = ({ onMapReady }) => {
         </button>
         <button 
           className={`manager-btn ${widgetStates.sketch ? 'active' : ''}`}
-          onClick={() => toggleWidget('sketch')}
+          onClick={() => mostrarSketch()}
           title="Herramientas de Dibujo"
         >
           <calcite-icon icon="pencil" scale="l"></calcite-icon>
         </button>
+        <button 
+          className={`manager-btn ${widgetStates.print ? 'active' : ''}`}
+          onClick={() =>  toggleWidget('print')}
+          title="Herramientas de Dibujo"
+        >
+          <calcite-icon icon="print" scale="l"></calcite-icon>
+        </button>
       </div>
+      <div
+        id="panel"
+        className={`esri-widget-panel ${Object.values(widgetStates).some(Boolean) ? 'panel-visible' : 'panel-hidden'}`}
+      >
+        {widgetStates.basemapGallery && (
+          <div className="widget-panel-content">
+            <arcgis-basemap-gallery></arcgis-basemap-gallery>
+          </div>
+        )}
+        {widgetStates.layerList && (
+          <div className="widget-panel-content">
+            <arcgis-layer-list></arcgis-layer-list>
+          </div>
+        )}
+        {widgetStates.legend && (
+          <div className="widget-panel-content">
+            <arcgis-legend></arcgis-legend>
+          </div>
+        )}
+        {widgetStates.measurement && (
+          <div className="widget-panel-content">
+            <arcgis-area-measurement-2d></arcgis-area-measurement-2d>
+          </div>
+        )}
+        {widgetStates.print && (
+          <div className="widget-panel-content">
+             <arcgis-print
+              allowed-formats="all"
+              allowed-layouts="all"
+            ></arcgis-print>
+          </div>
+        )}
+      </div>
+      </arcgis-map>
+
+      
+      {createPortal(
+        <>
+          <GeoProcesosWindow />
+          <ApofisWindow />
+          <EstadoWindow estado={null} />
+          <NuevoPanelWindow />
+        </>,
+        document.body
+      )}
     </div>
+    
   );
-  
-};
+}
 
 export default EsriWidgetManager;

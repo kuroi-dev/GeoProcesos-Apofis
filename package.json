@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@arcgis/map-components": "^4.34.9"
+  }
+}

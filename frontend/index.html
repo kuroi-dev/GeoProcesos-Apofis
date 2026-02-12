@@ -13,5 +13,14 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script type="module">
+      const printElement = document.querySelector("arcgis-print");
+      printElement.addEventListener("arcgisSubmit", (e) => {
+        console.log("Print component submit", e);
+      });
+      printElement.addEventListener("arcgisComplete", (e) => {
+        console.log("Print component complete", e);
+      });
+    </script>
   </body>
 </html>
