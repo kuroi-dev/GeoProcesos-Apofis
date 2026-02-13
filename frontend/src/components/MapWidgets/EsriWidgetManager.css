@@ -1,6 +1,6 @@
 .esri-widget-panel {
   width: 230px;
-  height: 140px;
+  max-height: 200px;
   background: rgba(30, 30, 40, 0.7);
   border-radius: 5px;
   overflow: auto;

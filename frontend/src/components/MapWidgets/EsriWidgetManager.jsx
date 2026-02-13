@@ -21,7 +21,81 @@ import { createPortal } from 'react-dom';
 
 const EsriWidgetManager = ({ onMapReady }) => {
 
+
+
   const [showSketch, setShowSketch] = React.useState(false);
+  const [showPrint, setShowPrint] = React.useState(false);
+  const printRef = useRef(null);
+  const [printKey, setPrintKey] = useState(0);
+  
+  useEffect(() => {
+    // Espera a que el widget esté en el DOM
+    const interval = setInterval(() => {
+      const print = document.querySelector('arcgis-print');
+      if (print) {
+        const shadow = print.shadowRoot;
+        if (shadow) {
+          // 1. Control visual: mostrar el menú de impresión y ocultar el de template
+          const flow = shadow.querySelector('calcite-flow');
+          if (flow) {
+            const items = flow.querySelectorAll('calcite-flow-item');
+            if (items.length >= 2) {
+              items[0].removeAttribute('hidden');
+              items[1].setAttribute('hidden', '');
+            }
+          }
+
+          // 2. (Adicional) Elimina cualquier calcite-label que contenga arcgis-print-template-select en cualquier shadowRoot descendiente
+          function removeAllTemplateLabels(root) {
+            const labels = root.querySelectorAll('calcite-label');
+            labels.forEach(label => {
+              if (label.querySelector('arcgis-print-template-select')) {
+                label.remove();
+              }
+            });
+            root.querySelectorAll('*').forEach(el => {
+              if (el.shadowRoot) {
+                removeAllTemplateLabels(el.shadowRoot);
+              }
+            });
+          }
+          removeAllTemplateLabels(shadow);
+
+          // Detener el intervalo si el menú principal está visible y el de template oculto
+          if (flow) {
+            const items = flow.querySelectorAll('calcite-flow-item');
+            if (items.length >= 2 && !items[0].hasAttribute('hidden') && items[1].hasAttribute('hidden')) {
+              clearInterval(interval);
+            }
+          }
+        }
+      }
+    }, 200);
+    // Limpieza
+    return () => clearInterval(interval);
+  }, [printKey]);
+
+  const handleResetPrint = () => {
+    setPrintKey(k => k + 1);
+  };
+
+
+  useEffect(() => {
+    const printElement = printRef.current;
+    if (!printElement) return;
+    const handleSubmit = (e) => {
+      console.log('Print component submit', e);
+    };
+    const handleComplete = (e) => {
+      console.log('Print component complete', e);
+    };
+    printElement.addEventListener('arcgisSubmit', handleSubmit);
+    printElement.addEventListener('arcgisComplete', handleComplete);
+    return () => {
+      printElement.removeEventListener('arcgisSubmit', handleSubmit);
+      printElement.removeEventListener('arcgisComplete', handleComplete);
+    };
+  }, []);
 
   // No widget refs needed for map-components
   // Widget visibility state
@@ -61,6 +135,20 @@ const EsriWidgetManager = ({ onMapReady }) => {
       print: false
     });
     setShowSketch(prev => !prev);
+    setShowPrint(false);
+  };
+  const mostrarPrint = () => {
+    // Close all other widgets when opening sketch
+    setWidgetStates({
+      basemapGallery: false,
+      layerList: false,
+      legend: false,
+      measurement: false,
+      sketch: false,
+      print: false
+    });
+    setShowSketch(false);
+    setShowPrint(prev => !prev);
   };
 
   useEffect(() => {
@@ -136,47 +224,58 @@ const EsriWidgetManager = ({ onMapReady }) => {
         zoom="12" 
         style={{ width: '100%', height: '100vh', display: 'block' }}
       >
+        <arcgis-print
+          slot="top-left"
+          allowed-formats="all"
+          allowed-layouts="a3-landscape"
+          //exclude-default-templates
+          //exclude-organization-templates
+          ref={printRef}
+          style={{ position: 'absolute', top: '70px', zIndex: 1100, width: '320px' }}
+          className={showPrint ? 'panel-visible' : 'panel-hidden'}
+        ></arcgis-print>
+        
         <arcgis-search 
-          slot="top-right"
-          style={{ position: 'absolute', top: '10px', right: '165px', zIndex: 1100, width: '320px' }}
+          slot="top-left"
+          style={{ position: 'absolute', top: '-3px', left: '165px', zIndex: 1100, width: '320px' }}
         ></arcgis-search>
 
         <arcgis-compass 
-          slot="bottom-right"
-          style={{ position: 'absolute', bottom: '180px', right: '10px', zIndex: 1100 }}
+          slot="bottom-left"
+          style={{ position: 'absolute', bottom: '180px', left: '10px', zIndex: 1100 }}
         ></arcgis-compass>
 
         <arcgis-home 
-          slot="bottom-right"
-          style={{ position: 'absolute', bottom: '140px', right: '10px', zIndex: 1100 }}
+          slot="bottom-left"
+          style={{ position: 'absolute', bottom: '140px', left: '10px', zIndex: 1100 }}
         ></arcgis-home>
 
 
         <arcgis-zoom 
-          slot="bottom-right"
-          style={{ position: 'absolute', bottom: '70px', right: '10px', zIndex: 1100 }}
+          slot="bottom-left"
+          style={{ position: 'absolute', bottom: '70px', left: '10px', zIndex: 1100 }}
         ></arcgis-zoom>
 
         <arcgis-scale-bar 
-          slot="bottom-left" 
+          slot="bottom-right" 
           unit="metric"
-          style={{ position: 'absolute', bottom: '-12px', left: '110px', zIndex: 1100 }}
+          style={{ position: 'absolute', bottom: '-12px', right: '100px', zIndex: 1100 }}
         ></arcgis-scale-bar>
 
         <arcgis-sketch
-          slot="top-right"
+          slot="top-left"
           creation-mode="continuous"
           layout="horizontal"
           scale="s"
-          style={{ position: 'absolute', top: '45px', right: '180px', zIndex: 1100}}
+          style={{ position: 'absolute', top: '32px', left: '166px', zIndex: 1100}}
           hide-undo-redo-menu
           hide-settings-menu
           className={showSketch ? 'panel-visible' : 'panel-hidden'}
         ></arcgis-sketch>
 
         <arcgis-basemap-toggle 
-          slot="bottom-right" 
-          style={{ position: 'absolute', bottom: '-10px', right: '0px', zIndex: 1100 }}
+          slot="bottom-left" 
+          style={{ position: 'absolute', bottom: '-10px', left: '0px', zIndex: 1100 }}
           next-basemap="topo"
         ></arcgis-basemap-toggle>
 
@@ -220,7 +319,7 @@ const EsriWidgetManager = ({ onMapReady }) => {
         </button>
         <button 
           className={`manager-btn ${widgetStates.print ? 'active' : ''}`}
-          onClick={() => toggleWidget('print')}
+          onClick={() => mostrarPrint()}
           title="Imprimir mapa"
         >
           <calcite-icon icon="print" scale="l"></calcite-icon>
@@ -251,12 +350,10 @@ const EsriWidgetManager = ({ onMapReady }) => {
           </div>
         )}
         {widgetStates.print && (
-          <div className="widget-panel-content">
-            <arcgis-print
-              allowed-formats="pdf,png,jpg"
-              allowed-layouts
-              export-title="Mapa personalizado"
-            ></arcgis-print>
+          <div className="widget-panel-content"
+            style={{ display: widgetStates.print ? 'block' : 'none' }}
+          >
+            
           </div>
         )}
       </div>

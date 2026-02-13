@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Map from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
-import loginImage from '../../assets/logo/logogeo.svg'; // Imagen del login
+import loginImage from '../../assets/logo/logogeo2.svg'; // Imagen del login
 import logoImage from '../../assets/logo/logoL.svg'; // Logo superior izquierda
 import infoImage from '../../assets/logo/info.svg'; // Icono de información
 import './Login.css';
@@ -135,6 +135,7 @@ const Login = () => {
                 <h4>¿Cómo acceder?</h4>
                 <p>Ingresa tu correo en la casilla Email y podrás acceder al aplicativo.</p>
                 <p><strong>Tendrás un límite de 30 minutos para probar el aplicativo.</strong></p>
+                <button onClick={() => navigate('/test-widget-map')}>testWidgets</button>
                 <button 
                   className="info-popup-close" 
                   onClick={() => setShowInfoPopup(false)}
@@ -255,12 +256,7 @@ const Login = () => {
               </div>
             )}
           </div>
-          <button
-            style={{ marginTop: '24px', background: '#65e6e2', color: '#222', padding: '10px 24px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}
-            onClick={() => navigate('/test-home-map')}
-          >
-            Ir a test home map
-          </button>
+   
         </div>
       </div>
     </div>

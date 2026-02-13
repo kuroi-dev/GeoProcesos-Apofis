@@ -1,3 +1,113 @@
+/* =============================
+   PANEL 4: MODAL DE HERRAMIENTAS ESPECIALIZADAS (special-tool-modal)
+   ============================= */
+.special-tool-modal {
+  position: absolute;
+  width: 270px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  
+}
+.special-tool-modal-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.special-tool-modal-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.special-tool-modal-header-btns {
+  display: flex;
+  gap: 8px;
+}
+.special-tool-modal-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-left: 8px;
+  padding: 0 8px;
+  line-height: 1;
+  border-radius: 4px;
+  transition: background 0.2s, color 0.2s;
+}
+.special-tool-modal-btn:hover {
+  background: #333;
+  color: #00fff7;
+}
+.special-tool-modal-content {
+  width: 100%;
+  margin-top: 24px;
+}
+.special-tool-modal-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+.special-tool-modal-input {
+  width: 260px;
+  margin-top: 4px;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background: #333;
+  color: #fff;
+  font-size: 1rem;
+}
+.special-tool-modal-select {
+  width: 100%;
+  margin-top: 4px;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background: #333;
+  color: #fff;
+  font-size: 1rem;
+}
+.special-tool-modal-btn-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+.special-tool-modal-action-btn {
+  flex: 1;
+  padding: 8px;
+  border-radius: 4px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s, color 0.2s;
+}
+.special-tool-modal-action-btn.ejecutar {
+  background: #0077ff;
+  color: #fff;
+}
+.special-tool-modal-action-btn.ejecutar:hover {
+  background: #0056b3;
+}
+.special-tool-modal-action-btn.limpiar {
+  background: #28a745;
+  color: #fff;
+}
+.special-tool-modal-action-btn.limpiar:hover {
+  background: #218838;
+}
+.special-tool-modal-action-btn.ayuda {
+  background: #ffc107;
+  color: #222;
+}
+.special-tool-modal-action-btn.ayuda:hover {
+  background: #ffecb3;
+  color: #222;
+}
 /* === Stylized title for Herramientas Especializadas panel === */
 .tools-panel-title {
   font-size: 1.1rem;
@@ -19,10 +129,6 @@
 /* =============================
    ESTILOS GENERALES
    ============================= */
-.special-window {
-  display: flex;
-  z-index: 2147483647 !important;
-}
 
 /* =============================
    PANEL 1: GEOPROCESOS (title-windows)
@@ -30,7 +136,7 @@
 .title-windows {
   position: absolute;
   top: 10px;
-  right: 10px;
+  left: 10px;
   min-height: 70px;
 }
 .title-header {
@@ -145,17 +251,17 @@
 .marca-windows {
   position: absolute;
   bottom: 15px;
-  left: 10px;
+  right: 10px;
   height: 20px;
 }
 .apofis-container {
   position: relative;
-  left: 10px;
+  right: 10px;
   bottom: 10px;
   background: rgba(0,0,0,0.7);
   height: auto;
   padding: 4% 7px;
-  height: 25px;
+  height: 18px;
 }
 .apofis-logo {
   height: 18px;
@@ -170,7 +276,7 @@
   border-radius: 2px;
   position: absolute;
   bottom: 20px;
-  right: 88px;
+  left: 88px;
 }
 .estado-panel {
   display: flex;
@@ -215,8 +321,9 @@
 .tools-windows {
   position: absolute;
   top: 10px;
-  left: 10px;
+  right: 50px;
   width: 270px;
+  min-height: 50vh;
   max-height: 85vh;
   background: rgba(20, 25, 35, 0.82);
   border-radius: 10px;
@@ -226,7 +333,7 @@
   justify-content: flex-start;
   padding: 18px 24px 16px 24px;
   z-index: 3000;
-  transition: transform 0.4s cubic-bezier(.77,0,.18,1);
+  transition: right 0.5s ease-in-out;
 }
 .tools-windows.hidden {
   pointer-events: none;
@@ -247,14 +354,14 @@
 }
 .show-tools-panel-btn {
   position: absolute;
-  left: 0;
+  right: 0;
   top: 50px;
   transform: translateY(-50%);
   z-index: 3100;
   background: rgba(0, 0, 0, 0.8);
   border: grey solid 2px;
-  border-left: none;
-  border-radius: 0 8px 8px 0;
+  border-right: none;
+  border-radius: 8px 0 0 8px ;
   color: #fffdfd;
   font-size: 0.9rem;
   cursor: pointer;

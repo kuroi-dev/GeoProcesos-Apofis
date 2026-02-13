@@ -11,7 +11,7 @@ import { SpecialToolCard } from './SpecialToolCard';
 export function GeoProcesosWindow() {
   const [open, setOpen] = React.useState(false);
   return (
-    <div className="special-window title-windows">
+    <div className=" title-windows">
       <div className={`title-header${open ? ' open' : ' closed'}`} onClick={() => setOpen(o => !o)}>
         <div className="title-logo-container">
           <img src={logoPro} alt="GeoProcesos Logo" className="title-logo-img" />
@@ -39,7 +39,7 @@ export function GeoProcesosWindow() {
 
 export function ApofisWindow() {
   return (
-    <div className="special-window marca-windows">
+    <div className=" marca-windows">
       <div className="apofis-container">
         <img src={logoApofis} className='apofis-logo' />
       </div>
@@ -49,7 +49,7 @@ export function ApofisWindow() {
 
 export function EstadoWindow({ estado }) {
   return (
-    <div className="special-window status-windows">
+    <div className=" status-windows">
       <div className="estado-panel">
         <div>
           <h2 className='estadoTitle'>Estado App</h2>
@@ -73,7 +73,7 @@ export function EstadoWindow({ estado }) {
 
 export function NuevoPanelWindow() {
   const [visible, setVisible] = React.useState(true);
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [selectedIndex, setSelectedIndex] = React.useState(-1);
   const tools = [
     {
       imgSrc: logoGeo1,
@@ -99,8 +99,12 @@ export function NuevoPanelWindow() {
   return (
     <>
       <div
-        className={`special-window tools-windows${visible ? '' : ' hidden'}`}
-        style={{ transition: 'transform 0.4s cubic-bezier(.77,0,.18,1)', transform: visible ? 'translateX(0)' : 'translateX(-110%)' }}
+        className={`tools-windows${visible ? '' : ' hidden'}`}
+        style={{ transition: 'right 0.4s',
+          right: visible ? 10 : '-350px',
+          top: 10,
+          position: 'fixed',
+          width: 270, }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <h2 className="tools-panel-title" style={{ marginBottom: 0 }}>Herramientas Especializadas</h2>
@@ -126,16 +130,54 @@ export function NuevoPanelWindow() {
           </button>
         </div>
         <div style={{ height: 18 }} />
-        {tools.map((tool, idx) => (
-          <SpecialToolCard
-            key={tool.title}
-            imgSrc={tool.imgSrc}
-            title={tool.title}
-            summary={tool.summary}
-            selected={selectedIndex === idx}
-            onSelect={() => setSelectedIndex(idx)}
-          />
-        ))}
+        {/* Ocultar el contenido del panel principal cuando la ventana está activa */}
+        <div style={{ display: selectedIndex === -1 ? 'block' : 'none' }}>
+          {tools.map((tool, idx) => (
+            <SpecialToolCard
+              key={tool.title}
+              imgSrc={tool.imgSrc}
+              title={tool.title}
+              summary={tool.summary}
+              selected={false}
+              onSelect={() => setSelectedIndex(idx)}
+            />
+          ))}
+        </div>
+        {selectedIndex !== -1 && (
+          <div className="special-tool-modal">
+            <div className="special-tool-modal-header">
+              <h2 className="special-tool-modal-title">{tools[selectedIndex].title}</h2>
+              <div className="special-tool-modal-header-btns">
+                <button className="special-tool-modal-btn" title="Volver al panel" onClick={() => setSelectedIndex(-1)}>Volver</button>
+              </div>
+            </div>
+            <div className="special-tool-modal-content">
+              {/* Panel de inputs y botones para herramientas especializadas */}
+              <label className="special-tool-modal-label">
+                Parámetro 1:
+                <input className="special-tool-modal-input" type="text" placeholder="Escribe un valor..." />
+              </label>
+              <label className="special-tool-modal-label">
+                Parámetro 2:
+                <input className="special-tool-modal-input" type="number" placeholder="Número" />
+              </label>
+              <label className="special-tool-modal-label">
+                Selección:
+                <select className="special-tool-modal-select">
+                  <option value="">Elige una opción</option>
+                  <option value="opcion1">Opción 1</option>
+                  <option value="opcion2">Opción 2</option>
+                  <option value="opcion3">Opción 3</option>
+                </select>
+              </label>
+              <div className="special-tool-modal-btn-group">
+                <button className="special-tool-modal-action-btn ejecutar">Ejecutar</button>
+                <button className="special-tool-modal-action-btn limpiar">Limpiar</button>
+                <button className="special-tool-modal-action-btn ayuda">Ayuda</button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       {!visible && (
         <button
@@ -143,7 +185,7 @@ export function NuevoPanelWindow() {
           title="Mostrar herramientas"
           onClick={() => setVisible(true)}
         >
-          ▶
+          ◀
         </button>
       )}
     </>
