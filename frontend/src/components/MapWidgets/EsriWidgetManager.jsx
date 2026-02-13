@@ -1,212 +1,376 @@
-import React, { useEffect, useRef, useState } from 'react';
-import Map from '@arcgis/core/Map';
-import MapView from '@arcgis/core/views/MapView';
-import BasemapToggle from '@arcgis/core/widgets/BasemapToggle';
-import ScaleBar from '@arcgis/core/widgets/ScaleBar';
-import Compass from '@arcgis/core/widgets/Compass';
-import Home from '@arcgis/core/widgets/Home';
-import Locate from '@arcgis/core/widgets/Locate';
-import Search from '@arcgis/core/widgets/Search';
-import Legend from '@arcgis/core/widgets/Legend';
-import LayerList from '@arcgis/core/widgets/LayerList';
-import Measurement from '@arcgis/core/widgets/Measurement';
+import React, { useRef, useEffect, useState } from 'react';
+
+import "@arcgis/map-components/components/arcgis-map";
+import "@arcgis/map-components/components/arcgis-search";
+import "@arcgis/map-components/components/arcgis-basemap-gallery";
+import "@arcgis/map-components/components/arcgis-layer-list";
+import "@arcgis/map-components/components/arcgis-legend";
+import "@arcgis/map-components/components/arcgis-compass";
+import "@arcgis/map-components/components/arcgis-home";
+import "@arcgis/map-components/components/arcgis-zoom";
+import "@arcgis/map-components/components/arcgis-scale-bar";
+import "@arcgis/map-components/components/arcgis-sketch";
+import "@arcgis/map-components/components/arcgis-area-measurement-2d";
+import "@arcgis/map-components/components/arcgis-basemap-toggle";
+import "@arcgis/map-components/components/arcgis-print";
+
 import './EsriWidgetManager.css';
+import { GeoProcesosWindow, ApofisWindow, EstadoWindow, NuevoPanelWindow } from './SpecialToolWindows';
+import { createPortal } from 'react-dom';
+
 
 const EsriWidgetManager = ({ onMapReady }) => {
-  const mapDiv = useRef(null);
-  const mapView = useRef(null);
-  const [activeWidgets, setActiveWidgets] = useState({
-    basemapToggle: true,
-    scaleBar: true,
-    compass: true,
-    home: true,
-    locate: false,
-    search: false,
-    legend: false,
-    layerList: false,
-    measurement: false
-  });
 
-  const [widgets, setWidgets] = useState({});
 
-  // Widgets disponibles
-  const availableWidgets = [
-    { id: 'basemapToggle', icon: <calcite-icon icon="basemap" scale="s"></calcite-icon> },
-    { id: 'scaleBar', icon: <calcite-icon icon="measure-line" scale="s"></calcite-icon> },
-    { id: 'compass', icon: <calcite-icon icon="compass" scale="s"></calcite-icon> },
-    { id: 'home', icon: <calcite-icon icon="home" scale="s"></calcite-icon> },
-    { id: 'locate', icon: <calcite-icon icon="gps-on" scale="s"></calcite-icon> },
-    { id: 'search', icon: <calcite-icon icon="search" scale="s"></calcite-icon> },
-    { id: 'legend', icon: <calcite-icon icon="legend" scale="s"></calcite-icon> },
-    { id: 'layerList', icon: <calcite-icon icon="layers" scale="s"></calcite-icon> },
-    { id: 'measurement', icon: <calcite-icon icon="measure" scale="s"></calcite-icon> }
-  ];
+
+  const [showSketch, setShowSketch] = React.useState(false);
+  const [showPrint, setShowPrint] = React.useState(false);
+  const printRef = useRef(null);
+  const [printKey, setPrintKey] = useState(0);
+  
+  useEffect(() => {
+    // Espera a que el widget esté en el DOM
+    const interval = setInterval(() => {
+      const print = document.querySelector('arcgis-print');
+      if (print) {
+        const shadow = print.shadowRoot;
+        if (shadow) {
+          // 1. Control visual: mostrar el menú de impresión y ocultar el de template
+          const flow = shadow.querySelector('calcite-flow');
+          if (flow) {
+            const items = flow.querySelectorAll('calcite-flow-item');
+            if (items.length >= 2) {
+              items[0].removeAttribute('hidden');
+              items[1].setAttribute('hidden', '');
+            }
+          }
+
+          // 2. (Adicional) Elimina cualquier calcite-label que contenga arcgis-print-template-select en cualquier shadowRoot descendiente
+          function removeAllTemplateLabels(root) {
+            const labels = root.querySelectorAll('calcite-label');
+            labels.forEach(label => {
+              if (label.querySelector('arcgis-print-template-select')) {
+                label.remove();
+              }
+            });
+            root.querySelectorAll('*').forEach(el => {
+              if (el.shadowRoot) {
+                removeAllTemplateLabels(el.shadowRoot);
+              }
+            });
+          }
+          removeAllTemplateLabels(shadow);
+
+          // Detener el intervalo si el menú principal está visible y el de template oculto
+          if (flow) {
+            const items = flow.querySelectorAll('calcite-flow-item');
+            if (items.length >= 2 && !items[0].hasAttribute('hidden') && items[1].hasAttribute('hidden')) {
+              clearInterval(interval);
+            }
+          }
+        }
+      }
+    }, 200);
+    // Limpieza
+    return () => clearInterval(interval);
+  }, [printKey]);
+
+  const handleResetPrint = () => {
+    setPrintKey(k => k + 1);
+  };
+
 
   useEffect(() => {
-    if (mapDiv.current && !mapView.current) {
-      // Crear el mapa
-      const map = new Map({
-        basemap: 'satellite'
-      });
-
-      // Crear la vista del mapa
-      const view = new MapView({
-        container: mapDiv.current,
-        map: map,
-        center: [-72.210533, -39.2902], // Chile central
-        zoom: 13
-      });
-
-      mapView.current = view;
-
-      // Esperar a que la vista esté lista antes de inicializar widgets
-      view.when(() => {
-        // Inicializar widgets por defecto
-        initializeDefaultWidgets(view);
-
-        // Notificar que el mapa está listo
-        if (onMapReady) {
-          onMapReady(view, map);
-        }
-      });
-    }
-
+    const printElement = printRef.current;
+    if (!printElement) return;
+    const handleSubmit = (e) => {
+      console.log('Print component submit', e);
+    };
+    const handleComplete = (e) => {
+      console.log('Print component complete', e);
+    };
+    printElement.addEventListener('arcgisSubmit', handleSubmit);
+    printElement.addEventListener('arcgisComplete', handleComplete);
     return () => {
-      if (mapView.current) {
-        mapView.current.destroy();
-        mapView.current = null;
-      }
+      printElement.removeEventListener('arcgisSubmit', handleSubmit);
+      printElement.removeEventListener('arcgisComplete', handleComplete);
     };
   }, []);
 
-  const initializeDefaultWidgets = (view) => {
-    const newWidgets = {};
+  // No widget refs needed for map-components
+  // Widget visibility state
+  const [widgetStates, setWidgetStates] = useState({
+    basemapGallery: false,
+    layerList: false,
+    legend: false,
+    measurement: false,
+    sketch: false,
+    print: false
+  });
 
-    // BasemapToggle (activo por defecto)
-    if (activeWidgets.basemapToggle) {
-      newWidgets.basemapToggle = new BasemapToggle({
-        view: view,
-        nextBasemap: 'streets-vector'
+  // Función para alternar la visibilidad de un widget (solo uno activo a la vez)
+  const toggleWidget = (widgetName) => {
+    setWidgetStates(prev => {
+      const newState = {};
+      Object.keys(prev).forEach(name => {
+        newState[name] = false;
       });
-      view.ui.add(newWidgets.basemapToggle, 'bottom-right');
+      newState[widgetName] = !prev[widgetName];
+      return newState;
+    });
+    // If toggling a widget other than sketch, close sketch
+    if (widgetName !== 'sketch') {
+      setShowSketch(false);
     }
-
-    // ScaleBar (activo por defecto)
-    if (activeWidgets.scaleBar) {
-      newWidgets.scaleBar = new ScaleBar({
-        view: view,
-        unit: 'dual'
-      });
-      view.ui.add(newWidgets.scaleBar, 'bottom-left');
-    }
-
-    // Compass (activo por defecto)
-    if (activeWidgets.compass) {
-      newWidgets.compass = new Compass({
-        view: view
-      });
-      view.ui.add(newWidgets.compass, 'top-left');
-    }
-
-    // Home (activo por defecto)
-    if (activeWidgets.home) {
-      newWidgets.home = new Home({
-        view: view
-      });
-      view.ui.add(newWidgets.home, 'top-left');
-    }
-
-    setWidgets(newWidgets);
   };
 
-  const toggleWidget = (widgetId) => {
-    if (!mapView.current) return;
-
-    const newActiveWidgets = { ...activeWidgets };
-    const newWidgets = { ...widgets };
-
-    if (activeWidgets[widgetId]) {
-      // Desactivar widget
-      if (widgets[widgetId]) {
-        mapView.current.ui.remove(widgets[widgetId]);
-        widgets[widgetId].destroy();
-        delete newWidgets[widgetId];
-      }
-      newActiveWidgets[widgetId] = false;
-    } else {
-      // Activar widget
-      newActiveWidgets[widgetId] = true;
-      
-      switch (widgetId) {
-        case 'locate':
-          newWidgets.locate = new Locate({
-            view: mapView.current
-          });
-          mapView.current.ui.add(newWidgets.locate, 'top-left');
-          break;
-        
-        case 'search':
-          newWidgets.search = new Search({
-            view: mapView.current
-          });
-          mapView.current.ui.add(newWidgets.search, 'top-right');
-          break;
-        
-        case 'legend':
-          newWidgets.legend = new Legend({
-            view: mapView.current
-          });
-          mapView.current.ui.add(newWidgets.legend, 'bottom-right');
-          break;
-        
-        case 'layerList':
-          newWidgets.layerList = new LayerList({
-            view: mapView.current
-          });
-          mapView.current.ui.add(newWidgets.layerList, 'top-right');
-          break;
-        
-        case 'measurement':
-          newWidgets.measurement = new Measurement({
-            view: mapView.current
-          });
-          mapView.current.ui.add(newWidgets.measurement, 'top-right');
-          break;
-        
-        default:
-          break;
-      }
-    }
-
-    setActiveWidgets(newActiveWidgets);
-    setWidgets(newWidgets);
+  const mostrarSketch = () => {
+    // Close all other widgets when opening sketch
+    setWidgetStates({
+      basemapGallery: false,
+      layerList: false,
+      legend: false,
+      measurement: false,
+      sketch: false,
+      print: false
+    });
+    setShowSketch(prev => !prev);
+    setShowPrint(false);
+  };
+  const mostrarPrint = () => {
+    // Close all other widgets when opening sketch
+    setWidgetStates({
+      basemapGallery: false,
+      layerList: false,
+      legend: false,
+      measurement: false,
+      sketch: false,
+      print: false
+    });
+    setShowSketch(false);
+    setShowPrint(prev => !prev);
   };
 
-  const renderWidgetPanel = (panelClass) => (
-    <div className={`widget-manager-panel ${panelClass}`}>
-      <div className="widget-list">
-        {availableWidgets.map(widget => (
-          <div 
-            key={widget.id}
-            className={`widget-item ${activeWidgets[widget.id] ? 'active' : ''}`}
-            onClick={() => toggleWidget(widget.id)}
-          >
-            <span className="widget-icon">{widget.icon}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+  useEffect(() => {
+    // Parchea el botón de arcgis-home en shadow DOM profundo con doble observer
+    function patchHomeButton() {
+      const homeEl = document.querySelector('arcgis-home');
+      if (!homeEl) return;
+      const arcgisShadow = homeEl.shadowRoot;
+      if (!arcgisShadow) return;
+      const calciteBtn = arcgisShadow.querySelector('calcite-button');
+      if (!calciteBtn) return;
+      // Si el shadowRoot de calcite-button aún no existe, observa hasta que aparezca
+      if (!calciteBtn.shadowRoot) {
+        const calciteObserver = new MutationObserver(() => {
+          if (calciteBtn.shadowRoot) {
+            patchHomeButton();
+            calciteObserver.disconnect();
+          }
+        });
+        calciteObserver.observe(calciteBtn, { childList: true, subtree: true });
+        return;
+      }
+      const calciteShadow = calciteBtn.shadowRoot;
+      // Observa el shadowRoot de calcite-button para detectar el botón
+      const btnObserver = new MutationObserver(() => {
+        const btn = calciteShadow.querySelector('button');
+        if (btn) {
+          btn.style.paddingLeft = '15px';
+          // Centra el icono
+          const icon = btn.querySelector('calcite-icon');
+          if (icon) {
+            icon.style.marginLeft = '8px';
+          }
+        }
+      });
+      btnObserver.observe(calciteShadow, { childList: true, subtree: true });
+      // Parchea si ya existe
+      const btn = calciteShadow.querySelector('button');
+      if (btn) {
+        btn.style.paddingLeft = '15px';
+        const icon = btn.querySelector('calcite-icon');
+        if (icon) {
+          icon.style.marginLeft = '8px';
+        }
+      }
+    }
+    // Observa cambios en arcgis-home y su shadowRoot
+    const observer = new MutationObserver(() => {
+      patchHomeButton();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    // También observa el shadowRoot de arcgis-home si existe
+    const homeEl = document.querySelector('arcgis-home');
+    let arcgisShadowObserver = null;
+    if (homeEl && homeEl.shadowRoot) {
+      arcgisShadowObserver = new MutationObserver(() => {
+        patchHomeButton();
+      });
+      arcgisShadowObserver.observe(homeEl.shadowRoot, { childList: true, subtree: true });
+    }
+    patchHomeButton();
+    return () => {
+      observer.disconnect();
+      if (arcgisShadowObserver) arcgisShadowObserver.disconnect();
+    };
+  }, []);
 
   return (
-    <>
-      <div ref={mapDiv} className="esri-map-container"></div>
-      {renderWidgetPanel('widget-manager-panel-border1')}
-      {renderWidgetPanel('widget-manager-panel-border2')}
-      {renderWidgetPanel('widget-manager-panel-border3')}
-      {renderWidgetPanel('widget-manager-panel-border4')}
-    </>
-  );
-};
+    <div className="esri-widget-manager">
+      <arcgis-map 
+        basemap="satellite" 
+        center="-72.2322, -39.2764" 
+        zoom="12" 
+        style={{ width: '100%', height: '100vh', display: 'block' }}
+      >
+        <arcgis-print
+          slot="top-left"
+          allowed-formats="all"
+          allowed-layouts="a3-landscape"
+          //exclude-default-templates
+          //exclude-organization-templates
+          ref={printRef}
+          style={{ position: 'absolute', top: '70px', zIndex: 1100, width: '320px' }}
+          className={showPrint ? 'panel-visible' : 'panel-hidden'}
+        ></arcgis-print>
+        
+        <arcgis-search 
+          slot="top-left"
+          style={{ position: 'absolute', top: '-3px', left: '165px', zIndex: 1100, width: '320px' }}
+        ></arcgis-search>
 
+        <arcgis-compass 
+          slot="bottom-left"
+          style={{ position: 'absolute', bottom: '180px', left: '10px', zIndex: 1100 }}
+        ></arcgis-compass>
+
+        <arcgis-home 
+          slot="bottom-left"
+          style={{ position: 'absolute', bottom: '140px', left: '10px', zIndex: 1100 }}
+        ></arcgis-home>
+
+
+        <arcgis-zoom 
+          slot="bottom-left"
+          style={{ position: 'absolute', bottom: '70px', left: '10px', zIndex: 1100 }}
+        ></arcgis-zoom>
+
+        <arcgis-scale-bar 
+          slot="bottom-right" 
+          unit="metric"
+          style={{ position: 'absolute', bottom: '-12px', right: '100px', zIndex: 1100 }}
+        ></arcgis-scale-bar>
+
+        <arcgis-sketch
+          slot="top-left"
+          creation-mode="continuous"
+          layout="horizontal"
+          scale="s"
+          style={{ position: 'absolute', top: '32px', left: '166px', zIndex: 1100}}
+          hide-undo-redo-menu
+          hide-settings-menu
+          className={showSketch ? 'panel-visible' : 'panel-hidden'}
+        ></arcgis-sketch>
+
+        <arcgis-basemap-toggle 
+          slot="bottom-left" 
+          style={{ position: 'absolute', bottom: '-10px', left: '0px', zIndex: 1100 }}
+          next-basemap="topo"
+        ></arcgis-basemap-toggle>
+
+      
+      
+      <div className="custom-widget-manager">
+        <button 
+          className={`manager-btn ${widgetStates.basemapGallery ? 'active' : ''}`}
+          onClick={() => toggleWidget('basemapGallery')}
+          title="Galería de Mapas Base"
+        >
+          <calcite-icon icon="basemap" scale="l"></calcite-icon>
+        </button>
+        <button 
+          className={`manager-btn ${widgetStates.layerList ? 'active' : ''}`}
+          onClick={() => toggleWidget('layerList')}
+          title="Lista de Capas"
+        >
+          <calcite-icon icon="layers" scale="l"></calcite-icon>
+        </button>
+        <button 
+          className={`manager-btn ${widgetStates.legend ? 'active' : ''}`}
+          onClick={() => toggleWidget('legend')}
+          title="Leyenda"
+        >
+          <calcite-icon icon="legend" scale="l"></calcite-icon>
+        </button>
+        <button 
+          className={`manager-btn ${widgetStates.measurement ? 'active' : ''}`}
+          onClick={() => toggleWidget('measurement')}
+          title="Herramientas de Medición"
+        >
+          <calcite-icon icon="measure" scale="l"></calcite-icon>
+        </button>
+        <button 
+          className={`manager-btn ${widgetStates.sketch ? 'active' : ''}`}
+          onClick={() => mostrarSketch()}
+          title="Herramientas de Dibujo"
+        >
+          <calcite-icon icon="pencil" scale="l"></calcite-icon>
+        </button>
+        <button 
+          className={`manager-btn ${widgetStates.print ? 'active' : ''}`}
+          onClick={() => mostrarPrint()}
+          title="Imprimir mapa"
+        >
+          <calcite-icon icon="print" scale="l"></calcite-icon>
+        </button>
+      </div>
+      <div
+        id="panel"
+        className={`esri-widget-panel ${Object.values(widgetStates).some(Boolean) ? 'panel-visible' : 'panel-hidden'}`}
+      >
+        {widgetStates.basemapGallery && (
+          <div className="widget-panel-content">
+            <arcgis-basemap-gallery></arcgis-basemap-gallery>
+          </div>
+        )}
+        {widgetStates.layerList && (
+          <div className="widget-panel-content">
+            <arcgis-layer-list></arcgis-layer-list>
+          </div>
+        )}
+        {widgetStates.legend && (
+          <div className="widget-panel-content">
+            <arcgis-legend></arcgis-legend>
+          </div>
+        )}
+        {widgetStates.measurement && (
+          <div className="widget-panel-content">
+            <arcgis-area-measurement-2d></arcgis-area-measurement-2d>
+          </div>
+        )}
+        {widgetStates.print && (
+          <div className="widget-panel-content"
+            style={{ display: widgetStates.print ? 'block' : 'none' }}
+          >
+            
+          </div>
+        )}
+      </div>
+      </arcgis-map>
+
+      
+      {createPortal(
+        <>
+          <GeoProcesosWindow />
+          <ApofisWindow />
+          <EstadoWindow estado={null} />
+          <NuevoPanelWindow />
+        </>,
+        document.body
+      )}
+    </div>
+    
+  );
+}
 export default EsriWidgetManager;

@@ -1,0 +1,82 @@
+
+/* === Special Tool Card Styles (Unificado y optimizado) === */
+
+/* Header de la card: icono y título */
+.special-tool-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  height: auto;
+}
+.special-tool-header-icon {
+  flex: 0 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+}
+.special-tool-logo {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+}
+.special-tool-header-title {
+  flex: 1;
+  padding-left: 12px;
+  display: flex;
+  align-items: center;
+}
+
+/* Card principal: Neon Cyan Enterprise Style */
+.special-tool-card {
+  background: rgba(18, 22, 32, 0.92);
+  border-radius: 8px;
+  border: 1px solid rgba(0,255,255,0.22);
+  box-shadow: 0 4px 14px 0 rgba(0,255,255,0.10), 0 2px 14px 0 rgba(0,0,0,0.32);
+  backdrop-filter: blur(6px) saturate(1.1);
+  -webkit-backdrop-filter: blur(6px) saturate(1.1);
+  color: #e0f7fa;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+  padding: 8px 10px ;
+  margin-bottom: 14px;
+  position: relative;
+  cursor: pointer;
+  height: auto;
+}
+.special-tool-card:hover {
+  box-shadow: 0 0 2px 1px #00fff7cc, 0 2px 2px 0 rgba(0,255,255,0.18), 0 2px 4px 0 rgba(0,0,0,0.32);
+  background: rgba(18, 22, 32, 0.98);
+}
+.special-tool-card.selected {
+  box-shadow: 0 0 2px 1px #00fff7cc, 0 2px 2px 0 rgba(0,255,255,0.18), 0 2px 4px 0 rgba(0,0,0,0.32);
+  border: 1px solid #00fff7;
+}
+
+
+.special-tool-title {
+  font-size: 1rem;
+  font-weight: 300;
+  color: #ffffff;
+}
+
+.special-tool-summary {
+  font-size: 12px;
+  color: #d7d7d7;
+  margin-bottom: 5px;
+  text-align: left;
+
+}
+
+/* Utility: divider for card sections */
+.special-tool-card-divider {
+  border-bottom: 1px solid rgba(0,255,255,0.13);
+  margin: 10px 0;
+}
+
+/* Utilidades de borde para debug */
+.borderR {
+  border: red solid 2px;
+}
+.borderB {
+  border: blue solid 2px;
+}

@@ -1,418 +1,85 @@
-/* Dashboard GeoPro - Mapa pantalla completa con paneles flotantes */
+.dashboard-map-area {
+	flex: 1 1 0;
+	min-width: 0;
+	min-height: 0;
+	position: relative;
+	height: 100vh;
+	overflow: hidden;
+}
+/* Dashboard GeoPro - Mapa y panel */
 .dashboard-container {
-  width: 100vw;
-  height: 100vh;
-  position: relative;
-  overflow: hidden;
-  font-family: 'Arial', sans-serif;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	position: relative;
+	background: linear-gradient(135deg, #10141c 0%, #16202e 100%);
+	color: #e0f7fa;
+	font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+	overflow: hidden;
+	background-attachment: fixed;
+	animation: dashboardBgMove 24s linear infinite alternate;
 }
 
-/* Mapa integrado con Widget Manager */
-.esri-map-container {
-  width: 100% !important;
-  height: 100% !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  z-index: 1 !important;
+@keyframes dashboardBgMove {
+	0% { background-position: 0% 0%; }
+	100% { background-position: 100% 100%; }
 }
 
-/* Contenedor de paneles flotantes */
-.floating-panels {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 20;
+/* Floating dashboard panel */
+.dashboard-panel {
+	background: rgba(20, 25, 35, 0.92);
+	border-radius: 18px;
+	box-shadow: 0 8px 32px 0 rgba(0,255,255,0.10), 0 2px 24px 0 rgba(0,0,0,0.32);
+	border: 1.5px solid rgba(0,255,255,0.18);
+	backdrop-filter: blur(10px) saturate(1.2);
+	-webkit-backdrop-filter: blur(10px) saturate(1.2);
+	color: #e0f7fa;
+	padding: 28px 36px 24px 36px;
+	margin: 32px auto 0 auto;
+	max-width: 1100px;
+	width: 90%;
+	transition: box-shadow 0.3s, border 0.3s, background 0.3s;
+}
+.dashboard-panel:hover {
+	box-shadow: 0 0 32px 2px #00fff7cc, 0 8px 32px 0 rgba(0,255,255,0.18), 0 2px 24px 0 rgba(0,0,0,0.32);
+	border: 2px solid #00fff7;
 }
 
-/* Panel de título principal - Optimizado 1920x1080 */
-.main-title-panel {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: linear-gradient(135deg, rgba(18, 18, 18, 0.95) 0%, rgba(28, 28, 28, 0.95) 100%);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 10px 19px;
-  pointer-events: auto;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
-  text-align: center;
+/* Neon scrollbar for dashboard */
+.dashboard-panel::-webkit-scrollbar, .dashboard-container::-webkit-scrollbar {
+	width: 10px;
+	background: rgba(0,255,255,0.08);
+	border-radius: 8px;
+}
+.dashboard-panel::-webkit-scrollbar-thumb, .dashboard-container::-webkit-scrollbar-thumb {
+	background: linear-gradient(135deg, #00fff7 0%, #0fffc3 100%);
+	border-radius: 8px;
 }
 
-/* Contenedor del título con logo */
-.title-container {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  justify-content: center;
+/* Utility: divider for dashboard sections */
+.dashboard-divider {
+	border-bottom: 1.5px solid rgba(0,255,255,0.13);
+	margin: 18px 0;
 }
 
-/* Logo del título */
-.title-logo {
-  width: 66px;
-  height: 66px;
-  object-fit: contain;
-  filter: brightness(0) invert(1) brightness(1.2);
+.tools-windows.minimal-panel {
+	border-left: 1px solid #eee;
+	box-shadow: -2px 0 12px #0001;
+	background: rgba(255,255,255,0.97);
+	height: 100vh;
+	overflow-y: auto;
+	padding: 24px 16px 16px 16px;
+	z-index: 10;
 }
-
-.main-title {
-  color: white;
-  font-size: 19px;
-  font-weight: 300;
-  margin: 0;
-  line-height: 1.2;
-  text-align: left;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  letter-spacing: 0.5px;
+.tools-title-minimal {
+	color: #b30000;
+	font-size: 1.3rem;
+	font-weight: 700;
+	margin-bottom: 18px;
+	letter-spacing: 0.5px;
 }
-
-/* Panel de créditos Apofis - inferior izquierda */
-.company-credit-panel {
-  position: fixed;
-  bottom: 10px;
-  left: 10px;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  padding: 9px 6px 3px 6px;
-  pointer-events: auto;
-  z-index: 100;
-}
-
-.company-logo {
-  width: 120px;
-  height: 24px;
-  object-fit: contain;
-  filter: brightness(1.2) contrast(1.1);
-  transition: all 0.3s ease;
-}
-
-/* Logo móvil (icono compacto) */
-.company-logo.mobile-logo {
-  width: 32px;
-  height: 32px;
-}
-
-/* Panel de herramientas flotante (superior izquierda) - Optimizado 1920x1080 */
-.tools-floating-panel {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: rgba(16, 16, 16, 0.92);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  padding: 24px;
-  pointer-events: auto;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-  width: 380px;
-  max-height: 75vh;
-  overflow-y: auto;
-}
-
-.tools-floating-panel .panel-header {
-  margin-bottom: 18px;
-  text-align: center;
-}
-
-.tools-floating-panel .panel-header h3 {
-  color: white;
-  font-size: 18px;
-  font-weight: 700;
-  margin: 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.tools-floating-panel .panel-header .panel-description {
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 1.5;
-  margin: 10px 0 0 0;
-  padding: 10px 14px;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  text-align: left;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-}
-
-/* Grid de herramientas flotantes - Optimizado 1920x1080 */
-.tools-grid-floating {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-/* Tarjetas de herramientas expandidas - Optimizado 1920x1080 */
-.tool-floating-card {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
-  padding: 18px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  overflow: hidden;
-  border-left: 2px solid transparent;
-}
-
-.tool-floating-card:hover {
-  background: rgba(255, 255, 255, 0.08);
-  transform: translateX(3px);
-  border-left-color: #e60023;
-  box-shadow: 0 6px 20px rgba(230, 0, 35, 0.1);
-}
-
-.tool-floating-card.selected {
-  background: rgba(230, 0, 35, 0.08);
-  border: 1px solid rgba(230, 0, 35, 0.2);
-  border-left-color: #e60023;
-  transform: translateX(6px);
-  box-shadow: 0 8px 25px rgba(230, 0, 35, 0.15);
-}
-
-/* Estructura de header con icono al lado del título - Optimizado 1920x1080 */
-.tool-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.tool-header .tool-icon {
-  width: 20px;
-  height: 20px;
-  line-height: 1;
-  flex-shrink: 0;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.tool-header .tool-icon calcite-icon {
-  --calcite-ui-icon-color: white;
-  color: white;
-}
-
-.tool-content h4 {
-  color: white;
-  font-size: 15px;
-  font-weight: 600;
-  margin: 0;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-.tool-content p {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 12px;
-  line-height: 1.5;
-  margin: 0;
-  text-align: left;
-}
-
-/* Panel de estado flotante (inferior derecha) - Optimizado 1920x1080 */
-.status-floating-panel {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background: rgba(16, 16, 16, 0.92);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
-  padding: 14px 18px;
-  pointer-events: auto;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-  min-width: 160px;
-}
-
-.status-floating-panel .panel-header {
-  margin-bottom: 10px;
-  text-align: center;
-}
-
-.status-floating-panel .panel-header h4 {
-  color: white;
-  font-size: 12px;
-  font-weight: 600;
-  margin: 0;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.);
-}
-
-.status-items-floating {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.status-item-floating {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 10px;
-  font-weight: 500;
-}
-
-.status-item-floating .status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.status-item-floating .status-dot.active {
-  background: #4CAF50;
-  box-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .main-title-panel {
-    top: 8px;
-    right: 8px;
-    padding: 7px 14px;
-  }
-  
-  .title-container {
-    gap: 10px;
-  }
-  
-  .title-logo {
-    width: 53px;
-    height: 53px;
-  }
-  
-  .main-title {
-    font-size: 14px;
-    font-weight: 300;
-    line-height: 1.2;
-  }
-  
-  .company-credit-panel {
-    bottom: 8px;
-    left: 8px;
-    padding: 7px 5px 2px 5px;
-  }
-  
-  .company-logo {
-    width: 80px;
-    height: 16px;
-  }
-  
-  .company-logo.mobile-logo {
-    width: 28px;
-    height: 28px;
-  }
-  
-  .tools-floating-panel {
-    top: 15px;
-    left: 15px;
-    max-width: 300px;
-    padding: 16px;
-  }
-  
-  .tool-floating-card {
-    padding: 14px;
-  }
-  
-  .tool-content h4 {
-    font-size: 13px;
-  }
-  
-  .tool-content p {
-    font-size: 10px;
-  }
-  
-  .status-floating-panel {
-    bottom: 15px;
-    right: 15px;
-    padding: 10px 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  .main-title-panel {
-    top: 5px;
-    right: 5px;
-    padding: 6px 12px;
-    text-align: center;
-  }
-  
-  .title-container {
-    gap: 8px;
-  }
-  
-  .title-logo {
-    width: 43px;
-    height: 43px;
-  }
-  
-  .main-title {
-    font-size: 12px;
-    font-weight: 300;
-    line-height: 1.2;
-  }
-  
-  .company-credit-panel {
-    bottom: 5px;
-    left: 5px;
-    padding: 6px 4px 1px 4px;
-  }
-  
-  .company-logo {
-    width: 70px;
-    height: 14px;
-  }
-  
-  .company-logo.mobile-logo {
-    width: 24px;
-    height: 24px;
-  }
-  
-  .tools-floating-panel {
-    top: 70px;
-    left: 10px;
-    right: 10px;
-    max-width: none;
-    padding: 14px;
-    max-height: 50vh;
-  }
-  
-  .tool-floating-card {
-    padding: 12px;
-  }
-  
-  .tool-floating-card .tool-icon {
-    font-size: 20px;
-  }
-  
-  .tool-content h4 {
-    font-size: 12px;
-  }
-  
-  .tool-content p {
-    font-size: 9px;
-    line-height: 1.3;
-  }
-  
-  .status-floating-panel {
-    bottom: 50px;
-    right: 10px;
-    left: 10px;
-    text-align: center;
-    padding: 8px 12px;
-  }
-  
-  .status-items-floating {
-    flex-direction: row;
-    justify-content: center;
-    gap: 12px;
-  }
+.tools-list-minimal {
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
 }

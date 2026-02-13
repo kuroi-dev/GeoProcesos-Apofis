@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/Login/Login'
 import EnConstruccion from './pages/EnConstruccion/EnConstruccion'
 import DashboardGeoPro from './pages/Dashboard/dashboard-geoPro'
+import TestWidgetMap from './pages/TestWidgetMap';
 import './App.css'
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/en-construccion" element={<EnConstruccion />} />
         <Route path="/dashboard" element={<DashboardGeoPro />} />
+        <Route path="/test-widget-map" element={<TestWidgetMap />} />
       </Routes>
     </Router>
   )

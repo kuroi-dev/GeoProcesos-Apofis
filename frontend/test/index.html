@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
+  <title>Print Component - jpg and png | ArcGIS Maps SDK for JavaScript 4.33</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+    }
+  </style>
+  <!-- Load Calcite components from CDN -->
+  <script type="module" src="https://js.arcgis.com/calcite-components/3.3.3/calcite.esm.js"></script>
+
+  <!-- Load the ArcGIS Maps SDK for JavaScript from CDN -->
+  <link rel="stylesheet" href="https://js.arcgis.com/4.34/esri/themes/light/main.css" />
+  <script src="https://js.arcgis.com/4.34/"></script>
+
+  <!-- Load Map components from CDN-->
+  <script type="module" src="https://js.arcgis.com/4.34/map-components/"></script>
+</head>
+
+<body>
+  <!-- webmap showing outdoor recreation locations, symbology and labels and center/scale all defined in ArcGIS Online -->
+  <arcgis-map item-id="f4d985ef18d0411abcb4b3aae7cdfbdc">
+    <!-- zoom component in the top-left, no extra code -->
+    <arcgis-zoom position="top-left"></arcgis-zoom>
+    <!-- print component in the bottom-right, only allow png/jpg formats and landscape layouts -->
+    <arcgis-print position="bottom-right" allowed-formats="png32,png8,jpg" allowed-layouts="a3-landscape,a4-landscape" show-print-area-enabled></arcgis-print>
+    <!-- legend component in the bottom-left, no extra code -->
+    <arcgis-legend position="bottom-left"></arcgis-legend>
+  </arcgis-map>
+  <script type="module">
+    // Print component documentation
+    // https://developers.arcgis.com/javascript/latest/references/map-components/arcgis-print/
+    const TemplateOptions = await $arcgis.import("@arcgis/core/widgets/Print/TemplateOptions.js");
+    // TemplateOptions documentation
+    // https://developers.arcgis.com/javascript/latest/api-reference/esri-widgets-Print-TemplateOptions.html
+    const printTemplateOptions = new TemplateOptions({
+      title: "The Print Component",
+      author: "ArcGIS Maps SDK for JavaScript 4.33",
+      copyright: "Esri",
+      legendEnabled: false
+    });
+    // reference to Print component
+    const print = document.querySelector("arcgis-print");
+    await print.componentOnReady();
+    // assign templateOptions to Print component
+    print.templateOptions = printTemplateOptions;
+  </script>
+</body>
+
+</html>

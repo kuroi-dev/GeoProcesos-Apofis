@@ -1,183 +1,115 @@
-/* Widget Manager - Estilo dark integrado con el dashboard */
-
-.esri-map-container {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-/* Panel de control de widgets */
-.widget-manager-panel {
-  position: absolute;
-  top: 150px;
-  
-  background: rgba(16, 16, 16, 0.1);
-  backdrop-filter: blur(20px);
-  border-radius: 8px;
-  padding: 10px;
-  pointer-events: auto;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-
-  max-height: 70vh;
-  overflow-y: auto;
-  z-index: 25;
-}
-
-.widget-manager-panel-border1 {
-  right: 10px;
-}
-.widget-manager-panel-border2 {
-  right: 100px;
-}
-.widget-manager-panel-border3 {
-  right: 200px;
-}
-.widget-manager-panel-border4 {
-  right: 300px;
-}
-
-/* Lista de widgets */
-.widget-list {
-  display: flex;
+.esri-widget-panel {
+  width: 230px;
+  max-height: 200px;
+  background: rgba(30, 30, 40, 0.7);
+  border-radius: 5px;
+  overflow: auto;
   flex-direction: column;
-  gap: 10px;
+  transition: opacity 0.2s, visibility 0.2s;
+  bottom: 100px;
+  left: 50%;
+  margin-left: -125px;
+  z-index: 2500;
+  padding: 10px;
 }
 
-.widget-item {
-  backdrop-filter: blur(10px);
-  border-radius: 6px;
-  padding: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.panel-visible {
   display: flex;
-  align-items: center;
-  background: rgba(16, 16, 16, 0.8);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  position: fixed;
 }
 
-.widget-item:hover {
-  background: rgba(16, 16, 16, 0.8);
-  transform: translateX(3px);
-  border-left-color: rgba(76, 175, 80, 0.6);
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+.panel-hidden {
+  display: none !important;
 }
 
-.widget-item.active {
-  background: rgba(16, 16, 16, 0.8);
-  border: 1px solid rgba(76, 175, 80, 0.3);
-  border-left-color: #4CAF50;
-  transform: translateX(6px);
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.2);
+
+.widget-panel-content arcgis-basemap-gallery {
+  width: 100%;
+  min-height: 80px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.widget-panel-content arcgis-legend{
+  width: 100%;
+  min-height: 80px;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.widget-panel-content arcgis-sketch{
+  align-items: stretch;
+  justify-content: flex-start;
 }
 
-/* Iconos de widgets */
-.widget-icon {
-  width: 35px;
-  height: 35px;
-  flex-shrink: 0;
+/* WIDGET MANAGER PERSONALIZADO - CENTRO INFERIOR */
+.custom-widget-manager {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%) scale(0.7);
+  transform-origin: bottom center;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  z-index: 2000;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 6px 14px;
+  border-radius: 25px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* BOTONES DEL MANAGER */
+.manager-btn {
+  width: 60px;
+  height: 60px;
+  background-color: rgb(31, 31, 31);
+  border: 2px solid #65e6e2;
+  border-radius: 50%;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-.widget-icon calcite-icon {
-  --calcite-ui-icon-color: white;
-  color: white;
+.manager-btn:hover {
+  background-color: hsla(178, 72%, 65%, 0.453);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
-/* Scrollbar personalizado */
-.widget-manager-panel::-webkit-scrollbar {
-  width: 4px;
+.manager-btn.active {
+  background-color: rgba(0, 150, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 20px rgba(0, 150, 255, 0.6);
+  transform: scale(1.05);
 }
 
-.widget-manager-panel::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 2px;
+.manager-btn.active:hover {
+  background-color: rgba(0, 150, 255, 1);
+  transform: scale(1.15);
 }
 
-.widget-manager-panel::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 2px;
+
+.titleBasemap{
+  font-weight: 400;
+  font-size: 25px;
+  margin-bottom: -5px;
 }
 
-.widget-manager-panel::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+.esri-component, .esri-attribution, .esri-widget{
+  background: black !important;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .widget-manager-panel {
-    top: 60px;
-    padding: 12px;
-    max-height: 60vh;
-  }
-
-  .widget-item {
-    padding: 10px;
-  }
-
-  .widget-icon {
-    width: 28px;
-    height: 28px;
-  }
-}
-
-@media (max-width: 480px) {
-  .widget-manager-panel {
-    top: 50px;
-    padding: 10px;
-    max-height: 50vh;
-  }
-
-  .widget-item {
-    padding: 8px;
-  }
-
-  .widget-icon {
-    width: 24px;
-    height: 24px;
-  }
-}
-
-/* Integración con widgets ESRI existentes */
-.esri-ui {
-  z-index: 5;
-}
-
-.esri-widget {
-  background: rgba(16, 16, 16, 0.9) !important;
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 6px !important;
-  backdrop-filter: blur(10px);
-}
-
-.esri-widget--button {
-  background: rgba(16, 16, 16, 0.9) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-.esri-widget--button:hover {
-  background: rgba(32, 32, 32, 0.9) !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-}
-
-.esri-icon {
-  color: white !important;
-}
-
-.esri-search {
-  max-width: 300px !important;
-}
-
-.esri-legend {
-  max-width: 280px !important;
-  max-height: 400px !important;
-}
-
-.esri-layer-list {
-  max-width: 280px !important;
-  max-height: 400px !important;
-}
