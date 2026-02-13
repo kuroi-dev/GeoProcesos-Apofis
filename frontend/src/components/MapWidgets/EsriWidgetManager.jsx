@@ -12,7 +12,7 @@ import "@arcgis/map-components/components/arcgis-scale-bar";
 import "@arcgis/map-components/components/arcgis-sketch";
 import "@arcgis/map-components/components/arcgis-area-measurement-2d";
 import "@arcgis/map-components/components/arcgis-basemap-toggle";
-
+import "@arcgis/map-components/components/arcgis-print";
 
 import './EsriWidgetManager.css';
 import { GeoProcesosWindow, ApofisWindow, EstadoWindow, NuevoPanelWindow } from './SpecialToolWindows';
@@ -63,9 +63,73 @@ const EsriWidgetManager = ({ onMapReady }) => {
     setShowSketch(prev => !prev);
   };
 
+  useEffect(() => {
+    // Parchea el botón de arcgis-home en shadow DOM profundo con doble observer
+    function patchHomeButton() {
+      const homeEl = document.querySelector('arcgis-home');
+      if (!homeEl) return;
+      const arcgisShadow = homeEl.shadowRoot;
+      if (!arcgisShadow) return;
+      const calciteBtn = arcgisShadow.querySelector('calcite-button');
+      if (!calciteBtn) return;
+      // Si el shadowRoot de calcite-button aún no existe, observa hasta que aparezca
+      if (!calciteBtn.shadowRoot) {
+        const calciteObserver = new MutationObserver(() => {
+          if (calciteBtn.shadowRoot) {
+            patchHomeButton();
+            calciteObserver.disconnect();
+          }
+        });
+        calciteObserver.observe(calciteBtn, { childList: true, subtree: true });
+        return;
+      }
+      const calciteShadow = calciteBtn.shadowRoot;
+      // Observa el shadowRoot de calcite-button para detectar el botón
+      const btnObserver = new MutationObserver(() => {
+        const btn = calciteShadow.querySelector('button');
+        if (btn) {
+          btn.style.paddingLeft = '15px';
+          // Centra el icono
+          const icon = btn.querySelector('calcite-icon');
+          if (icon) {
+            icon.style.marginLeft = '8px';
+          }
+        }
+      });
+      btnObserver.observe(calciteShadow, { childList: true, subtree: true });
+      // Parchea si ya existe
+      const btn = calciteShadow.querySelector('button');
+      if (btn) {
+        btn.style.paddingLeft = '15px';
+        const icon = btn.querySelector('calcite-icon');
+        if (icon) {
+          icon.style.marginLeft = '8px';
+        }
+      }
+    }
+    // Observa cambios en arcgis-home y su shadowRoot
+    const observer = new MutationObserver(() => {
+      patchHomeButton();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    // También observa el shadowRoot de arcgis-home si existe
+    const homeEl = document.querySelector('arcgis-home');
+    let arcgisShadowObserver = null;
+    if (homeEl && homeEl.shadowRoot) {
+      arcgisShadowObserver = new MutationObserver(() => {
+        patchHomeButton();
+      });
+      arcgisShadowObserver.observe(homeEl.shadowRoot, { childList: true, subtree: true });
+    }
+    patchHomeButton();
+    return () => {
+      observer.disconnect();
+      if (arcgisShadowObserver) arcgisShadowObserver.disconnect();
+    };
+  }, []);
+
   return (
     <div className="esri-widget-manager">
-      
       <arcgis-map 
         basemap="satellite" 
         center="-72.2322, -39.2764" 
@@ -115,7 +179,8 @@ const EsriWidgetManager = ({ onMapReady }) => {
           style={{ position: 'absolute', bottom: '-10px', right: '0px', zIndex: 1100 }}
           next-basemap="topo"
         ></arcgis-basemap-toggle>
-        
+
+      
       
       <div className="custom-widget-manager">
         <button 
@@ -155,8 +220,8 @@ const EsriWidgetManager = ({ onMapReady }) => {
         </button>
         <button 
           className={`manager-btn ${widgetStates.print ? 'active' : ''}`}
-          onClick={() =>  toggleWidget('print')}
-          title="Herramientas de Dibujo"
+          onClick={() => toggleWidget('print')}
+          title="Imprimir mapa"
         >
           <calcite-icon icon="print" scale="l"></calcite-icon>
         </button>
@@ -187,9 +252,10 @@ const EsriWidgetManager = ({ onMapReady }) => {
         )}
         {widgetStates.print && (
           <div className="widget-panel-content">
-             <arcgis-print
-              allowed-formats="all"
-              allowed-layouts="all"
+            <arcgis-print
+              allowed-formats="pdf,png,jpg"
+              allowed-layouts
+              export-title="Mapa personalizado"
             ></arcgis-print>
           </div>
         )}
@@ -210,5 +276,4 @@ const EsriWidgetManager = ({ onMapReady }) => {
     
   );
 }
-
 export default EsriWidgetManager;

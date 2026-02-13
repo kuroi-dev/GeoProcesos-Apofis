@@ -1,9 +1,5 @@
 /* CSS global limpio - NO afecta elementos Esri */
-*:not([class*="esri"]) {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+
 
 html, body {
   margin: 0;
@@ -17,23 +13,6 @@ html, body {
   height: 100%;
 }
 
-/* FORZAR VISIBILIDAD DE WIDGETS ESRI */
-[class*="esri"] {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
+
 
 /* Elementos específicos de ArcGIS que deben ser visibles */
-.esri-ui,
-.esri-ui-corner,
-.esri-zoom,
-.esri-attribution,
-.esri-widget,
-.esri-component {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  position: relative !important;
-  z-index: 999 !important;
-}

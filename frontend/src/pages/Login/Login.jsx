@@ -255,6 +255,12 @@ const Login = () => {
               </div>
             )}
           </div>
+          <button
+            style={{ marginTop: '24px', background: '#65e6e2', color: '#222', padding: '10px 24px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}
+            onClick={() => navigate('/test-home-map')}
+          >
+            Ir a test home map
+          </button>
         </div>
       </div>
     </div>
