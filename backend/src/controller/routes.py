@@ -7,6 +7,7 @@ import base64
 import json
 import threading
 import datetime
+from . import bp  
 
 # API blueprint
 bp = Blueprint('api', __name__)
@@ -196,3 +197,39 @@ def site_static(path):
             return send_from_directory(_STATIC_DIR, path)
         return send_from_directory(_STATIC_DIR, 'index.html')
     return ('Static directory not found', 404)
+
+
+#enrutamiento del validador de token e emails.
+
+@bp.route('/validate-user', methods=['POST'])
+def validate_user():
+    try:
+        # 1. Recibimos el JSON del aplicativo
+        data = request.get_json()
+        
+        # 2. Extraemos los datos
+        email = data.get('email')
+        token = data.get('token')
+
+        # 3. Validación de campos obligatorios
+        if not email or not token:
+            return jsonify({
+                "valid": False, 
+                "message": "Faltan datos obligatorios (email o token)."
+            }), 400
+
+        # 4. Lógica de validación (Aquí es donde evitarás Inyecciones SQL)
+        # Por ahora, una validación manual para tus pruebas:
+        if email == "email@email.com" and token == "123456":
+            return jsonify({
+                "valid": True,
+                "message": "Usuario legitimado correctamente."
+            }), 200
+        else:
+            return jsonify({
+                "valid": False,
+                "message": "Email o código incorrectos."
+            }), 401
+
+    except Exception as e:
+        return jsonify({"valid": False, "message": f"Error en el servidor: {str(e)}"}), 500
