@@ -43,6 +43,7 @@ const Login = () => {
     setLoading(true);
     setEmailError('');
     
+    
     try {
       const response = await fetch('http://127.0.0.1:5000/api/access', {
         method: 'POST',
@@ -53,7 +54,9 @@ const Login = () => {
       });
       
       const data = await response.json();
-      
+      // Imprimir respuesta del backend en consola
+      console.log('Respuesta backend:', data);
+
       if (data.ACCESS) {
         // Si el acceso es exitoso, navegar al dashboard
         navigate('/dashboard', { state: { userEmail: email, token: data.token } });
@@ -67,6 +70,9 @@ const Login = () => {
     } finally {
       setLoading(false);
     }
+      
+
+   
   };
 
   useEffect(() => {

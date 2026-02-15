@@ -28,57 +28,6 @@ const EsriWidgetManager = ({ onMapReady }) => {
   const printRef = useRef(null);
   const [printKey, setPrintKey] = useState(0);
   
-  useEffect(() => {
-    // Espera a que el widget esté en el DOM
-    const interval = setInterval(() => {
-      const print = document.querySelector('arcgis-print');
-      if (print) {
-        const shadow = print.shadowRoot;
-        if (shadow) {
-          // 1. Control visual: mostrar el menú de impresión y ocultar el de template
-          const flow = shadow.querySelector('calcite-flow');
-          if (flow) {
-            const items = flow.querySelectorAll('calcite-flow-item');
-            if (items.length >= 2) {
-              items[0].removeAttribute('hidden');
-              items[1].setAttribute('hidden', '');
-            }
-          }
-
-          // 2. (Adicional) Elimina cualquier calcite-label que contenga arcgis-print-template-select en cualquier shadowRoot descendiente
-          function removeAllTemplateLabels(root) {
-            const labels = root.querySelectorAll('calcite-label');
-            labels.forEach(label => {
-              if (label.querySelector('arcgis-print-template-select')) {
-                label.remove();
-              }
-            });
-            root.querySelectorAll('*').forEach(el => {
-              if (el.shadowRoot) {
-                removeAllTemplateLabels(el.shadowRoot);
-              }
-            });
-          }
-          removeAllTemplateLabels(shadow);
-
-          // Detener el intervalo si el menú principal está visible y el de template oculto
-          if (flow) {
-            const items = flow.querySelectorAll('calcite-flow-item');
-            if (items.length >= 2 && !items[0].hasAttribute('hidden') && items[1].hasAttribute('hidden')) {
-              clearInterval(interval);
-            }
-          }
-        }
-      }
-    }, 200);
-    // Limpieza
-    return () => clearInterval(interval);
-  }, [printKey]);
-
-  const handleResetPrint = () => {
-    setPrintKey(k => k + 1);
-  };
-
 
   useEffect(() => {
     const printElement = printRef.current;
@@ -151,70 +100,7 @@ const EsriWidgetManager = ({ onMapReady }) => {
     setShowPrint(prev => !prev);
   };
 
-  useEffect(() => {
-    // Parchea el botón de arcgis-home en shadow DOM profundo con doble observer
-    function patchHomeButton() {
-      const homeEl = document.querySelector('arcgis-home');
-      if (!homeEl) return;
-      const arcgisShadow = homeEl.shadowRoot;
-      if (!arcgisShadow) return;
-      const calciteBtn = arcgisShadow.querySelector('calcite-button');
-      if (!calciteBtn) return;
-      // Si el shadowRoot de calcite-button aún no existe, observa hasta que aparezca
-      if (!calciteBtn.shadowRoot) {
-        const calciteObserver = new MutationObserver(() => {
-          if (calciteBtn.shadowRoot) {
-            patchHomeButton();
-            calciteObserver.disconnect();
-          }
-        });
-        calciteObserver.observe(calciteBtn, { childList: true, subtree: true });
-        return;
-      }
-      const calciteShadow = calciteBtn.shadowRoot;
-      // Observa el shadowRoot de calcite-button para detectar el botón
-      const btnObserver = new MutationObserver(() => {
-        const btn = calciteShadow.querySelector('button');
-        if (btn) {
-          btn.style.paddingLeft = '15px';
-          // Centra el icono
-          const icon = btn.querySelector('calcite-icon');
-          if (icon) {
-            icon.style.marginLeft = '8px';
-          }
-        }
-      });
-      btnObserver.observe(calciteShadow, { childList: true, subtree: true });
-      // Parchea si ya existe
-      const btn = calciteShadow.querySelector('button');
-      if (btn) {
-        btn.style.paddingLeft = '15px';
-        const icon = btn.querySelector('calcite-icon');
-        if (icon) {
-          icon.style.marginLeft = '8px';
-        }
-      }
-    }
-    // Observa cambios en arcgis-home y su shadowRoot
-    const observer = new MutationObserver(() => {
-      patchHomeButton();
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-    // También observa el shadowRoot de arcgis-home si existe
-    const homeEl = document.querySelector('arcgis-home');
-    let arcgisShadowObserver = null;
-    if (homeEl && homeEl.shadowRoot) {
-      arcgisShadowObserver = new MutationObserver(() => {
-        patchHomeButton();
-      });
-      arcgisShadowObserver.observe(homeEl.shadowRoot, { childList: true, subtree: true });
-    }
-    patchHomeButton();
-    return () => {
-      observer.disconnect();
-      if (arcgisShadowObserver) arcgisShadowObserver.disconnect();
-    };
-  }, []);
+  
 
   return (
     <div className="esri-widget-manager">
@@ -227,7 +113,7 @@ const EsriWidgetManager = ({ onMapReady }) => {
         <arcgis-print
           slot="top-left"
           allowed-formats="all"
-          allowed-layouts="a3-landscape"
+          allowed-layouts="all"
           //exclude-default-templates
           //exclude-organization-templates
           ref={printRef}
@@ -267,9 +153,10 @@ const EsriWidgetManager = ({ onMapReady }) => {
           creation-mode="continuous"
           layout="horizontal"
           scale="s"
-          style={{ position: 'absolute', top: '32px', left: '166px', zIndex: 1100}}
+          hide-duplicate-button
           hide-undo-redo-menu
-          hide-settings-menu
+          toolbar-kind="floating"
+          style={{ position: 'absolute', top: '32px', left: '166px', zIndex: 1100}}
           className={showSketch ? 'panel-visible' : 'panel-hidden'}
         ></arcgis-sketch>
 
