@@ -11,7 +11,7 @@ class UserValidation(BaseModel):
 
 # Simulación de base de datos
 db_usuarios = {
-    "usuario@ejemplo.com": {"token_valido": "123456abcde", "activo": False}
+    "testing@testing.test": {"token_valido": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYWlsIjoidGVzdGluZ0B0ZXN0aW5nLnRlc3QiLCJpYXQiOjE3NzAzMjUxNTEsImV4cCI6MTc3MDMyNjk1MX0.uIUB73Ktk85hsq18d3ZXJPwEKMtdqsWbJRkx2Wmxv2I", "activo": False}
 }
 
 @app.post("/auth/validate")
