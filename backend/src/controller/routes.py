@@ -109,7 +109,6 @@ def _get_next_id():
     _next_id += 1
     return nid
 
-
 @bp.route('/health', methods=['GET'])
 def health_check():
     return jsonify({'status': 'ok'})
