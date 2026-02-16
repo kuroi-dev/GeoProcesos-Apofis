@@ -1,6 +1,5 @@
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, EmailStr
-from typing import Optional
 
 app = FastAPI()
 
