@@ -34,9 +34,44 @@ def _get_next_id():
 def health_check():
     return jsonify({'status': 'ok'})
 
-@bp.route('/users', methods=['GET'])
 def list_users():
     return jsonify(_users)
+
+# Nueva ruta para descarga de TIFF
+@bp.route('/downloadTif', methods=['POST'])
+def download_tif():
+    """
+    Espera un JSON con:
+      - extent: lista de 5 puntos (EPSG:4326)
+      - satellite: 'landsat' o 'sentinel'
+      - date: 'YYYY-MM-DD'
+      - hour: 'HH:MM' (opcional)
+      - centroid: [lon, lat]
+      - (opcional) image_id
+    """
+    data = request.get_json() or {}
+    extent = data.get('extent')
+    satellite = data.get('satellite')
+    date = data.get('date')
+    hour = data.get('hour')
+    centroid = data.get('centroid')
+    image_id = data.get('image_id')
+    token = data.get('token')
+
+    # Validación básica
+    if not (extent and satellite and date and centroid and token):
+        return jsonify({'success': False, 'error': 'Faltan parámetros obligatorios'}), 400
+
+    # Llamar a la función controladora (a implementar)
+    from .helpers import handle_download_tif
+    try:
+        result = handle_download_tif(extent, satellite, date, hour, centroid, image_id, token)
+        if result.get('success'):
+            return jsonify(result)
+        else:
+            return jsonify(result), 400
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 @bp.route('/users', methods=['POST'])

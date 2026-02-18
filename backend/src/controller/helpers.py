@@ -8,6 +8,57 @@ import hashlib
 import base64
 import datetime
 
+
+def handle_download_tif(extent, satellite, date, hour, centroid, image_id=None, token=None):
+    # Validar token antes de proceder
+    if not token:
+        return {'success': False, 'error': 'Token requerido'}
+
+    # Validar token en la base de datos
+    _DB_FILE = os.path.abspath(os.path.join(_THIS_DIR, '..', '..', 'database', 'tokens.json'))
+    user_found = False
+    privilegio = 0
+    if os.path.isfile(_DB_FILE):
+        with open(_DB_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f) or []
+        for entry in data:
+            if entry.get('token') == token:
+                user_found = True
+                privilegio = entry.get('privilegio', 0)
+                break
+    if not user_found:
+        return {'success': False, 'error': 'Token inválido o usuario no autorizado'}
+
+    # Validar tipo de satélite
+    if satellite not in ['landsat', 'sentinel']:
+        return {'success': False, 'error': 'Tipo de satélite no soportado'}
+
+    # Generar nombre único para el archivo
+    import uuid
+    filename = f"{satellite}_{date}_{hour or '00-00'}_{uuid.uuid4().hex[:8]}.tif"
+    static_dir = os.path.abspath(os.path.join(_THIS_DIR, '..', '..', 'static'))
+    tif_path = os.path.join(static_dir, filename)
+
+    # Aquí deberías implementar la lógica real de descarga y recorte de la imagen
+    # Por ahora, solo crea un archivo vacío como marcador de posición
+    try:
+        os.makedirs(static_dir, exist_ok=True)
+        with open(tif_path, 'wb') as f:
+            f.write(b'')  # Aquí iría el contenido real del TIFF
+    except Exception as e:
+        return {'success': False, 'error': f'No se pudo crear el archivo: {str(e)}'}
+
+    # Retornar solo el nombre del archivo para que el front lo busque en /static
+    return {
+        'success': True,
+        'filename': filename,
+        'message': 'Archivo generado correctamente (simulado). Implementar lógica real.'
+    }
+
+
+
+
+
 _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 _DB_FILE = os.path.join(_THIS_DIR, '..', '..', 'database', 'tokens.json')
 

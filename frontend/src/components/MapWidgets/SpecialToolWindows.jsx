@@ -71,7 +71,7 @@ export function EstadoWindow({ estado }) {
   );
 }
 
-export function NuevoPanelWindow() {
+export function NuevoPanelWindow({ agregarFeatureLayer }) {
   const [visible, setVisible] = React.useState(true);
   const [selectedIndex, setSelectedIndex] = React.useState(-1);
   const tools = [
@@ -172,8 +172,27 @@ export function NuevoPanelWindow() {
               </label>
               <div className="special-tool-modal-btn-group">
                 <button className="special-tool-modal-action-btn ejecutar">Ejecutar</button>
-                <button className="special-tool-modal-action-btn limpiar">Limpiar</button>
-                <button className="special-tool-modal-action-btn ayuda">Ayuda</button>
+                {/* Botón para agregar capa Industria Forestal */}
+                <button
+                  className="special-tool-modal-action-btn"
+                  style={{ background: '#00b4ff', color: '#fff', marginTop: 8 }}
+                  onClick={() => {
+                    if (agregarFeatureLayer) {
+                      agregarFeatureLayer({
+                        id: 'industria-forestal',
+                        url: 'https://esri.ciren.cl/server/rest/services/INDUSTRIA_FORESTAL/FeatureServer/4',
+                        popupTemplate: {
+                          title: 'Industria Forestal',
+                          content: '<b>Nombre:</b> {NOMBRE}<br><b>Tipo:</b> {TIPO}'
+                        },
+                        visible: true,
+                        opacity: 1
+                      });
+                    }
+                  }}
+                >
+                  Añadir capa Industria Forestal
+                </button>
               </div>
             </div>
           </div>

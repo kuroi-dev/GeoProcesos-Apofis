@@ -3,7 +3,8 @@ from pydantic import BaseModel, EmailStr
 
 app = FastAPI()
 
-# 1. Definimos el modelo del JSON que esperamos
+# 1. Definimos el modelo del JSON que esperamosgit push origin develop
+
 class UserValidation(BaseModel):
     email: EmailStr
     token: str
