@@ -13,6 +13,11 @@ import "@arcgis/map-components/components/arcgis-sketch";
 import "@arcgis/map-components/components/arcgis-area-measurement-2d";
 import "@arcgis/map-components/components/arcgis-basemap-toggle";
 import "@arcgis/map-components/components/arcgis-print";
+import "@arcgis/map-components/components/arcgis-popup";
+
+
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer.js";
+
 
 import './EsriWidgetManager.css';
 import { GeoProcesosWindow, ApofisWindow, EstadoWindow, NuevoPanelWindow } from './SpecialToolWindows';
@@ -21,12 +26,12 @@ import { createPortal } from 'react-dom';
 
 const EsriWidgetManager = ({ onMapReady }) => {
 
-
-
   const [showSketch, setShowSketch] = React.useState(false);
   const [showPrint, setShowPrint] = React.useState(false);
   const printRef = useRef(null);
   const [printKey, setPrintKey] = useState(0);
+  const [selectPolygonActive, setSelectPolygonActive] = useState(false);
+  const selectPolygonHandlerRef = useRef(null);
   
 
   useEffect(() => {
@@ -100,7 +105,119 @@ const EsriWidgetManager = ({ onMapReady }) => {
     setShowPrint(prev => !prev);
   };
 
-  
+  useEffect(() => {
+    const arcgisMap = document.querySelector("arcgis-map");;
+    if (!arcgisMap) return;
+
+    let observer;
+    let featureLayerAdded = false;
+
+    const tryAddFeatureLayer = () => {
+      // El objeto map se expone como propiedad del custom element
+      const map = arcgisMap.map;
+      if (map && !featureLayerAdded) {
+        featureLayerAdded = true;
+        console.log('Mapa detectado por MutationObserver:', map);
+        const featureLayer = new FeatureLayer({
+          url: "https://esri.ciren.cl/server/rest/services/LIMITES_ADMINISTRATIVOS/FeatureServer/3",
+          renderer: {
+            type: "simple",
+            symbol: {
+              type: "simple-fill", // Para polígonos
+              color: [0, 0, 0, 0], // Fondo negro, 0.1 opacidad
+              outline: {
+                color: [0, 255, 0, 1], // Borde verde 
+                width: 2 // Grosor del borde
+              }
+            }
+          }
+        });
+        map.add(featureLayer);
+      }
+    };
+
+    // Intenta inmediatamente por si ya está listo
+    tryAddFeatureLayer();
+
+    observer = new MutationObserver(() => {
+      tryAddFeatureLayer();
+    });
+    observer.observe(arcgisMap, { attributes: true, childList: false, subtree: false });
+
+    return () => {
+      if (observer) observer.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    const popupComponent = document.querySelector("arcgis-popup");
+    if (popupComponent) {
+      popupComponent.dockOptions = {
+        breakpoint: false,
+      };
+    }
+  }, []);
+
+
+//Captura de poligono
+
+  function handleSelectPolygon() {
+    const arcgisMap = document.querySelector("arcgis-map");
+    if (!arcgisMap || !arcgisMap.map) return;
+    const view = arcgisMap.view;
+    if (!view) {
+      alert("El mapa aún no está listo.");
+      return;
+    }
+    if (!selectPolygonActive) {
+      // Activar selección
+      const layers = arcgisMap.map.layers.items.filter(
+        l => l.type === "feature" && l.visible && l.geometryType === "polygon"
+      );
+      if (layers.length === 0) {
+        alert("No hay capas de polígonos visibles para seleccionar.");
+        return;
+      }
+      view.popup.close();
+      view.graphics.removeAll();
+      // Guardar handler para poder removerlo
+      const handler = view.on("click", async (event) => {
+        const hit = await view.hitTest(event);
+        const graphic = hit.results.find(r => r.graphic && r.graphic.layer && layers.includes(r.graphic.layer));
+        if (graphic) {
+          view.graphics.removeAll();
+          view.graphics.add({
+            geometry: graphic.graphic.geometry,
+            symbol: {
+              type: "simple-fill",
+              color: [255, 255, 0, 0.3],
+              outline: { color: [255, 128, 0, 1], width: 3 }
+            }
+          });
+          view.popup.open({
+            features: [graphic.graphic],
+            location: event.mapPoint
+          });
+        }
+      });
+      selectPolygonHandlerRef.current = handler;
+      setSelectPolygonActive(true);
+      alert("Haz clic en un polígono para seleccionarlo. Pulsa el botón de nuevo para salir.");
+    } else {
+      // Desactivar selección
+      if (selectPolygonHandlerRef.current) {
+        selectPolygonHandlerRef.current.remove();
+        selectPolygonHandlerRef.current = null;
+      }
+      setSelectPolygonActive(false);
+      // Opcional: limpiar selección
+      const view = arcgisMap.view;
+      if (view) {
+        view.graphics.removeAll();
+        view.popup.close();
+      }
+    }
+  }
 
   return (
     <div className="esri-widget-manager">
@@ -165,10 +282,18 @@ const EsriWidgetManager = ({ onMapReady }) => {
           style={{ position: 'absolute', bottom: '-10px', left: '0px', zIndex: 1100 }}
           next-basemap="topo"
         ></arcgis-basemap-toggle>
-
       
       
       <div className="custom-widget-manager">
+        <button
+          className={`manager-btn${selectPolygonActive ? ' active-select' : ''}`}
+          onClick={handleSelectPolygon}
+          title={selectPolygonActive ? "Terminar selección de polígono" : "Seleccionar polígono de capa"}
+          style={selectPolygonActive ? { background: '#2196f3', color: '#fff' } : {}}
+        >
+          <calcite-icon icon="cursor-marquee" scale="l"></calcite-icon>
+        </button>
+          
         <button 
           className={`manager-btn ${widgetStates.basemapGallery ? 'active' : ''}`}
           onClick={() => toggleWidget('basemapGallery')}
@@ -211,6 +336,7 @@ const EsriWidgetManager = ({ onMapReady }) => {
         >
           <calcite-icon icon="print" scale="l"></calcite-icon>
         </button>
+
       </div>
       <div
         id="panel"

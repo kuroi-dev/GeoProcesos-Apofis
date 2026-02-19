@@ -484,3 +484,25 @@
   padding: 18px 24px 16px 24px;
   z-index: 3000;
 }
+
+
+
+
+.special-layerUp{
+  align-items: center;
+  gap: 15px;
+  margin-top: 16px;
+  height: 120px;
+  border-top: rgb(151, 151, 151) solid 3px;
+  padding-top: 20px;
+}
+
+.special-layerUp input{
+  margin-bottom: 15px;
+}
+
+
+
+
+
+
