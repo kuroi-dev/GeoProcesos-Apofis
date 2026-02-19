@@ -163,6 +163,7 @@ const EsriWidgetManager = ({ onMapReady }) => {
 
   function handleSelectPolygon() {
     const arcgisMap = document.querySelector("arcgis-map");
+    console.log(arcgisMap);
     if (!arcgisMap || !arcgisMap.map) return;
     const view = arcgisMap.view;
     if (!view) {
@@ -178,7 +179,6 @@ const EsriWidgetManager = ({ onMapReady }) => {
         alert("No hay capas de polígonos visibles para seleccionar.");
         return;
       }
-      view.popup.close();
       view.graphics.removeAll();
       // Guardar handler para poder removerlo
       const handler = view.on("click", async (event) => {

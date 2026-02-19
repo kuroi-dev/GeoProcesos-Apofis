@@ -77,7 +77,7 @@ export function EstadoWindow({ estado }) {
   );
 }
 
-export function NuevoPanelWindow() {
+export function NuevoPanelWindow({ agregarFeatureLayer }) {
   const [visible, setVisible] = React.useState(true);
   const [selectedIndex, setSelectedIndex] = React.useState(-1);
   // Estado para parámetros por herramienta

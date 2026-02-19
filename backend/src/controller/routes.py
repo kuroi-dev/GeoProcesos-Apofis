@@ -1,3 +1,67 @@
+
+# --- SMTP para envío de correos ---
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from flask import redirect
+#import psycopg2
+#import bleach
+from datetime import datetime
+
+
+def send_validation_email(to_email, validation_token):
+    smtp_server = os.environ.get('SMTP_SERVER', 'smtp.gmail.com')
+    smtp_port = int(os.environ.get('SMTP_PORT', 587))
+    smtp_user = os.environ.get('SMTP_USER')
+    smtp_pass = os.environ.get('SMTP_PASS')
+    from_email = smtp_user
+    subject = 'Validación de correo'
+    # Cambia la URL base según tu frontend
+    base_url = os.environ.get('VALIDATION_URL_BASE', 'http://127.0.0.1:5000')
+    validation_link = f"{base_url}/validar-correo?token={validation_token}&email={to_email}"
+    body = f"Para validar tu correo, haz clic en el siguiente enlace:\n\n{validation_link}\n\nSi no solicitaste este acceso, ignora este mensaje."
+
+    print(smtp_server, smtp_port, smtp_user, '****' if smtp_pass else None)  # Debug info (oculta contraseña)
+
+    msg = MIMEMultipart()
+    msg['From'] = from_email
+    msg['To'] = to_email
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))
+
+    try:
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(smtp_user, smtp_pass)
+        server.sendmail(from_email, to_email, msg.as_string())
+        server.quit()
+        print(f"Correo de validación enviado a {to_email}")
+
+        # Guardar el token de validación en la base de datos (tokens.json)
+        if os.path.isfile(_DB_FILE):
+            with open(_DB_FILE, 'r', encoding='utf-8') as f:
+                data = json.load(f) or []
+        else:
+            data = []
+        updated = False
+        for entry in data:
+            if entry.get('correo') == to_email:
+                entry['validation_token'] = validation_token
+                updated = True
+        if updated:
+            with open(_DB_FILE, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+
+        return True
+    except Exception as e:
+        print(f"Error enviando correo: {e}")
+        return False
+    
+
+#############################################################################
+
+
+from flask import Blueprint, jsonify, request, send_from_directory
 import os
 import time
 import json
@@ -34,9 +98,44 @@ def _get_next_id():
 def health_check():
     return jsonify({'status': 'ok'})
 
-@bp.route('/users', methods=['GET'])
 def list_users():
     return jsonify(_users)
+
+# Nueva ruta para descarga de TIFF
+@bp.route('/downloadTif', methods=['POST'])
+def download_tif():
+    """
+    Espera un JSON con:
+      - extent: lista de 5 puntos (EPSG:4326)
+      - satellite: 'landsat' o 'sentinel'
+      - date: 'YYYY-MM-DD'
+      - hour: 'HH:MM' (opcional)
+      - centroid: [lon, lat]
+      - (opcional) image_id
+    """
+    data = request.get_json() or {}
+    extent = data.get('extent')
+    satellite = data.get('satellite')
+    date = data.get('date')
+    hour = data.get('hour')
+    centroid = data.get('centroid')
+    image_id = data.get('image_id')
+    token = data.get('token')
+
+    # Validación básica
+    if not (extent and satellite and date and centroid and token):
+        return jsonify({'success': False, 'error': 'Faltan parámetros obligatorios'}), 400
+
+    # Llamar a la función controladora (a implementar)
+    from .helpers import handle_download_tif
+    try:
+        result = handle_download_tif(extent, satellite, date, hour, centroid, image_id, token)
+        if result.get('success'):
+            return jsonify(result)
+        else:
+            return jsonify(result), 400
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 @bp.route('/users', methods=['POST'])
@@ -210,5 +309,88 @@ def validate_user():
 
     except Exception as e:
         return jsonify({"valid": False, "message": f"Error en el servidor: {str(e)}"}), 500
+<<<<<<< HEAD
 
+
+    
+
+#enrutamiento para evitar sql injection y xss
+    
+@current_app.route('/save-comment', methods=['POST'])
+def save_comment_route():
+    user_input = request.json.get('comment', '')
+    
+    # 1. Defensa Anti-XSS: Limpiamos el HTML
+    clean_html = bleach.clean(user_input)
+    
+    # 2. Defensa Anti-SQLi: Consulta parametrizada
+    query = "INSERT INTO comments (text) VALUES (%s)"
+    success = execute_query(query, (clean_html,))
+    
+    if success:
+        return jsonify({"status": "comentario guardado"}), 201
+    return jsonify({"error": "error al guardar"}), 500
+
+@current_app.route('/get-user', methods=['GET'])
+def get_user_route():
+    email = request.args.get('email')
+    
+    # Defensa Anti-SQLi: El email viaja como parámetro separado
+    query = "SELECT id, name FROM users WHERE email = %s"
+    user = execute_query(query, (email,), fetch=True)
+    
+    if user:
+        return jsonify({"id": user[0], "name": user[1]})
+    return jsonify({"error": "usuario no encontrado"}), 404
+
+#esto seria el enrutamiento para los ataques de DDOS.
+@app.route('/comentar', methods=['POST'])
+def post_comment():
+    comment = request.json.get('text', '')
+    
+    # Si el comentario es ridículamente largo (ataque de desbordamiento), recházalo
+    if len(comment) > 5000:
+        return {"error": "Contenido demasiado largo"}, 413
+    
+#ruta del timeout de 30 minutos. #trial es el periodo de prueba que dura 30 minutos, luego se borra todo lo que hizo el usuario en ese periodo.
+@app.route('/api/start-trial', methods=['GET'])
+def start_trial():
+    # Enviamos al front el tiempo exacto para que sincronice su timer
+    return jsonify({
+        "trial_duration_seconds": get_trial_seconds(),
+        "message": "Trial iniciado"
+    })
+
+@app.route('/api/expired-trial', methods=['POST'])
+def expired_trial():
+    user_id = request.json.get('user_id')
+    
+    # Ejecutamos la purga de datos en la base de datos
+    if purge_trial_data(user_id):
+        return jsonify({
+            "status": "FINISH SESSION",
+            "action": "CLEAR_ALL_DATA",
+            "message": "El tiempo de Free Trial ha terminado. Todos los datos han sido borrados."
+        }), 200
+    
+    return jsonify({"error": "No se pudo limpiar el trial"}), 500
+
+#ruta de limpieza Automatica. despues de los 30 minutos o cierre de session voluntario.
+@app.route('/api/activate-trial', methods=['POST'])
+def activate_trial():
+    user_id = request.json.get('user_id')
+    
+    conn = get_db_connection()
+    cur = conn.cursor()
+    # El daemon usará esta estampa de tiempo para saber cuándo pasen los 30 min
+    cur.execute(""""""
+        UPDATE users 
+        SET trial_active = True, trial_started_at = %s 
+        WHERE id = %s
+    """""", (datetime.now(), user_id))
+    conn.commit()
+    cur.close()
+    conn.close()
+    
+    return jsonify({"message": "Trial activado en servidor"})
 """
