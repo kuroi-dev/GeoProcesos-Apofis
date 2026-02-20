@@ -51,7 +51,30 @@ const [urlLayer, setUrlLayer] = React.useState("");
         </div>
       </div>
       <div className="special-tool-modal-content">
-        {/* Inputs y lógica específica para Análisis Espacial */}
+
+        <div className='special-layerUp' >
+            <label className="special-tool-modal-label">Cargar capa:</label>
+            <input
+                type="text"
+                className="special-tool-modal-input"
+                placeholder="Ingrese una URL de una capa"
+                value={urlLayer}
+                onChange={(e) => setUrlLayer(e.target.value)}
+            />
+            <button
+              className="special-tool-modal-action-btn ejecutar"
+              onClick={cargarLayer}
+            >Cargar</button>
+        </div>
+
+        <div className='special-layerUp' >
+            <label className="special-tool-modal-label">Buffer:</label>
+
+            <button>Capturar Geometria</button>
+
+            <input className="special-tool-modal-input" type="number" placeholder="Distancia en metros" />
+            <button className="special-tool-modal-action-btn ejecutar">Ejecutar</button>
+        </div>
         <label className="special-tool-modal-label">
           Buffer:
           <input className="special-tool-modal-input" type="number" placeholder="Distancia en metros" />
@@ -68,20 +91,7 @@ const [urlLayer, setUrlLayer] = React.useState("");
         <div className="special-tool-modal-btn-group">
           <button className="special-tool-modal-action-btn ejecutar">Ejecutar</button>
         </div>
-        <div className='special-layerUp' >
-            <label className="special-tool-modal-label">Cargar capa:</label>
-            <input
-                type="text"
-                className="special-tool-modal-input"
-                placeholder="Ingrese una URL de una capa"
-                value={urlLayer}
-                onChange={(e) => setUrlLayer(e.target.value)}
-            />
-            <button
-              className="special-tool-modal-action-btn ejecutar"
-              onClick={cargarLayer}
-            >Cargar capa</button>
-        </div>
+        
       </div>
     </div>
   );
