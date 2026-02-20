@@ -10,9 +10,9 @@ import sys
 
 # Configuración centralizada. despoues al crear la database lo mejoramos.
 DB_CONFIG = {
-    "dbname": "tu_db",
-    "user": "app_user_limitado",
-    "password": "tu_password",
+    "dbname": "",
+    "user": "",
+    "password": "",
     "host": "localhost",
     "port": "5432"
 }
