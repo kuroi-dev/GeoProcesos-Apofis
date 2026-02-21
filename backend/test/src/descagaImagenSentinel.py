@@ -1,3 +1,8 @@
+#Usar senentinal para descargar imagenes de satelite.
+#Libreria sentinelsat: https://sentinelsat.readthedocs.io/en/stable/usage.html
+
+
+
 from sentinelsat import SentinelAPI, read_geojson, geojson_to_wkt
 from datetime import date
 
