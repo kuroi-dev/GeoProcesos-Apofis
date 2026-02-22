@@ -141,27 +141,45 @@ export function NuevoPanelWindow({ agregarFeatureLayer }) {
         {/* Ocultar el contenido del panel principal cuando la ventana está activa */}
         <div style={{ display: selectedIndex === -1 ? 'block' : 'none' }}>
           {tools.map((tool, idx) => (
-            <SpecialToolCard
-              key={tool.title}
-              imgSrc={tool.imgSrc}
-              title={tool.title}
-              summary={tool.summary}
-              selected={false}
-              onSelect={() => setSelectedIndex(idx)}
-            />
+            idx === 0 ? (
+              <SpecialToolCard
+                key={tool.title}
+                imgSrc={tool.imgSrc}
+                title={tool.title}
+                summary={tool.summary}
+                selected={false}
+                onSelect={() => setSelectedIndex(idx)}
+              />
+            ) : (
+              <div className="disabled-tool-menu" key={tool.title}>
+                <SpecialToolCard
+                  imgSrc={tool.imgSrc}
+                  title={tool.title}
+                  summary={tool.summary}
+                  selected={false}
+                  onSelect={() => {}}
+                />
+              </div>
+            )
           ))}
         </div>
         {selectedIndex === 0 && (
           <AnalisisEspacialMenu onBack={() => setSelectedIndex(-1)} />
         )}
         {selectedIndex === 1 && (
-          <VisualizacionAvanzadaMenu onBack={() => setSelectedIndex(-1)} />
+          <div className="disabled-tool-menu">
+            <VisualizacionAvanzadaMenu onBack={() => setSelectedIndex(-1)} />
+          </div>
         )}
         {selectedIndex === 2 && (
-          <ImagenesSatelitalesMenu onBack={() => setSelectedIndex(-1)} />
+          <div className="disabled-tool-menu">
+            <ImagenesSatelitalesMenu onBack={() => setSelectedIndex(-1)} />
+          </div>
         )}
         {selectedIndex === 3 && (
-          <AutomatizacionMenu onBack={() => setSelectedIndex(-1)} />
+          <div className="disabled-tool-menu">
+            <AutomatizacionMenu onBack={() => setSelectedIndex(-1)} />
+          </div>
         )}
       </div>
       {!visible && (

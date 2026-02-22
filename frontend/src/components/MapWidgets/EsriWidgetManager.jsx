@@ -30,8 +30,8 @@ const EsriWidgetManager = ({ onMapReady }) => {
   const [showPrint, setShowPrint] = React.useState(false);
   const printRef = useRef(null);
   const [printKey, setPrintKey] = useState(0);
-  const [selectPolygonActive, setSelectPolygonActive] = useState(false);
-  const selectPolygonHandlerRef = useRef(null);
+  const [selectGeometryActive, setSelectGeometryActive] = useState(false);
+  const selectGeometryHandlerRef = useRef(null);
   
 
   useEffect(() => {
@@ -159,59 +159,84 @@ const EsriWidgetManager = ({ onMapReady }) => {
   }, []);
 
 
-//Captura de poligono
+//Captura de geometrias
 
-  function handleSelectPolygon() {
+  function handleSelectGeometry() {
     const arcgisMap = document.querySelector("arcgis-map");
-    console.log(arcgisMap);
     if (!arcgisMap || !arcgisMap.map) return;
     const view = arcgisMap.view;
     if (!view) {
       alert("El mapa aún no está listo.");
       return;
     }
-    if (!selectPolygonActive) {
+    if (!selectGeometryActive) {
       // Activar selección
       const layers = arcgisMap.map.layers.items.filter(
-        l => l.type === "feature" && l.visible && l.geometryType === "polygon"
+        l =>
+          l.type === "feature" &&
+          l.visible &&
+          ["polygon", "point", "polyline"].includes(l.geometryType)
       );
       if (layers.length === 0) {
-        alert("No hay capas de polígonos visibles para seleccionar.");
+        alert("No hay capas visibles para seleccionar.");
         return;
       }
       view.graphics.removeAll();
-      // Guardar handler para poder removerlo
       const handler = view.on("click", async (event) => {
         const hit = await view.hitTest(event);
-        const graphic = hit.results.find(r => r.graphic && r.graphic.layer && layers.includes(r.graphic.layer));
+        const graphic = hit.results.find(
+          r => r.graphic && r.graphic.layer && layers.includes(r.graphic.layer)
+        );
         if (graphic) {
           view.graphics.removeAll();
-          view.graphics.add({
-            geometry: graphic.graphic.geometry,
-            symbol: {
-              type: "simple-fill",
-              color: [255, 255, 0, 0.3],
-              outline: { color: [255, 128, 0, 1], width: 3 }
-            }
-          });
+          let symbol;
+          switch (graphic.graphic.geometry.type) {
+            case "polygon":
+              symbol = {
+                type: "simple-fill",
+                color: [255, 255, 0, 0.3],
+                outline: { color: [255, 128, 0, 1], width: 3 }
+              };
+              break;
+            case "polyline":
+              symbol = {
+                type: "simple-line",
+                color: [0, 128, 255, 1],
+                width: 3
+              };
+              break;
+            case "point":
+              symbol = {
+                type: "simple-marker",
+                color: [255, 0, 128, 0.7],
+                size: 12,
+                outline: { color: [0, 0, 0, 1], width: 2 }
+              };
+              break;
+            default:
+              symbol = null;
+          }
+          if (symbol) {
+            view.graphics.add({
+              geometry: graphic.graphic.geometry,
+              symbol
+            });
+          }
           view.popup.open({
             features: [graphic.graphic],
             location: event.mapPoint
           });
         }
       });
-      selectPolygonHandlerRef.current = handler;
-      setSelectPolygonActive(true);
-      alert("Haz clic en un polígono para seleccionarlo. Pulsa el botón de nuevo para salir.");
+      selectGeometryHandlerRef.current = handler;
+      setSelectGeometryActive(true);
     } else {
       // Desactivar selección
-      if (selectPolygonHandlerRef.current) {
-        selectPolygonHandlerRef.current.remove();
-        selectPolygonHandlerRef.current = null;
+      if (selectGeometryHandlerRef.current) {
+        selectGeometryHandlerRef.current.remove();
+        selectGeometryHandlerRef.current = null;
       }
-      setSelectPolygonActive(false);
-      // Opcional: limpiar selección
-      const view = arcgisMap.view;
+      setSelectGeometryActive(false);
       if (view) {
         view.graphics.removeAll();
         view.popup.close();
@@ -286,10 +311,10 @@ const EsriWidgetManager = ({ onMapReady }) => {
       
       <div className="custom-widget-manager">
         <button
-          className={`manager-btn${selectPolygonActive ? ' active-select' : ''}`}
-          onClick={handleSelectPolygon}
-          title={selectPolygonActive ? "Terminar selección de polígono" : "Seleccionar polígono de capa"}
-          style={selectPolygonActive ? { background: '#2196f3', color: '#fff' } : {}}
+          className={`manager-btn${selectGeometryActive ? ' active-select' : ''}`}
+          onClick={handleSelectGeometry}
+          title={selectGeometryActive ? "Terminar selección de geometría" : "Seleccionar geometría de capa"}
+          style={selectGeometryActive ? { background: '#2196f3', color: '#fff' } : {}}
         >
           <calcite-icon icon="cursor-marquee" scale="l"></calcite-icon>
         </button>
