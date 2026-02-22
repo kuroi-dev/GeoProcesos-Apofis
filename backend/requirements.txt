@@ -11,3 +11,10 @@ Werkzeug==3.1.5
 requests
 Flask-Cors
 earthengine-api
+
+# Dependencias detectadas pero no listadas
+psycopg2
+fastapi
+pydantic
+bleach
+sentinelsat
