@@ -13,6 +13,7 @@ except ImportError:
 import argparse
 
 
+
 def test_access(url: str, mail: str):
     payload = {'mail': mail}
     try:
@@ -28,6 +29,8 @@ def test_access(url: str, mail: str):
         print('Text:', resp.text)
     return 0
 
+test_access()
+
 
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description='Test POST /api/access')
@@ -35,3 +38,8 @@ if __name__ == '__main__':
     p.add_argument('--mail', default='testing@testing.test')
     args = p.parse_args()
     sys.exit(test_access(args.url, args.mail))
+
+
+    test_access()
+
+    

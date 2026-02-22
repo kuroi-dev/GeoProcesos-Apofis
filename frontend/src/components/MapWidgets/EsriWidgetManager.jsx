@@ -13,6 +13,11 @@ import "@arcgis/map-components/components/arcgis-sketch";
 import "@arcgis/map-components/components/arcgis-area-measurement-2d";
 import "@arcgis/map-components/components/arcgis-basemap-toggle";
 import "@arcgis/map-components/components/arcgis-print";
+import "@arcgis/map-components/components/arcgis-popup";
+
+
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer.js";
+
 
 import './EsriWidgetManager.css';
 import { GeoProcesosWindow, ApofisWindow, EstadoWindow, NuevoPanelWindow } from './SpecialToolWindows';
@@ -21,64 +26,13 @@ import { createPortal } from 'react-dom';
 
 const EsriWidgetManager = ({ onMapReady }) => {
 
-
-
   const [showSketch, setShowSketch] = React.useState(false);
   const [showPrint, setShowPrint] = React.useState(false);
   const printRef = useRef(null);
   const [printKey, setPrintKey] = useState(0);
+  const [selectGeometryActive, setSelectGeometryActive] = useState(false);
+  const selectGeometryHandlerRef = useRef(null);
   
-  useEffect(() => {
-    // Espera a que el widget esté en el DOM
-    const interval = setInterval(() => {
-      const print = document.querySelector('arcgis-print');
-      if (print) {
-        const shadow = print.shadowRoot;
-        if (shadow) {
-          // 1. Control visual: mostrar el menú de impresión y ocultar el de template
-          const flow = shadow.querySelector('calcite-flow');
-          if (flow) {
-            const items = flow.querySelectorAll('calcite-flow-item');
-            if (items.length >= 2) {
-              items[0].removeAttribute('hidden');
-              items[1].setAttribute('hidden', '');
-            }
-          }
-
-          // 2. (Adicional) Elimina cualquier calcite-label que contenga arcgis-print-template-select en cualquier shadowRoot descendiente
-          function removeAllTemplateLabels(root) {
-            const labels = root.querySelectorAll('calcite-label');
-            labels.forEach(label => {
-              if (label.querySelector('arcgis-print-template-select')) {
-                label.remove();
-              }
-            });
-            root.querySelectorAll('*').forEach(el => {
-              if (el.shadowRoot) {
-                removeAllTemplateLabels(el.shadowRoot);
-              }
-            });
-          }
-          removeAllTemplateLabels(shadow);
-
-          // Detener el intervalo si el menú principal está visible y el de template oculto
-          if (flow) {
-            const items = flow.querySelectorAll('calcite-flow-item');
-            if (items.length >= 2 && !items[0].hasAttribute('hidden') && items[1].hasAttribute('hidden')) {
-              clearInterval(interval);
-            }
-          }
-        }
-      }
-    }, 200);
-    // Limpieza
-    return () => clearInterval(interval);
-  }, [printKey]);
-
-  const handleResetPrint = () => {
-    setPrintKey(k => k + 1);
-  };
-
 
   useEffect(() => {
     const printElement = printRef.current;
@@ -152,69 +106,143 @@ const EsriWidgetManager = ({ onMapReady }) => {
   };
 
   useEffect(() => {
-    // Parchea el botón de arcgis-home en shadow DOM profundo con doble observer
-    function patchHomeButton() {
-      const homeEl = document.querySelector('arcgis-home');
-      if (!homeEl) return;
-      const arcgisShadow = homeEl.shadowRoot;
-      if (!arcgisShadow) return;
-      const calciteBtn = arcgisShadow.querySelector('calcite-button');
-      if (!calciteBtn) return;
-      // Si el shadowRoot de calcite-button aún no existe, observa hasta que aparezca
-      if (!calciteBtn.shadowRoot) {
-        const calciteObserver = new MutationObserver(() => {
-          if (calciteBtn.shadowRoot) {
-            patchHomeButton();
-            calciteObserver.disconnect();
+    const arcgisMap = document.querySelector("arcgis-map");;
+    if (!arcgisMap) return;
+
+    let observer;
+    let featureLayerAdded = false;
+
+    const tryAddFeatureLayer = () => {
+      // El objeto map se expone como propiedad del custom element
+      const map = arcgisMap.map;
+      if (map && !featureLayerAdded) {
+        featureLayerAdded = true;
+        console.log('Mapa detectado por MutationObserver:', map);
+        const featureLayer = new FeatureLayer({
+          url: "https://esri.ciren.cl/server/rest/services/LIMITES_ADMINISTRATIVOS/FeatureServer/3",
+          renderer: {
+            type: "simple",
+            symbol: {
+              type: "simple-fill", // Para polígonos
+              color: [0, 0, 0, 0], // Fondo negro, 0.1 opacidad
+              outline: {
+                color: [0, 255, 0, 1], // Borde verde 
+                width: 2 // Grosor del borde
+              }
+            }
           }
         });
-        calciteObserver.observe(calciteBtn, { childList: true, subtree: true });
-        return;
+        map.add(featureLayer);
       }
-      const calciteShadow = calciteBtn.shadowRoot;
-      // Observa el shadowRoot de calcite-button para detectar el botón
-      const btnObserver = new MutationObserver(() => {
-        const btn = calciteShadow.querySelector('button');
-        if (btn) {
-          btn.style.paddingLeft = '15px';
-          // Centra el icono
-          const icon = btn.querySelector('calcite-icon');
-          if (icon) {
-            icon.style.marginLeft = '8px';
-          }
-        }
-      });
-      btnObserver.observe(calciteShadow, { childList: true, subtree: true });
-      // Parchea si ya existe
-      const btn = calciteShadow.querySelector('button');
-      if (btn) {
-        btn.style.paddingLeft = '15px';
-        const icon = btn.querySelector('calcite-icon');
-        if (icon) {
-          icon.style.marginLeft = '8px';
-        }
-      }
-    }
-    // Observa cambios en arcgis-home y su shadowRoot
-    const observer = new MutationObserver(() => {
-      patchHomeButton();
+    };
+
+    // Intenta inmediatamente por si ya está listo
+    tryAddFeatureLayer();
+
+    observer = new MutationObserver(() => {
+      tryAddFeatureLayer();
     });
-    observer.observe(document.body, { childList: true, subtree: true });
-    // También observa el shadowRoot de arcgis-home si existe
-    const homeEl = document.querySelector('arcgis-home');
-    let arcgisShadowObserver = null;
-    if (homeEl && homeEl.shadowRoot) {
-      arcgisShadowObserver = new MutationObserver(() => {
-        patchHomeButton();
-      });
-      arcgisShadowObserver.observe(homeEl.shadowRoot, { childList: true, subtree: true });
-    }
-    patchHomeButton();
+    observer.observe(arcgisMap, { attributes: true, childList: false, subtree: false });
+
     return () => {
-      observer.disconnect();
-      if (arcgisShadowObserver) arcgisShadowObserver.disconnect();
+      if (observer) observer.disconnect();
     };
   }, []);
+
+  useEffect(() => {
+    const popupComponent = document.querySelector("arcgis-popup");
+    if (popupComponent) {
+      popupComponent.dockOptions = {
+        breakpoint: false,
+      };
+    }
+  }, []);
+
+
+//Captura de geometrias
+
+  function handleSelectGeometry() {
+    const arcgisMap = document.querySelector("arcgis-map");
+    if (!arcgisMap || !arcgisMap.map) return;
+    const view = arcgisMap.view;
+    if (!view) {
+      alert("El mapa aún no está listo.");
+      return;
+    }
+    if (!selectGeometryActive) {
+      // Activar selección
+      const layers = arcgisMap.map.layers.items.filter(
+        l =>
+          l.type === "feature" &&
+          l.visible &&
+          ["polygon", "point", "polyline"].includes(l.geometryType)
+      );
+      if (layers.length === 0) {
+        alert("No hay capas visibles para seleccionar.");
+        return;
+      }
+      view.graphics.removeAll();
+      const handler = view.on("click", async (event) => {
+        const hit = await view.hitTest(event);
+        const graphic = hit.results.find(
+          r => r.graphic && r.graphic.layer && layers.includes(r.graphic.layer)
+        );
+        if (graphic) {
+          view.graphics.removeAll();
+          let symbol;
+          switch (graphic.graphic.geometry.type) {
+            case "polygon":
+              symbol = {
+                type: "simple-fill",
+                color: [255, 255, 0, 0.3],
+                outline: { color: [255, 128, 0, 1], width: 3 }
+              };
+              break;
+            case "polyline":
+              symbol = {
+                type: "simple-line",
+                color: [0, 128, 255, 1],
+                width: 3
+              };
+              break;
+            case "point":
+              symbol = {
+                type: "simple-marker",
+                color: [255, 0, 128, 0.7],
+                size: 12,
+                outline: { color: [0, 0, 0, 1], width: 2 }
+              };
+              break;
+            default:
+              symbol = null;
+          }
+          if (symbol) {
+            view.graphics.add({
+              geometry: graphic.graphic.geometry,
+              symbol
+            });
+          }
+          view.popup.open({
+            features: [graphic.graphic],
+            location: event.mapPoint
+          });
+        }
+      });
+      selectGeometryHandlerRef.current = handler;
+      setSelectGeometryActive(true);
+    } else {
+      // Desactivar selección
+      if (selectGeometryHandlerRef.current) {
+        selectGeometryHandlerRef.current.remove();
+        selectGeometryHandlerRef.current = null;
+      }
+      setSelectGeometryActive(false);
+      if (view) {
+        view.graphics.removeAll();
+        view.popup.close();
+      }
+    }
+  }
 
   return (
     <div className="esri-widget-manager">
@@ -227,7 +255,7 @@ const EsriWidgetManager = ({ onMapReady }) => {
         <arcgis-print
           slot="top-left"
           allowed-formats="all"
-          allowed-layouts="a3-landscape"
+          allowed-layouts="all"
           //exclude-default-templates
           //exclude-organization-templates
           ref={printRef}
@@ -267,9 +295,10 @@ const EsriWidgetManager = ({ onMapReady }) => {
           creation-mode="continuous"
           layout="horizontal"
           scale="s"
-          style={{ position: 'absolute', top: '32px', left: '166px', zIndex: 1100}}
+          hide-duplicate-button
           hide-undo-redo-menu
-          hide-settings-menu
+          toolbar-kind="floating"
+          style={{ position: 'absolute', top: '32px', left: '166px', zIndex: 1100}}
           className={showSketch ? 'panel-visible' : 'panel-hidden'}
         ></arcgis-sketch>
 
@@ -278,10 +307,18 @@ const EsriWidgetManager = ({ onMapReady }) => {
           style={{ position: 'absolute', bottom: '-10px', left: '0px', zIndex: 1100 }}
           next-basemap="topo"
         ></arcgis-basemap-toggle>
-
       
       
       <div className="custom-widget-manager">
+        <button
+          className={`manager-btn${selectGeometryActive ? ' active-select' : ''}`}
+          onClick={handleSelectGeometry}
+          title={selectGeometryActive ? "Terminar selección de geometría" : "Seleccionar geometría de capa"}
+          style={selectGeometryActive ? { background: '#2196f3', color: '#fff' } : {}}
+        >
+          <calcite-icon icon="cursor-marquee" scale="l"></calcite-icon>
+        </button>
+          
         <button 
           className={`manager-btn ${widgetStates.basemapGallery ? 'active' : ''}`}
           onClick={() => toggleWidget('basemapGallery')}
@@ -324,6 +361,7 @@ const EsriWidgetManager = ({ onMapReady }) => {
         >
           <calcite-icon icon="print" scale="l"></calcite-icon>
         </button>
+
       </div>
       <div
         id="panel"

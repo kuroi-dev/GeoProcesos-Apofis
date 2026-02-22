@@ -1,3 +1,10 @@
+.disabled-tool-menu {
+  pointer-events: none;
+  opacity: 0.6;
+  background: #e0e0e0;
+  border-radius: 12px;
+  filter: grayscale(0.7);
+}
 /* =============================
    PANEL 4: MODAL DE HERRAMIENTAS ESPECIALIZADAS (special-tool-modal)
    ============================= */
@@ -323,8 +330,8 @@
   top: 10px;
   right: 50px;
   width: 270px;
-  min-height: 50vh;
-  max-height: 85vh;
+  height: 85vh;
+  overflow: auto;
   background: rgba(20, 25, 35, 0.82);
   border-radius: 10px;
   box-shadow: 0 8px 32px 0 rgba(0,255,255,0.12), 0 2px 24px 0 rgba(0,0,0,0.32);
@@ -484,3 +491,26 @@
   padding: 18px 24px 16px 24px;
   z-index: 3000;
 }
+
+
+
+
+.special-layerUp{
+  align-items: center;
+  gap: 15px;
+  border: rgb(73, 251, 248) solid 3px;
+  
+  margin-top: -3px;
+  padding: 15px;
+}
+  
+.special-layerUp input{
+  margin-bottom: 15px;
+  width: 90%;
+}
+
+
+
+
+
+

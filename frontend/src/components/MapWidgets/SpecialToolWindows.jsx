@@ -1,4 +1,10 @@
 import React from 'react';
+import {
+  AnalisisEspacialMenu,
+  VisualizacionAvanzadaMenu,
+  ImagenesSatelitalesMenu,
+  AutomatizacionMenu
+} from './SpecialToolMenus';
 import './SpecialToolWindows.css';
 import logoApofis from '../../assets/logo/logoL.svg';
 import logoPro from '../../assets/logo/logogeo.svg';
@@ -71,9 +77,11 @@ export function EstadoWindow({ estado }) {
   );
 }
 
-export function NuevoPanelWindow() {
+export function NuevoPanelWindow({ agregarFeatureLayer }) {
   const [visible, setVisible] = React.useState(true);
   const [selectedIndex, setSelectedIndex] = React.useState(-1);
+  // Estado para parámetros por herramienta
+  const [toolParams, setToolParams] = React.useState({});
   const tools = [
     {
       imgSrc: logoGeo1,
@@ -133,49 +141,44 @@ export function NuevoPanelWindow() {
         {/* Ocultar el contenido del panel principal cuando la ventana está activa */}
         <div style={{ display: selectedIndex === -1 ? 'block' : 'none' }}>
           {tools.map((tool, idx) => (
-            <SpecialToolCard
-              key={tool.title}
-              imgSrc={tool.imgSrc}
-              title={tool.title}
-              summary={tool.summary}
-              selected={false}
-              onSelect={() => setSelectedIndex(idx)}
-            />
+            idx === 0 ? (
+              <SpecialToolCard
+                key={tool.title}
+                imgSrc={tool.imgSrc}
+                title={tool.title}
+                summary={tool.summary}
+                selected={false}
+                onSelect={() => setSelectedIndex(idx)}
+              />
+            ) : (
+              <div className="disabled-tool-menu" key={tool.title}>
+                <SpecialToolCard
+                  imgSrc={tool.imgSrc}
+                  title={tool.title}
+                  summary={tool.summary}
+                  selected={false}
+                  onSelect={() => {}}
+                />
+              </div>
+            )
           ))}
         </div>
-        {selectedIndex !== -1 && (
-          <div className="special-tool-modal">
-            <div className="special-tool-modal-header">
-              <h2 className="special-tool-modal-title">{tools[selectedIndex].title}</h2>
-              <div className="special-tool-modal-header-btns">
-                <button className="special-tool-modal-btn" title="Volver al panel" onClick={() => setSelectedIndex(-1)}>Volver</button>
-              </div>
-            </div>
-            <div className="special-tool-modal-content">
-              {/* Panel de inputs y botones para herramientas especializadas */}
-              <label className="special-tool-modal-label">
-                Parámetro 1:
-                <input className="special-tool-modal-input" type="text" placeholder="Escribe un valor..." />
-              </label>
-              <label className="special-tool-modal-label">
-                Parámetro 2:
-                <input className="special-tool-modal-input" type="number" placeholder="Número" />
-              </label>
-              <label className="special-tool-modal-label">
-                Selección:
-                <select className="special-tool-modal-select">
-                  <option value="">Elige una opción</option>
-                  <option value="opcion1">Opción 1</option>
-                  <option value="opcion2">Opción 2</option>
-                  <option value="opcion3">Opción 3</option>
-                </select>
-              </label>
-              <div className="special-tool-modal-btn-group">
-                <button className="special-tool-modal-action-btn ejecutar">Ejecutar</button>
-                <button className="special-tool-modal-action-btn limpiar">Limpiar</button>
-                <button className="special-tool-modal-action-btn ayuda">Ayuda</button>
-              </div>
-            </div>
+        {selectedIndex === 0 && (
+          <AnalisisEspacialMenu onBack={() => setSelectedIndex(-1)} />
+        )}
+        {selectedIndex === 1 && (
+          <div className="disabled-tool-menu">
+            <VisualizacionAvanzadaMenu onBack={() => setSelectedIndex(-1)} />
+          </div>
+        )}
+        {selectedIndex === 2 && (
+          <div className="disabled-tool-menu">
+            <ImagenesSatelitalesMenu onBack={() => setSelectedIndex(-1)} />
+          </div>
+        )}
+        {selectedIndex === 3 && (
+          <div className="disabled-tool-menu">
+            <AutomatizacionMenu onBack={() => setSelectedIndex(-1)} />
           </div>
         )}
       </div>

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Map from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
@@ -17,6 +18,7 @@ const Login = () => {
   const [emailError, setEmailError] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [searchParams] = useSearchParams();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,6 +45,7 @@ const Login = () => {
     setLoading(true);
     setEmailError('');
     
+    
     try {
       const response = await fetch('http://127.0.0.1:5000/api/access', {
         method: 'POST',
@@ -53,7 +56,9 @@ const Login = () => {
       });
       
       const data = await response.json();
-      
+      // Imprimir respuesta del backend en consola
+      console.log('Respuesta backend:', data);
+
       if (data.ACCESS) {
         // Si el acceso es exitoso, navegar al dashboard
         navigate('/dashboard', { state: { userEmail: email, token: data.token } });
@@ -67,6 +72,9 @@ const Login = () => {
     } finally {
       setLoading(false);
     }
+      
+
+   
   };
 
   useEffect(() => {
@@ -109,6 +117,33 @@ const Login = () => {
         mapView.current = null;
       }
     };
+  }, []);
+
+
+  useEffect(() => {
+    console.log("TESTING");
+    const mail = searchParams.get("mail");
+    if (mail) {
+      fetch('http://127.0.0.1:5000/api/access', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 'mail': mail })
+      })
+      .then(res => res.json())
+      .then(async data => {
+      // Imprimir respuesta del backend en consola
+        console.log('Respuesta backend:', data);
+
+        if (data.ACCESS) {
+          // Si el acceso es exitoso, navegar al dashboard
+          navigate('/dashboard', { state: { userEmail: email, token: data.token } });
+        } else {
+          // Si el acceso es denegado, mostrar error
+          setEmailError(data.error || 'Acceso denegado. Verifica tu correo electrónico.');
+        }
+        })
+        .catch(err => console.error("Error verificando", err));
+      }
   }, []);
 
   return (
