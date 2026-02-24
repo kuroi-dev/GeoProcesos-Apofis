@@ -1,20 +1,24 @@
-# Add backend Python dependencies here
-# Top-level requirements; Flask pulls its own sub-deps but pinning common versions
+
+# Backend Python dependencies (auto-generated)
 Flask==3.1.2
 blinker==1.9.0
-click==8.3.1
+click==8.3.0
 colorama==0.4.6
 itsdangerous==2.2.0
 Jinja2==3.1.6
-MarkupSafe==3.0.3
-Werkzeug==3.1.5
-requests
-Flask-Cors
-earthengine-api
-
-# Dependencias detectadas pero no listadas
-psycopg2
+MarkupSafe==3.0.2
+Werkzeug==3.1.3
+requests==2.32.5
+Flask-Cors==6.0.1
+sentinelsat==1.2.1
+gunicorn
 fastapi
 pydantic
 bleach
-sentinelsat
+# Extra detected packages (not previously listed)
+python-dotenv==1.1.1
+PyYAML==6.0.3
+psutil==7.2.1
+numpy==2.2.6
+pandas==3.0.0
+scipy==1.17.0

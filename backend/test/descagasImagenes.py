@@ -67,8 +67,8 @@ class SentinelMaster:
 
 if __name__ == "__main__":
     # Credenciales (Cámbialas o úsalas desde variables de entorno)
-    USER = "usuario"
-    PASS = "password"
+    USER = "david.riquelme.sb@gmail.com"
+    PASS = "Kuroi1101####"
     
     # Instanciar el motor
     motor = SentinelMaster(USER, PASS)
