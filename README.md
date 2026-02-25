@@ -224,9 +224,9 @@ Este proyecto está licenciado bajo la Licencia MIT - ver el archivo [LICENSE](L
 
 Para soporte técnico y consultas:
 
-- 📧 **Email**: soporte@apofisgeo.cl
-- 🌐 **Web**: www.apofisgeo.cl
-- 📱 **Teléfono**: +56 9 XXXX XXXX
+- 📧 **Email**: david.riquelme.sb@gmail.com
+- 🌐 **Web**: www.apofis.cl
+- 📱 **Teléfono**: +56 9 23997618
 
 ---
 
