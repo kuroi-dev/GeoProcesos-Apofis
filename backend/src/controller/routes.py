@@ -1,3 +1,8 @@
+# --- Cargar variables de entorno desde .env ---
+from dotenv import load_dotenv
+import os
+env_path = os.path.join(os.path.dirname(__file__), '../../.env')
+load_dotenv(env_path)
 
 # --- SMTP para envío de correos ---
 import smtplib
@@ -16,12 +21,16 @@ def send_validation_email(to_email, validation_token):
     smtp_pass = os.environ.get('SMTP_PASS')
     from_email = smtp_user
     subject = 'Validación de correo'
-    # Cambia la URL base según tu frontend
     base_url = os.environ.get('VALIDATION_URL_BASE', 'http://127.0.0.1:5000')
     validation_link = f"{base_url}/validar-correo?token={validation_token}&email={to_email}"
     body = f"Para validar tu correo, haz clic en el siguiente enlace:\n\n{validation_link}\n\nSi no solicitaste este acceso, ignora este mensaje."
 
     print(smtp_server, smtp_port, smtp_user, '****' if smtp_pass else None)  # Debug info (oculta contraseña)
+
+    # Validar credenciales SMTP
+    if not smtp_user or not smtp_pass:
+        print("Error: SMTP_USER o SMTP_PASS no están definidos en el entorno.")
+        return False
 
     msg = MIMEMultipart()
     msg['From'] = from_email
