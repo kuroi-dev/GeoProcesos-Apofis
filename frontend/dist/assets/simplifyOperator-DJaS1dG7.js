@@ -1,0 +1,1 @@
+import{i6 as s,i7 as i,iF as r,i8 as o,iG as c,iH as f}from"./index-7yMn0-lP.js";function p(t){const e=s(t),a=e.getSpatialReference();return i(r(e.getGeometry(),a,!1),a)}function l(t){const[e,a]=o(t);return c(e,a,!1).map(n=>i(n,a))}function m(t){const e=s(t);return f(e.getGeometry(),e.getSpatialReference(),!1)}export{p as execute,l as executeMany,m as isSimple};
