@@ -47,7 +47,7 @@ const Login = () => {
     
     
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/access', {
+      const response = await fetch('/api/access', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -124,7 +124,7 @@ const Login = () => {
     console.log("TESTING");
     const mail = searchParams.get("mail");
     if (mail) {
-      fetch('http://127.0.0.1:5000/api/access', {
+      fetch('/api/access', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 'mail': mail })
