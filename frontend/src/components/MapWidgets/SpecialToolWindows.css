@@ -10,7 +10,7 @@
    ============================= */
 .special-tool-modal {
   position: absolute;
-  width: 270px;
+  width: 90%;
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -117,6 +117,7 @@
 }
 /* === Stylized title for Herramientas Especializadas panel === */
 .tools-panel-title {
+  width: 100%;
   font-size: 1.1rem;
   font-weight: 300;
   color: white;
@@ -142,30 +143,39 @@
    ============================= */
 .title-windows {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  min-height: 70px;
+  top: 90px;
+  right: 10px;
+  border: rgb(0, 204, 255) solid 3px;
+  border-radius: 10px;
+  background: rgba(20, 25, 35, 0.9);
+}
+.title-windows.danger-border {
+  border: rgb(255, 0, 0) solid 3px !important;
 }
 .title-header {
   display: flex;
-  align-items: flex-start;
-  gap: 0;
-  cursor: pointer;
-  user-select: none;
-  font-size: 17px;
-  font-weight: 400;
-  color: #fff;
-  padding: 8px 12px 8px 8px;
-  background: rgba(0,0,0,0.7);
-  border-radius: 6px;
-  position: relative;
+  align-items: center;
+  color:white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 30px;
 }
+.title-header p{
+  font-size: 18px;
+}
+
 .title-logo-container {
   display: flex;
   align-items: center;
   margin-right: 4px;
 }
 .title-logo-img {
+  width: 62px;
+  height: 62px;
+}
+.title-logo-img2 {
   width: 42px;
   height: 42px;
 }
@@ -256,47 +266,43 @@
    PANEL 2: APOFIS (marca-windows)
    ============================= */
 .marca-windows {
-  position: absolute;
-  bottom: 15px;
-  right: 10px;
-  height: 20px;
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+  height: 16px;
+  background: rgb(61, 61, 61);
+  padding: 0px 16px;
 }
 .apofis-container {
   position: relative;
-  right: 10px;
-  bottom: 10px;
-  background: rgba(0,0,0,0.7);
-  height: auto;
-  padding: 4% 7px;
-  height: 18px;
+  right: 0px;
 }
 .apofis-logo {
-  height: 18px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 4px;
 }
 
 /* =============================
    PANEL 3: ESTADO (status-windows)
    ============================= */
-.status-windows {
-  width: 115px;
-  background: rgba(0,0,0,0.8);
-  border-radius: 2px;
-  position: absolute;
-  bottom: 20px;
-  left: 88px;
-}
+
 .estado-panel {
+  
   display: flex;
+  background: rgb(255, 255, 255);
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   padding: 8px 8px;
-  width: 100%;
+  width: auto;
 }
 .estadoTitle{
-  font-size: 9px;
-  color: #65e6e2;
+  font-size: 18px;
+  color: #000000;
   text-align: left;
   font-weight: 600;
+  margin: 0;
 }
 .estado-item {
   display: flex;
@@ -304,8 +310,8 @@
   gap: 8px;
 }
 .estado-dot {
-  width: 7px;
-  height: 7px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   display: inline-block;
   background: #bbb;
@@ -316,8 +322,8 @@
   background: #00ff1e;
 }
 .estado-label {
-  font-size: 10px;
-  color: #fff;
+  font-size: 15px;
+  color: #000000;
   font-weight: 400;
 }
 
@@ -327,20 +333,20 @@
 /* Panel de herramientas especializado con animación de ocultar/mostrar */
 .tools-windows {
   position: absolute;
-  top: 10px;
   right: 50px;
-  width: 270px;
-  height: 85vh;
+  height: 84vh;
+  max-height: 750px;
   overflow: auto;
-  background: rgba(20, 25, 35, 0.82);
+  background: rgba(20, 25, 35, 0.9);
   border-radius: 10px;
   box-shadow: 0 8px 32px 0 rgba(0,255,255,0.12), 0 2px 24px 0 rgba(0,0,0,0.32);
   display: block;
   align-items: flex-start;
   justify-content: flex-start;
-  padding: 18px 24px 16px 24px;
+  padding: 10px 14px 10px 14px;
   z-index: 3000;
   transition: right 0.5s ease-in-out;
+  backdrop-filter: blur(5px);
 }
 .tools-windows.hidden {
   pointer-events: none;
@@ -360,15 +366,16 @@
   color: #00fff7;
 }
 .show-tools-panel-btn {
+  display: block;
   position: absolute;
-  right: 0;
-  top: 50px;
+  right: 10px;  
+  top: 53px;
   transform: translateY(-50%);
   z-index: 3100;
   background: rgba(0, 0, 0, 0.8);
   border: grey solid 2px;
   border-right: none;
-  border-radius: 8px 0 0 8px ;
+  border-radius: 4px  ;
   color: #fffdfd;
   font-size: 0.9rem;
   cursor: pointer;
@@ -376,6 +383,7 @@
   transition: background 0.2s;
 }
 .show-tools-panel-btn:hover {
+  display: block;
   background: #003e3c;
   border: 1px solid #00fff7;
   border-left: none;
@@ -513,4 +521,11 @@
 
 
 
+
+.esri-attribution{
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
 

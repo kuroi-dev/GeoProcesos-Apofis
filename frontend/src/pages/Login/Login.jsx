@@ -132,7 +132,6 @@ const Login = () => {
       .then(res => res.json())
       .then(async data => {
       // Imprimir respuesta del backend en consola
-        console.log('Respuesta backend:', data);
 
         if (data.ACCESS) {
           // Si el acceso es exitoso, navegar al dashboard
@@ -156,7 +155,7 @@ const Login = () => {
             {/* <div className="logo-placeholder">🏔️ LOGO</div> */}
           </div>
           <div className="copyright-container">
-            <span>© Creado por Apofis SPA</span>
+            <span>© Creado por Apofis</span>
           </div>
           <div 
             className="info-icon-container"
