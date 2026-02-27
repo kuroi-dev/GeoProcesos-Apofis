@@ -21,8 +21,14 @@ def create_app():
 	static_folder = STATIC_DIR if os.path.isdir(STATIC_DIR) else None
 	app = Flask(__name__, static_folder=static_folder, static_url_path='')
 	
-	# Configure CORS to allow requests from frontend
-	CORS(app, origins=["http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:3000", "http://127.0.0.1:5173"])
+	CORS(app, origins=[
+		"http://localhost:3000",
+		"http://localhost:5173",
+		"http://127.0.0.1:3000",
+		"http://127.0.0.1:5173",
+		"https://apofis.cl",
+		"https://www.apofis.cl"  # <--- agrega aquí tu dominio real
+	])
 	
 	app.register_blueprint(controller_bp, url_prefix='/api')
 	# Register site blueprint at app root to serve static content
