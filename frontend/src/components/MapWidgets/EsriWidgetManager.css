@@ -1,16 +1,95 @@
+@media (max-width: 500px) {
+  .arcgis-basemap-toggle-widget {
+    top: 70px !important;
+  }
+
+
+
+}
+/* --- ArcGIS Map Widget Layouts --- */
+.arcgis-map-full {
+  width: 100%;
+  height: 100vh;
+  display: block;
+}
+
+.arcgis-print-widget {
+  position: absolute;
+  top: 70px;
+  z-index: 1100;
+  width: 320px;
+}
+
+.arcgis-search-widget {
+  position: absolute;
+  top: -3px;
+  left: 165px;
+  z-index: 1100;
+  width: 320px;
+}
+
+.arcgis-compass-widget {
+  position: absolute;
+  bottom: 180px;
+  left: 10px;
+  z-index: 1100;
+}
+
+.arcgis-home-widget {
+  position: absolute;
+  bottom: 140px;
+  left: 10px;
+  z-index: 1100;
+}
+
+.arcgis-zoom-widget {
+  position: absolute;
+  bottom: 70px;
+  left: 10px;
+  z-index: 1100;
+}
+
+.arcgis-scale-bar-widget {
+  position: absolute;
+  bottom: -10px;
+  left: 10px;
+  bottom: 0px !important;
+}
+
+.arcgis-sketch-widget {
+  position: absolute;
+  top: 48px;
+  left: 186px;
+  z-index: 1100;
+}
+
+.arcgis-basemap-toggle-widget {
+  position: absolute;
+  z-index: 1100;
+}
+
+
+
+
+
+
+
+
+
 .esri-widget-panel {
-  width: 230px;
-  max-height: 200px;
+  width: 280px;
+  max-height: 400px;
   background: rgba(30, 30, 40, 0.7);
   border-radius: 5px;
   overflow: auto;
   flex-direction: column;
   transition: opacity 0.2s, visibility 0.2s;
-  bottom: 100px;
+  bottom: 110px;
   left: 50%;
-  margin-left: -125px;
+  margin-left: -140px;
   z-index: 2500;
   padding: 10px;
+  border: gray solid 1px;
 }
 
 .panel-visible {
@@ -49,17 +128,17 @@
 /* WIDGET MANAGER PERSONALIZADO - CENTRO INFERIOR */
 .custom-widget-manager {
   position: absolute;
-  bottom: 25px;
+  bottom: 45px;
   left: 50%;
   transform: translateX(-50%) scale(0.7);
   transform-origin: bottom center;
   display: flex;
   flex-direction: row;
-  gap: 12px;
+  gap: 6px;
   z-index: 2000;
-  background-color: rgba(0, 0, 0, 0.6);
-  padding: 6px 14px;
-  border-radius: 25px;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 6px 10px;
+  border-radius: 10px;
   backdrop-filter: blur(4px);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   border: 2px solid rgba(255, 255, 255, 0.1);

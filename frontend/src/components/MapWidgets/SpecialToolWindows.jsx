@@ -16,29 +16,32 @@ import { SpecialToolCard } from './SpecialToolCard';
 
 export function GeoProcesosWindow() {
   const [open, setOpen] = React.useState(false);
+  const [secondsLeft, setSecondsLeft] = React.useState(30 * 60); // 30 minutos
+
+  React.useEffect(() => {
+    if (secondsLeft <= 0) {
+      // Redirigir al login
+      window.location.href = '/';
+      return;
+    }
+    const timer = setInterval(() => {
+      setSecondsLeft(s => (s > 0 ? s - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [secondsLeft]);
+
+  // Formatear mm:ss
+  const minutes = Math.floor(secondsLeft / 60);
+  const seconds = secondsLeft % 60;
+  const formatted = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+  // Cambia el borde a rojo si quedan 5 minutos o menos
+  const danger = secondsLeft <= 5 * 60;
   return (
-    <div className=" title-windows">
-      <div className={`title-header${open ? ' open' : ' closed'}`} onClick={() => setOpen(o => !o)}>
-        <div className="title-logo-container">
-          <img src={logoPro} alt="GeoProcesos Logo" className="title-logo-img" />
-        </div>
-        <div className="title-content-container">
-          <span className="title-text">Geoprocesos<br />en línea</span>
-          <div className="modo-flecha-container">
-            <span className="title-label">Modo de uso</span>
-            <span className={`title-arrow${open ? ' open' : ''}`}>▼</span>
-          </div>
-        </div>
+    <div className={`title-windows${danger ? ' danger-border' : ''}`}>
+      <div className="title-header">
+          <p>{formatted}</p>
       </div>
-      {open && (
-        <div className="title-info info-bottom-right open">
-          <span className="info-label">ℹ️ Información de uso:</span>
-          <p className="info-text">Utiliza las herramientas del mapa para explorar, analizar y visualizar datos geoespaciales en tiempo real.</p>
-        </div>
-      )}
-      {!open && (
-        <div className="title-info info-bottom-right closed"></div>
-      )}
     </div>
   );
 }
@@ -56,23 +59,8 @@ export function ApofisWindow() {
 export function EstadoWindow({ estado }) {
   return (
     <div className=" status-windows">
-      <div className="estado-panel">
-        <div>
-          <h2 className='estadoTitle'>Estado App</h2>
-        </div>
-        <div className="estado-item">
-          <span className="estado-dot estado-ok"></span>
-          <span className="estado-label">Mapa</span>
-        </div>
-        <div className="estado-item">
-          <span className="estado-dot estado-ok"></span>
-          <span className="estado-label">Base de datos</span>
-        </div>
-        <div className="estado-item">
-          <span className="estado-dot estado-ok"></span>
-          <span className="estado-label">Widgets</span>
-        </div>
-      </div>
+      
+      
     </div>
   );
 }
@@ -82,6 +70,13 @@ export function NuevoPanelWindow({ agregarFeatureLayer }) {
   const [selectedIndex, setSelectedIndex] = React.useState(-1);
   // Estado para parámetros por herramienta
   const [toolParams, setToolParams] = React.useState({});
+  // Solo ocultar una vez al inicio
+  React.useEffect(() => {
+    let timer = setTimeout(() => {
+      setVisible(false);
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, []);
   const tools = [
     {
       imgSrc: logoGeo1,
@@ -109,13 +104,16 @@ export function NuevoPanelWindow({ agregarFeatureLayer }) {
       <div
         className={`tools-windows${visible ? '' : ' hidden'}`}
         style={{ transition: 'right 0.4s',
-          right: visible ? 10 : '-350px',
+          right: visible ? 10 : '-380px',
           top: 10,
           position: 'fixed',
-          width: 270, }}
+          width: 345, }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <h2 className="tools-panel-title" style={{ marginBottom: 0 }}>Herramientas Especializadas</h2>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' , gap: 12}}>
+          <img src={logoPro} alt="GeoProcesos Logo" className="title-logo-img" />
+
+          <h2 className="tools-panel-title" style={{ marginBottom: 0 }}>Geoprocesos<br />en línea</h2>
+          
           <button
             className="close-tools-panel-btn"
             title="Cerrar panel"
@@ -134,14 +132,18 @@ export function NuevoPanelWindow({ agregarFeatureLayer }) {
               lineHeight: 1
             }}
           >
-            ×
+            →
           </button>
+
+
         </div>
+
+
         <div style={{ height: 18 }} />
         {/* Ocultar el contenido del panel principal cuando la ventana está activa */}
         <div style={{ display: selectedIndex === -1 ? 'block' : 'none' }}>
           {tools.map((tool, idx) => (
-            idx === 0 ? (
+            idx === 7? (
               <SpecialToolCard
                 key={tool.title}
                 imgSrc={tool.imgSrc}
@@ -164,7 +166,9 @@ export function NuevoPanelWindow({ agregarFeatureLayer }) {
           ))}
         </div>
         {selectedIndex === 0 && (
-          <AnalisisEspacialMenu onBack={() => setSelectedIndex(-1)} />
+          <div className="">
+            <AnalisisEspacialMenu onBack={() => setSelectedIndex(-1)} />
+          </div>
         )}
         {selectedIndex === 1 && (
           <div className="disabled-tool-menu">
@@ -188,7 +192,8 @@ export function NuevoPanelWindow({ agregarFeatureLayer }) {
           title="Mostrar herramientas"
           onClick={() => setVisible(true)}
         >
-          ◀
+          <img src={logoPro} alt="GeoProcesos Logo" className="title-logo-img2" />
+         
         </button>
       )}
     </>

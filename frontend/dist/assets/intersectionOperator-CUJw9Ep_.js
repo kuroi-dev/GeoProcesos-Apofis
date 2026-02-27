@@ -1,1 +1,0 @@
-import{i9 as n,ia as r,iv as o,ib as s,N as u}from"./index-mJToMGYU.js";import{o as f,u as m}from"./operatorIntersection-PIGstAaS.js";function g(a,i){const t=n(a),e=t.getSpatialReference();return r(f(t.getGeometry(),o(i),e),e)}function l(a,i){const[t,e]=s(a);return m(t,o(i),e,7).map(c=>r(c,e)).filter(u)}export{g as execute,l as executeMany};

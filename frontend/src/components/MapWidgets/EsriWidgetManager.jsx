@@ -14,6 +14,8 @@ import "@arcgis/map-components/components/arcgis-area-measurement-2d";
 import "@arcgis/map-components/components/arcgis-basemap-toggle";
 import "@arcgis/map-components/components/arcgis-print";
 import "@arcgis/map-components/components/arcgis-popup";
+import "@arcgis/map-components/components/arcgis-coordinate-conversion";
+
 
 
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer.js";
@@ -33,6 +35,21 @@ const EsriWidgetManager = ({ onMapReady }) => {
   const [selectGeometryActive, setSelectGeometryActive] = useState(false);
   const selectGeometryHandlerRef = useRef(null);
   
+  // Estado para estilos responsivos del scale-bar
+  const [scaleBarStyle, setScaleBarStyle] = useState({ position: 'absolute', left: 0, bottom: 0, zIndex: 1100 });
+
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth <= 500) {
+        setScaleBarStyle({ position: 'absolute', left: 0, bottom: 0, zIndex: 1100, width: '98vw' });
+      } else {
+        setScaleBarStyle({ position: 'absolute', left: 0, bottom: -16, zIndex: 1100 });
+      }
+    }
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Inicial
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const printElement = printRef.current;
@@ -59,7 +76,8 @@ const EsriWidgetManager = ({ onMapReady }) => {
     legend: false,
     measurement: false,
     sketch: false,
-    print: false
+    print: false,
+    status: false
   });
 
   // Función para alternar la visibilidad de un widget (solo uno activo a la vez)
@@ -86,10 +104,10 @@ const EsriWidgetManager = ({ onMapReady }) => {
       legend: false,
       measurement: false,
       sketch: false,
-      print: false
+      print: false,
+      status: false
     });
     setShowSketch(prev => !prev);
-    setShowPrint(false);
   };
   const mostrarPrint = () => {
     // Close all other widgets when opening sketch
@@ -99,10 +117,10 @@ const EsriWidgetManager = ({ onMapReady }) => {
       legend: false,
       measurement: false,
       sketch: false,
-      print: false
+      print: false,
+      status: false
     });
     setShowSketch(false);
-    setShowPrint(prev => !prev);
   };
 
   useEffect(() => {
@@ -119,15 +137,15 @@ const EsriWidgetManager = ({ onMapReady }) => {
         featureLayerAdded = true;
         console.log('Mapa detectado por MutationObserver:', map);
         const featureLayer = new FeatureLayer({
-          url: "https://esri.ciren.cl/server/rest/services/LIMITES_ADMINISTRATIVOS/FeatureServer/3",
+          url: "https://arcgis.mma.gob.cl/server/rest/services/MMA/LIMITES_URBANOS/MapServer/0",
           renderer: {
             type: "simple",
             symbol: {
               type: "simple-fill", // Para polígonos
-              color: [0, 0, 0, 0], // Fondo negro, 0.1 opacidad
+              color: [255, 255, 0, 0.1], // Fondo negro, 0.1 opacidad
               outline: {
-                color: [0, 255, 0, 1], // Borde verde 
-                width: 2 // Grosor del borde
+                color: [8, 252, 252, 1], // Borde verde 
+                width: 3 // Grosor del borde
               }
             }
           }
@@ -245,68 +263,70 @@ const EsriWidgetManager = ({ onMapReady }) => {
   }
 
   return (
+
     <div className="esri-widget-manager">
       <arcgis-map 
-        basemap="satellite" 
-        center="-72.2322, -39.2764" 
-        zoom="12" 
-        style={{ width: '100%', height: '100vh', display: 'block' }}
+        basemap="osm"
+        center="-72.220106, -39.287310"
+        zoom="14"
+        className="arcgis-map-full"
       >
-        <arcgis-print
+     
+
+        <arcgis-search
           slot="top-left"
-          allowed-formats="all"
-          allowed-layouts="all"
-          //exclude-default-templates
-          //exclude-organization-templates
-          ref={printRef}
-          style={{ position: 'absolute', top: '70px', zIndex: 1100, width: '320px' }}
-          className={showPrint ? 'panel-visible' : 'panel-hidden'}
-        ></arcgis-print>
-        
-        <arcgis-search 
-          slot="top-left"
-          style={{ position: 'absolute', top: '-3px', left: '165px', zIndex: 1100, width: '320px' }}
+          style={{ position: 'absolute', left: 0, top: 0, zIndex: 1100 , width: 300}}
+          scale="m"
         ></arcgis-search>
 
-        <arcgis-compass 
-          slot="bottom-left"
-          style={{ position: 'absolute', bottom: '180px', left: '10px', zIndex: 1100 }}
+        <arcgis-compass
+          slot="bottom-right"
+          style={{ position: 'absolute', right: 0, bottom:190, zIndex: 1100 }}
         ></arcgis-compass>
 
-        <arcgis-home 
-          slot="bottom-left"
-          style={{ position: 'absolute', bottom: '140px', left: '10px', zIndex: 1100 }}
+        <arcgis-home
+          slot="bottom-right"
+          style={{ position: 'absolute', right: 0, bottom:150, zIndex: 1100 }}
         ></arcgis-home>
 
-
-        <arcgis-zoom 
-          slot="bottom-left"
-          style={{ position: 'absolute', bottom: '70px', left: '10px', zIndex: 1100 }}
+        <arcgis-zoom
+          slot="bottom-right"
+          style={{ position: 'absolute', right: 0, bottom:80, zIndex: 1100 }}
         ></arcgis-zoom>
 
-        <arcgis-scale-bar 
-          slot="bottom-right" 
+        <arcgis-scale-bar
+          slot="bottom-left"
           unit="metric"
-          style={{ position: 'absolute', bottom: '-12px', right: '100px', zIndex: 1100 }}
+          style={{ position: 'absolute', left: 0, bottom: -15, zIndex: 1100 }}
         ></arcgis-scale-bar>
 
         <arcgis-sketch
-          slot="top-left"
+          slot="bottom-right"
           creation-mode="continuous"
-          layout="horizontal"
+          layout="vertical"
           scale="s"
           hide-duplicate-button
           hide-undo-redo-menu
+          style={{ position: 'absolute', right: 0, bottom: 235, zIndex: 1100}}
           toolbar-kind="floating"
-          style={{ position: 'absolute', top: '32px', left: '166px', zIndex: 1100}}
-          className={showSketch ? 'panel-visible' : 'panel-hidden'}
+          className={` ${showSketch ? 'panel-visible' : 'panel-hidden'}`}
         ></arcgis-sketch>
 
-        <arcgis-basemap-toggle 
-          slot="bottom-left" 
-          style={{ position: 'absolute', bottom: '-10px', left: '0px', zIndex: 1100 }}
-          next-basemap="topo"
+        <arcgis-basemap-toggle
+          slot="bottom-left"
+          style={{ position: 'absolute', left: 0, bottom: 80, zIndex: 1100 , width: 210}}
+          next-basemap="hybrid"
         ></arcgis-basemap-toggle>
+
+        <arcgis-coordinate-conversion
+          slot="top-left"
+          mode="live"
+          orientation="auto"
+          hide-expand-button
+    multiple-conversions-disabled
+          style={{ position: 'absolute', left: 1, top: 35, zIndex: 1100 , overflow: 'hidden', width: 297, height : 40 , display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          scale="s"
+        ></arcgis-coordinate-conversion>
       
       
       <div className="custom-widget-manager">
@@ -356,10 +376,17 @@ const EsriWidgetManager = ({ onMapReady }) => {
         </button>
         <button 
           className={`manager-btn ${widgetStates.print ? 'active' : ''}`}
-          onClick={() => mostrarPrint()}
+           onClick={() => toggleWidget('print')}
           title="Imprimir mapa"
         >
           <calcite-icon icon="print" scale="l"></calcite-icon>
+        </button>
+         <button 
+          className={`manager-btn ${widgetStates.status ? 'active' : ''}`}
+          onClick={() => toggleWidget('status')}
+          title="Estado de la aplicación"
+        >
+          <calcite-icon icon="activity-monitor" scale="l"></calcite-icon>
         </button>
 
       </div>
@@ -387,13 +414,38 @@ const EsriWidgetManager = ({ onMapReady }) => {
             <arcgis-area-measurement-2d></arcgis-area-measurement-2d>
           </div>
         )}
-        {widgetStates.print && (
-          <div className="widget-panel-content"
-            style={{ display: widgetStates.print ? 'block' : 'none' }}
-          >
-            
-          </div>
+        {widgetStates.status && (
+          <div className="widget-panel-content">
+              <div className="estado-panel">
+                <div>
+                  <h2 className='estadoTitle'>Estado App</h2>
+                </div>
+                <div className="estado-item">
+                  <span className="estado-dot estado-ok"></span>
+                  <span className="estado-label">Mapa</span>
+                </div>
+                <div className="estado-item">
+                  <span className="estado-dot estado-ok"></span>
+                  <span className="estado-label">Base de datos</span>
+                </div>
+                <div className="estado-item">
+                  <span className="estado-dot estado-ok"></span>
+                  <span className="estado-label">Widgets</span>
+                </div>
+              </div>
+            </div>
         )}
+        {widgetStates.print && ( 
+          <div className="widget-panel-content">
+            <arcgis-print
+              allowed-formats="all"
+              allowed-layouts="all"
+              ref={printRef}
+            ></arcgis-print> 
+          </div>
+            
+        )}
+
       </div>
       </arcgis-map>
 
