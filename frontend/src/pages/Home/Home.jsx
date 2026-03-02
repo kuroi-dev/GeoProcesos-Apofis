@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import logoImage from '../../assets/logo/logoD.png'; // Logo superior izquierda
 import logoImage2 from '../../assets/logo/iconoL.svg';
+import servi from '../../assets/logo/servi.png';
+
 
 // Componentes de contenido para cada cara
 const HomeContent = () => (
@@ -50,16 +52,66 @@ const HomeContent = () => (
 const ServiciosContent = () => (
   <div className="content-section">
     <div className="servicios-container">
-      <div className="servicios-header">
-        <h1 className="servicios-title">Servicios</h1>
+      <div className="servicios-hero">
+        <div className="servicios-hero-content">
+          <div className="servicios-hero-text">
+            <h1 className="servicios-main-title">
+              <div className="servicio-tech-label">ARQUITECTURA EDITORIAL DE SOFTWARE</div>
+              Nuestros <br/> <span>Servicios</span>
+            </h1>
+            <p className="servicios-subtitle">
+              Dividimos nuestra maestría en dos pilares fundamentales que definen el ecosistema APOFIS.
+            </p>
+          </div>
+          <div className="servicios-hero-image">
+            <img src={servi} alt="APOFIS Services" className="servicios-hero-img" />
+          </div>
+        </div>
       </div>
-      <div className="servicios-content">
-        <div className="servicio-item">
-          <h3 className="servicio-name">Geoprocesos en Línea</h3>
-          <p className="servicio-description">
-            Herramientas avanzadas de análisis espacial y procesamiento geográfico 
-            en tiempo real para optimizar tus procesos de toma de decisiones.
+      
+      <div className="servicios-grid">
+        <div className="servicio-card">
+          <div className="servicio-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <div className="servicio-tech-label">PYTHON & REACT ENGINEER</div>
+          <h2 className="servicio-title">Geoprocesos en Línea</h2>
+          <p className="servicio-desc">
+            Implementamos algoritmos de precisión espacial integrando motores Python avanzados. 
+            Transformamos datos geográficos masivos en decisiones estratégicas visualizadas en tiempo real.
           </p>
+          <ul className="servicio-features">
+            <li>• ANÁLISIS ESPACIAL VECTORIAL</li>
+            <li>• INTEGRACIÓN GIS EN LA NUBE</li>
+          </ul>
+          <button className="servicio-btn">
+            Ver Especificaciones →
+          </button>
+        </div>
+
+        <div className="servicio-card">
+          <div className="servicio-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20.84 4.61A5.5 5.5 0 0 0 16.5 2.03A5.5 5.5 0 0 0 12 5.96A5.5 5.5 0 0 0 7.5 2.03A5.5 5.5 0 0 0 3.16 4.61C1.9 6.64 1.9 9.56 3.16 11.59L12 21L20.84 11.59C22.1 9.56 22.1 6.64 20.84 4.61Z" fill="currentColor"/>
+            </svg>
+          </div>
+          <div className="servicio-tech-label">PYTHON & REACT ENGINEER</div>
+          <h2 className="servicio-title">ConviveEdu</h2>
+          <p className="servicio-desc">
+            Una interfaz humana y fluida diseñada para priorizar el bienestar. 
+            Utilizamos React para crear experiencias reactivas que acompañan al estudiante en cada etapa de su desarrollo.
+          </p>
+          <ul className="servicio-features">
+            <li>• INTERFACES HUMAN-CENTRIC</li>
+            <li>• MÉTRICAS DE BIENESTAR</li>
+          </ul>
+          <button className="servicio-btn">
+            Ver Experiencia →
+          </button>
         </div>
       </div>
     </div>
