@@ -8,7 +8,7 @@ import logoImage from '../../assets/logo/logoL.svg'; // Logo superior izquierda
 import infoImage from '../../assets/logo/info.svg'; // Icono de información
 import './Login.css';
 
-const URLDEFAULT = 'http://localhost:5000'; // Reemplaza con la URL de tu backend
+const URLDEFAULT = ''; // Reemplaza con la URL de tu backend
 
 const Login = () => {
     // Función para renderizar el mensaje de emailError
