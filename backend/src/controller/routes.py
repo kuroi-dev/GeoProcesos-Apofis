@@ -7,6 +7,7 @@ import json
 import uuid
 import datetime
 import uuid
+import logging
 
 from .helpers import send_validation_email, _jwt_encode
 
@@ -174,7 +175,7 @@ def site_validate_mail():
 
     token = request.args.get('token')
     mail = request.args.get('email')
-
+    logging.warning(f"Validando correo: {mail} con token: {token}")
     if not token or not mail:
         return jsonify({'success': False, 'error': 'Faltan parámetros'}), 400
     
