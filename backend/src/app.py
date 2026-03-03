@@ -1,6 +1,5 @@
 import os
 import sys
-from flask import Flask, send_from_directory
 from flask_cors import CORS
 
 # Ensure `src` is on sys.path so sibling packages (controller, models, views)
@@ -22,9 +21,7 @@ def create_app():
 	app = Flask(__name__, static_folder=static_folder, static_url_path='')
 	
 	CORS(app, origins=[
-		"http://localhost:3000",
 		"http://localhost:5173",
-		"http://127.0.0.1:3000",
 		"http://127.0.0.1:5173",
 		"https://apofis.cl",
 		"https://www.apofis.cl"  # <--- agrega aquí tu dominio real
@@ -33,7 +30,7 @@ def create_app():
 	app.register_blueprint(controller_bp, url_prefix='/api')
 	# Register site blueprint at app root to serve static content
 	if static_folder:
-		app.register_blueprint(site_bp)
+		app.register_blueprint(site_bp , url_prefix='/api')
 
 	print("App created and controller blueprint registered.")
 	return app
