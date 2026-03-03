@@ -1,3 +1,10 @@
+/* Mensaje de éxito en verde */
+.success-message {
+  color: #2ecc40;
+  font-size: 0.95em;
+  margin-top: 6px;
+  display: block;
+}
 @media (max-width: 480px) {
   .login-box {
     margin: 18px 8px !important;

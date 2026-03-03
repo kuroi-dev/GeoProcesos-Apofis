@@ -8,7 +8,11 @@ import logoImage from '../../assets/logo/logoL.svg'; // Logo superior izquierda
 import infoImage from '../../assets/logo/info.svg'; // Icono de información
 import './Login.css';
 
+const URLDEFAULT = 'http://localhost:5000'; // Reemplaza con la URL de tu backend
+
 const Login = () => {
+    // Función para renderizar el mensaje de emailError
+   
   const navigate = useNavigate();
   const mapDiv = useRef(null);
   const mapView = useRef(null);
@@ -47,7 +51,7 @@ const Login = () => {
     
     
     try {
-      const response = await fetch('/api/access', {
+      const response = await fetch(`${URLDEFAULT}/api/access`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -124,26 +128,43 @@ const Login = () => {
     console.log("TESTING");
     const mail = searchParams.get("mail");
     if (mail) {
-      fetch('/api/access', {
+      fetch(`${URLDEFAULT}/api/access`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 'mail': mail })
       })
       .then(res => res.json())
       .then(async data => {
-      // Imprimir respuesta del backend en consola
-
+        // Imprimir respuesta del backend en consola
         if (data.ACCESS) {
+          // Guardar datos en sessionStorage
+          sessionStorage.setItem('userEmail', mail);
+          if (data.token) sessionStorage.setItem('token', data.token);
+          // Puedes guardar otros datos si el backend los retorna
+          Object.keys(data).forEach(key => {
+            if (typeof data[key] !== 'object' && key !== 'token') {
+              sessionStorage.setItem(key, data[key]);
+            }
+          });
           // Si el acceso es exitoso, navegar al dashboard
-          navigate('/dashboard', { state: { userEmail: email, token: data.token } });
+          navigate('/dashboard', { state: { userEmail: mail, token: data.token } });
         } else {
           // Si el acceso es denegado, mostrar error
           setEmailError(data.error || 'Acceso denegado. Verifica tu correo electrónico.');
         }
-        })
-        .catch(err => console.error("Error verificando", err));
-      }
+      })
+      .catch(err => console.error("Error verificando", err));
+    }
   }, []);
+
+   const renderEmailError = () => {
+      if (!emailError) return null;
+      const trimmed = emailError.trim(); // Depuración: mostrar el mensaje completo en consola
+      if (trimmed.substring(0, 11) === "Te enviamos") {
+        return <span className="success-message">{emailError}</span>;
+      }
+      return <span className="error-message">{emailError}</span>;
+    };
 
   return (
     <div className="container-outer">
@@ -169,8 +190,8 @@ const Login = () => {
                 <h4>¿Cómo acceder?</h4>
                 <p>Ingresa tu correo en la casilla Email y podrás acceder al aplicativo.</p>
                 <p><strong>Tendrás un límite de 30 minutos para probar el aplicativo.</strong></p>
-                <button onClick={() => navigate('/test-widget-map')}>testWidgets</button>
                 <button 
+                  
                   className="info-popup-close" 
                   onClick={() => setShowInfoPopup(false)}
                 >
@@ -203,7 +224,7 @@ const Login = () => {
                     if (emailError) setEmailError('');
                   }}
                 />
-                {emailError && <span className="error-message">{emailError}</span>}
+                {renderEmailError()}
               </div>
               
               <div className="app-info">

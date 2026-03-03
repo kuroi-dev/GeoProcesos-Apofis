@@ -1,7 +1,6 @@
 // Panel DashboardGeoPro funcional (puede tener errores previos)
-import React from 'react';
+
 import EsriWidgetManager from '../../components/MapWidgets/EsriWidgetManager';
-import ToolCard from '../../components/ToolCard';
 import './dashboard-geoPro.css';
 
 const DashboardGeoPro = () => {

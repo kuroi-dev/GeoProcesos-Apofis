@@ -80,23 +80,23 @@ export function NuevoPanelWindow({ agregarFeatureLayer }) {
   const tools = [
     {
       imgSrc: logoGeo1,
-      title: "Análisis Espacial",
-      summary: "Realiza buffers, intersecciones, uniones y recortes sobre capas vectoriales. Analiza relaciones espaciales y áreas de influencia."
+      title: <span> Análisis Espacial <span style={{color:'#1ec31e', fontWeight:'bold', marginLeft:6}}>PROXIMAMENTE</span></span>,
+      summary: "Trabaja con archivos en distintos formatos (SHP, GeoJSON, KML, CSV, etc). Realiza operaciones de clip y buffer sobre capas vectoriales. Modifica colores y estilos de capas fácilmente. Agrega y gestiona múltiples capas en el mapa."
     },
     {
       imgSrc: logoGeo2,
-      title: "Visualización Avanzada",
-      summary: "Crea mapas temáticos y gráficos interactivos para explorar y comunicar datos geoespaciales."
+      title: <span> Visualización Avanzada <span style={{color:'#1ec31e', fontWeight:'bold', marginLeft:6}}>PROXIMAMENTE</span></span>,
+      summary: "Genera reportes y crea mapas temáticos de manera intuitiva. Realiza análisis de superposición para explorar relaciones espaciales complejas."
     },
     {
       imgSrc: logoGeo3,
-      title: "Imágenes Satelitales",
-      summary: "Procesa imágenes multiespectrales, calcula NDVI y realiza clasificaciones para monitoreo ambiental."
+      title: <span> Imágenes Satelitales <span style={{color:'#1ec31e', fontWeight:'bold', marginLeft:6}}>PROXIMAMENTE</span></span>,
+      summary: "Descarga imágenes desde Sentinel o Landsat, carga tus propias imágenes y edítalas. Genera polígonos en base a índices espectrales, configura bandas para cálculos, obtén percentiles máximos/mínimos de índices, y calcula hotspots mediante densidad de color."
     },
     {
       imgSrc: logoGeo4,
-      title: "Automatización",
-      summary: "Automatiza flujos de trabajo GIS, integra datos y genera reportes de forma eficiente."
+      title: <span> Automatización (Solo empresas) <span style={{color:'#1ec31e', fontWeight:'bold', marginLeft:6}}>PROXIMAMENTE</span></span>,
+      summary: "Carga tus propios scripts de Python para realizar cálculos avanzados (soporte para numpy, math, etc). Automatiza el ingreso de datos a distintas entidades. (Funcionalidad solo para empresas: requiere conexión directa a SharePoint, bases de datos o directorios específicos)."
     }
   ];
   return (
@@ -109,33 +109,44 @@ export function NuevoPanelWindow({ agregarFeatureLayer }) {
           position: 'fixed',
           width: 345, }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' , gap: 12}}>
-          <img src={logoPro} alt="GeoProcesos Logo" className="title-logo-img" />
-
-          <h2 className="tools-panel-title" style={{ marginBottom: 0 }}>Geoprocesos<br />en línea</h2>
-          
-          <button
-            className="close-tools-panel-btn"
-            title="Cerrar panel"
-            onClick={() => {
-              setVisible(false);
-              setSelectedIndex(-1);
-            }}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: '#fff',
-              fontSize: '1.3rem',
-              cursor: 'pointer',
-              marginLeft: 8,
-              padding: 0,
-              lineHeight: 1
-            }}
-          >
-            →
-          </button>
-
-
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0, width: '100%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between', gap: 12 }}>
+            <img src={logoPro} alt="GeoProcesos Logo" className="title-logo-img" />
+            <h2 className="tools-panel-title" style={{ marginBottom: 0 }}>Geoprocesos<br />en línea</h2>
+            <button
+              className="close-tools-panel-btn"
+              title="Cerrar panel"
+              onClick={() => {
+                setVisible(false);
+                setSelectedIndex(-1);
+              }}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#fff',
+                fontSize: '1.3rem',
+                cursor: 'pointer',
+                marginLeft: 8,
+                padding: 0,
+                lineHeight: 1
+              }}
+            >
+              →
+            </button>
+          </div>
+          {/* Módulo de usuario debajo del título y logo */}
+          <div style={{ background: '#222', color: '#b6ffb6', borderRadius: 8, padding: '8px 14px', minWidth: 180, fontSize: 13, marginTop: 8, marginBottom: 0, alignSelf: 'stretch', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
+            <div style={{ fontWeight: 'bold', color: '#fff', fontSize: 14, marginBottom: 2 }}>Usuario</div>
+            <div style={{ wordBreak: 'break-all', marginBottom: 2 }}>
+              <span style={{ color: '#b6ffb6' }}>{sessionStorage.getItem('userEmail') || 'Sin email'}</span>
+            </div>
+            <div style={{ fontSize: 12, marginBottom: 2 }}>
+              IP: <span style={{ color: '#b6ffb6' }}>{sessionStorage.getItem('ip_user') || 'Sin IP'}</span>
+            </div>
+            <div style={{ fontSize: 12 }}>
+              Nivel de privilegios: <span style={{ color: '#b6ffb6', fontWeight: 'bold' }}>{sessionStorage.getItem('privilegio') || '0'}</span>
+            </div>  
+          </div>
         </div>
 
 

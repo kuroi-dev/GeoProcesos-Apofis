@@ -71,13 +71,35 @@ def send_validation_email(to_email, validation_token):
     subject = 'Validación de correo'
     base_url = os.environ.get('VALIDATION_URL_BASE', 'http://127.0.0.1:5000')
     validation_link = f"{base_url}/validar-correo?token={validation_token}&email={to_email}"
-    body = f"Para validar tu correo, haz clic en el siguiente enlace:\n\n{validation_link}\n\nSi no solicitaste este acceso, ignora este mensaje."
+    # Mensaje en texto plano
+    body = f"Bienvenido a GeoProcesos Apofis!\n\nEste aplicativo te permite realizar análisis geoespaciales avanzados, automatizar procesos y descargar imágenes satelitales.\nLímite de uso: 100 procesos mensuales por usuario.\n\nPara validar tu correo, haz clic en el siguiente enlace:\n{validation_link}\n\nSi no solicitaste este acceso, ignora este mensaje."
 
-    msg = MIMEMultipart()
+    # Mensaje en HTML con imagen local
+    image_url = f"{base_url}/iconos/bienvenida.png"  # Usa el dominio configurado
+    body_html = f"""
+                        <html>
+                            <body>
+                                <div style='text-align:center;'>
+                                    <img src='{image_url}' alt='Bienvenida' style='max-width:120px;'/><br>
+                                    <h2>¡Bienvenido a GeoProcesos Apofis!</h2>
+                                    <p>Este aplicativo te permite realizar análisis geoespaciales avanzados, automatizar procesos y descargar imágenes satelitales.<br>
+                                    <b>Límite de uso:</b> 30 minutos por usuario con un máximo de 5 usuarios en consecutivo.</p>
+                                    <p>Para validar tu correo, haz clic en el siguiente enlace:</p>
+                                    <a href='{validation_link}' style='font-size:18px;color:#1976d2;'>Validar correo</a>
+                                    <p style='margin-top:20px;font-size:14px;color:#555;'>Si el enlace no funciona, copia y pega esta URL en tu navegador:</p>
+                                    <p style='font-size:12px;color:#888;'>{validation_link}</p
+                                    <p style='font-size:12px;color:#888;'>Si no solicitaste este acceso, ignora este mensaje.</p>
+                                </div>
+                            </body>
+                        </html>
+    """
+
+    msg = MIMEMultipart('alternative')
     msg['From'] = from_email
     msg['To'] = to_email
     msg['Subject'] = subject
     msg.attach(MIMEText(body, 'plain'))
+    msg.attach(MIMEText(body_html, 'html'))
 
     try:
         server = smtplib.SMTP(smtp_server, smtp_port)
