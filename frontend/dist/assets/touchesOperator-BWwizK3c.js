@@ -1,0 +1,1 @@
+import{t as n}from"./OperatorTouches-DGvKsOGu.js";import{i6 as o,is as s}from"./index-BrdDKxFV.js";const c=new n;function m(t,r){const e=o(t);return c.execute(e.getGeometry(),s(r),e.getSpatialReference(),null)}export{m as execute};
