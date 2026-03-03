@@ -10,6 +10,8 @@ import uuid
 
 from .helpers import send_validation_email, _jwt_encode
 
+BASE_URL = os.environ.get('BASE_URL', 'https://www.apofis.cl')  # Asegúrate de configurar esto en tu entorno
+
 
 # Definiciones globales necesarias
 _users = []
@@ -191,7 +193,7 @@ def site_validate_mail():
             with open(_DB_FILE, 'w', encoding='utf-8') as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
 
-            return redirect("http://localhost:5173/login?mail="+mail)  # Redirige al frontend con el email como parámetro
+            return redirect(f"{BASE_URL}/login?mail={mail}")  # Redirige al frontend con el email como parámetro
         
         else:
             return jsonify({'success': False, 'error': 'Usuario no encontrado'}), 404
