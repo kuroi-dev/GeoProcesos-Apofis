@@ -1,0 +1,66 @@
+# Kamatera Alpine CI/CD Pipeline Example
+# This pipeline stops the app at night and starts it in the morning, builds and deploys with nginx and gunicorn
+
+name: Apofis Web App CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    # Apaga el servidor a las 19:00 UTC (7pm local)
+    - cron: '0 19 * * *'
+    # Enciende el servidor a las 06:00 UTC (6am local)
+    - cron: '0 6 * * *'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Build Docker image
+        run: |
+          docker build -t apofis-app .
+      - name: Deploy to Kamatera (SSH)
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.KAMATERA_HOST }}
+          username: ${{ secrets.KAMATERA_USER }}
+          key: ${{ secrets.KAMATERA_SSH_KEY }}
+          port: 22
+          script: |
+            docker stop apofis-app || true
+            docker rm apofis-app || true
+            docker run -d -p 5000:5000 -p 80:80 --name apofis-app apofis-app
+            systemctl restart nginx
+
+  stop-at-night:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' && github.event.schedule == '0 19 * * *'
+    steps:
+      - name: Stop app at night
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.KAMATERA_HOST }}
+          username: ${{ secrets.KAMATERA_USER }}
+          key: ${{ secrets.KAMATERA_SSH_KEY }}
+          port: 22
+          script: |
+            docker stop apofis-app || true
+            systemctl stop nginx
+
+  start-in-morning:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' && github.event.schedule == '0 6 * * *'
+    steps:
+      - name: Start app in morning
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.KAMATERA_HOST }}
+          username: ${{ secrets.KAMATERA_USER }}
+          key: ${{ secrets.KAMATERA_SSH_KEY }}
+          port: 22
+          script: |
+            docker start apofis-app || docker run -d -p 5000:5000 -p 80:80 --name apofis-app apofis-app
+            systemctl start nginx

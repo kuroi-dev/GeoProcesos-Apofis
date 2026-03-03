@@ -1,84 +1,15 @@
 # --- Cargar variables de entorno desde .env ---
+from flask import Blueprint, jsonify, request, send_from_directory, redirect
 from dotenv import load_dotenv
-import os
-env_path = os.path.join(os.path.dirname(__file__), '../../.env')
-load_dotenv(env_path)
-
-# --- SMTP para envío de correos ---
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from flask import redirect
-#import psycopg2
-#import bleach
-from datetime import datetime
-
-
-def send_validation_email(to_email, validation_token):
-    smtp_server = os.environ.get('SMTP_SERVER', 'smtp.gmail.com')
-    smtp_port = int(os.environ.get('SMTP_PORT', 587))
-    smtp_user = os.environ.get('SMTP_USER')
-    smtp_pass = os.environ.get('SMTP_PASS')
-    from_email = smtp_user
-    subject = 'Validación de correo'
-    base_url = os.environ.get('VALIDATION_URL_BASE', 'http://127.0.0.1:5000')
-    validation_link = f"{base_url}/validar-correo?token={validation_token}&email={to_email}"
-    body = f"Para validar tu correo, haz clic en el siguiente enlace:\n\n{validation_link}\n\nSi no solicitaste este acceso, ignora este mensaje."
-
-    print(smtp_server, smtp_port, smtp_user, '****' if smtp_pass else None)  # Debug info (oculta contraseña)
-
-    # Validar credenciales SMTP
-    if not smtp_user or not smtp_pass:
-        print("Error: SMTP_USER o SMTP_PASS no están definidos en el entorno.")
-        return False
-
-    msg = MIMEMultipart()
-    msg['From'] = from_email
-    msg['To'] = to_email
-    msg['Subject'] = subject
-    msg.attach(MIMEText(body, 'plain'))
-
-    try:
-        server = smtplib.SMTP(smtp_server, smtp_port)
-        server.starttls()
-        server.login(smtp_user, smtp_pass)
-        server.sendmail(from_email, to_email, msg.as_string())
-        server.quit()
-        print(f"Correo de validación enviado a {to_email}")
-
-        # Guardar el token de validación en la base de datos (tokens.json)
-        if os.path.isfile(_DB_FILE):
-            with open(_DB_FILE, 'r', encoding='utf-8') as f:
-                data = json.load(f) or []
-        else:
-            data = []
-        updated = False
-        for entry in data:
-            if entry.get('correo') == to_email:
-                entry['validation_token'] = validation_token
-                updated = True
-        if updated:
-            with open(_DB_FILE, 'w', encoding='utf-8') as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
-
-        return True
-    except Exception as e:
-        print(f"Error enviando correo: {e}")
-        return False
-    
-
-#############################################################################
-
-
-from flask import Blueprint, jsonify, request, send_from_directory
 import os
 import time
 import json
 import uuid
 import datetime
-from .helpers import send_validation_email, _jwt_encode
 import uuid
-from flask import Blueprint, jsonify, request, send_from_directory, redirect
+
+from .helpers import send_validation_email, _jwt_encode
+
 
 # Definiciones globales necesarias
 _users = []
@@ -95,7 +26,8 @@ site_bp = Blueprint('site_bp', __name__)
 bp = Blueprint('bp', __name__)
 
 
-
+env_path = os.path.join(os.path.dirname(__file__), '../../.env')
+load_dotenv(env_path)
 
 def _get_next_id():
     global _next_id
@@ -191,7 +123,8 @@ def request_access():
                         'token': entry.get('token'),
                         'session_duration': '30 minutes',
                         'session_remaining': f"{max(0, entry.get('exp', 0) - now)} seconds",
-                        'privilegio': entry.get('privilegio', 1)
+                        'privilegio': entry.get('privilegio', 1),
+                        'ip_user': entry.get('ip_user')
                     })
                 else:
                     return jsonify({
@@ -203,6 +136,7 @@ def request_access():
         exp = now + 1800  # 30 minutos
         payload = {'mail': mail, 'iat': now, 'exp': exp}
         token = _jwt_encode(payload, SECRET)
+        ip_user = request.remote_addr
         entry = {
             'correo': mail,
             'token': token,
@@ -210,7 +144,8 @@ def request_access():
             'hora': datetime.datetime.utcfromtimestamp(now).strftime('%H:%M:%S'),
             'exp': exp,
             'privilegio': 1,
-            'correo_verificado': False
+            'correo_verificado': False,
+            'ip_user': ip_user
         }
         if os.path.isfile(_DB_FILE):
             with open(_DB_FILE, 'r', encoding='utf-8') as f:

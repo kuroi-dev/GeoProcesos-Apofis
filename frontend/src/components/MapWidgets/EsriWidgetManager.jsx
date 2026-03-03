@@ -268,7 +268,7 @@ const EsriWidgetManager = ({ onMapReady }) => {
       <arcgis-map 
         basemap="osm"
         center="-72.220106, -39.287310"
-        zoom="14"
+        zoom="13"
         className="arcgis-map-full"
       >
      
