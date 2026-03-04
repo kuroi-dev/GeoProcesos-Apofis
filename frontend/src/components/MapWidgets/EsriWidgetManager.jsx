@@ -275,29 +275,29 @@ const EsriWidgetManager = ({ onMapReady }) => {
 
         <arcgis-search
           slot="top-left"
-          style={{ position: 'absolute', left: 0, top: 0, zIndex: 1100 , width: 300}}
+          style={{ position: 'absolute', left: 0, top: 0, zIndex: 1100 , width: 275}}
           scale="m"
         ></arcgis-search>
 
         <arcgis-compass
           slot="bottom-right"
-          style={{ position: 'absolute', right: 0, bottom:190, zIndex: 1100 }}
+          style={{ position: 'fixed', right: 10, bottom:230, zIndex: 1100 }}
         ></arcgis-compass>
 
         <arcgis-home
           slot="bottom-right"
-          style={{ position: 'absolute', right: 0, bottom:150, zIndex: 1100 }}
+          style={{ position: 'fixed', right: 10, bottom:190, zIndex: 1100 }}
         ></arcgis-home>
 
         <arcgis-zoom
           slot="bottom-right"
-          style={{ position: 'absolute', right: 0, bottom:80, zIndex: 1100 }}
+          style={{ position: 'fixed', right: 10, bottom:120, zIndex: 1100 }}
         ></arcgis-zoom>
 
         <arcgis-scale-bar
           slot="bottom-left"
           unit="metric"
-          style={{ position: 'absolute', left: 0, bottom: -15, zIndex: 1100 }}
+          style={{ position: 'fixed', left: 10, bottom: 20, zIndex: 1100 }}
         ></arcgis-scale-bar>
 
         <arcgis-sketch
@@ -307,14 +307,14 @@ const EsriWidgetManager = ({ onMapReady }) => {
           scale="s"
           hide-duplicate-button
           hide-undo-redo-menu
-          style={{ position: 'absolute', right: 0, bottom: 235, zIndex: 1100}}
+          style={{ position: 'fixed', right: 10, bottom: 235, zIndex: 1100}}
           toolbar-kind="floating"
           className={` ${showSketch ? 'panel-visible' : 'panel-hidden'}`}
         ></arcgis-sketch>
 
         <arcgis-basemap-toggle
           slot="bottom-left"
-          style={{ position: 'absolute', left: 0, bottom: 80, zIndex: 1100 , width: 210}}
+          style={{ position: 'fixed', left: 10, bottom: 120, zIndex: 1100 , width: 210}}
           next-basemap="hybrid"
         ></arcgis-basemap-toggle>
 
@@ -324,7 +324,7 @@ const EsriWidgetManager = ({ onMapReady }) => {
           orientation="auto"
           hide-expand-button
     multiple-conversions-disabled
-          style={{ position: 'absolute', left: 1, top: 35, zIndex: 1100 , overflow: 'hidden', width: 297, height : 40 , display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          style={{ position: 'absolute', left: 1, top: 35, zIndex: 1100 , overflow: 'hidden', width: 273, height : 45 , display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           scale="s"
         ></arcgis-coordinate-conversion>
       
