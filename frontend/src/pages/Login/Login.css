@@ -560,24 +560,7 @@
   }
 }
 
-@media (max-width: 500px) {
-  .login-box {
-    width: 95vw;
-    padding: 20px;
-  }
-  
-  .login-box.expanded {
-    padding: 20px;
-    gap: 15px;
-  }
-  
-  .terms-content {
-    padding: 15px;
-    max-height: 100px;
-    width: 90%;
-  }
 
-}
 
 /* Media query para resoluciones pequeñas (1080x720 y similares) */
 @media (max-height: 800px) and (max-width: 1200px) {

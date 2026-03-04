@@ -127,7 +127,7 @@
 
 /* WIDGET MANAGER PERSONALIZADO - CENTRO INFERIOR */
 .custom-widget-manager {
-  position: absolute;
+  position: fixed;
   bottom: 45px;
   left: 50%;
   transform: translateX(-50%) scale(0.7);
