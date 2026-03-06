@@ -711,13 +711,6 @@
   }
 }
 
-/* OCULTAR ELEMENTOS ESRI EN LA PÁGINA DE LOGIN (excepto atribución) */
-.container-outer .esri-ui-corner,
-.container-outer .esri-zoom,
-.container-outer .esri-widget:not(.esri-attribution) {
+.calcite-mode-light, .esri-ui{
   display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
 }
-
