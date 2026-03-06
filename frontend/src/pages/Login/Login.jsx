@@ -7,7 +7,7 @@ import loginImage from '../../assets/logo/logogeo2.svg'; // Imagen del login
 import logoImage from '../../assets/logo/logoL.svg'; // Logo superior izquierda
 import infoImage from '../../assets/logo/info.svg'; // Icono de información
 
-import ReCAPTCHA from 'react-google-recaptcha';
+
 
 import './Login.css';
 
@@ -53,11 +53,6 @@ const Login = () => {
       return;
     }
 
-    // Validar reCAPTCHA
-    if (!recaptchaToken) {
-      setEmailError('Por favor, completa el reCAPTCHA para continuar.');
-      return;
-    }
 
     setLoading(true);
     setEmailError('');
@@ -90,8 +85,7 @@ const Login = () => {
           ip_user: userIp,
           city,
           region,
-          country,
-          recaptchaToken
+          country
         }),
       });
 
@@ -279,12 +273,7 @@ const Login = () => {
                 )}
                 {renderEmailError()}
               </div>
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <ReCAPTCHA
-                    sitekey="6LdXeoEsAAAAAFWpDN20QlvtmtqdCGLrUpNb20Ww"
-                    onChange={token => setRecaptchaToken(token)}
-                  />
-                </div>
+             
               <div className="app-info">
                 <p>El uso del aplicativo queda asociado a tu correo electrónico.</p>
                 <p>Límite de sesión: 30 minutos. Después de este tiempo, el mismo correo será bloqueado temporalmente.</p>
