@@ -1,0 +1,1 @@
+import{i9 as u,hY as o}from"./index-DcH3k9CO.js";const t=new u;function c(n,e,r){return t.execute(n,e,r,null)}function i(n,e){return t.executeMany(new o(n),e,null).next()}function l(){return t.supportsCurves()}export{i as o,c as r,l as s};
