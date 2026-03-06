@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@esri/calcite-components": "^5.0.0"
+    "@esri/calcite-components": "^5.0.0",
+    "react-google-recaptcha": "^3.1.0"
   }
 }

@@ -14,9 +14,57 @@ import logoGeo3 from '../../assets/logo/logoTools/logogeo4.png';
 import logoGeo4 from '../../assets/logo/logoTools/logogeo2.png';
 import { SpecialToolCard } from './SpecialToolCard';
 
+
+function UserMenu() {
+  const [open, setOpen] = React.useState(false);
+  const userEmail = sessionStorage.getItem('userEmail') || 'Sin email';
+  const ipUser = sessionStorage.getItem('ip_user') || 'Sin IP';
+  const privilegio = sessionStorage.getItem('privilegio') || '0';
+
+  const handleLogout = () => {
+    sessionStorage.clear();
+    window.location.href = '/';
+  };
+
+  return (
+    <div className="user-menu-root">
+      <button
+        className="user-menu-btn"
+        onClick={() => setOpen(o => !o)}
+      >
+        <span className="user-menu-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="10" cy="6.5" r="3.5" fill="#bbb" />
+            <ellipse cx="10" cy="15.5" rx="6.5" ry="3.5" fill="#bbb" />
+          </svg>
+        </span>
+        <span className="user-menu-label">Usuario</span>
+        <span className="user-menu-arrow">{open ? '▲' : '▼'}</span>
+      </button>
+      {open && (
+        <div className="user-menu-dropdown">
+          <div className="user-menu-info">User: <span className="user-menu-priv">{userEmail}</span></div>
+          <div className="user-menu-info">Tu IP Publica: <span className="user-menu-priv">{ipUser}</span></div>
+          <div className="user-menu-info">Ubicación: <span className="user-menu-priv">{`${sessionStorage.getItem('city') || 'Desconocida'}, ${sessionStorage.getItem('region') || 'Desconocida'}, ${sessionStorage.getItem('country') || 'Desconocido'}`}</span></div>
+          <div className="user-menu-info">Nivel de privilegios: <span className="user-menu-priv">{privilegio === '1' ? 'Básico' : privilegio}</span></div>
+          <button className="user-menu-logout" onClick={handleLogout}>
+            Cerrar sesión
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function GeoProcesosWindow() {
   const [open, setOpen] = React.useState(false);
-  const [secondsLeft, setSecondsLeft] = React.useState(30 * 60); // 30 minutos
+  // Obtener el tiempo restante desde sessionStorage (en segundos)
+  const getInitialSeconds = () => {
+    const remaining = sessionStorage.getItem('session_remaining');
+    const parsed = parseInt(remaining, 10);
+    return (!isNaN(parsed) && parsed > 0) ? parsed : 30 * 60;
+  };
+  const [secondsLeft, setSecondsLeft] = React.useState(getInitialSeconds);
 
   React.useEffect(() => {
     if (secondsLeft <= 0) {
@@ -30,10 +78,15 @@ export function GeoProcesosWindow() {
     return () => clearInterval(timer);
   }, [secondsLeft]);
 
-  // Formatear mm:ss
+  // Formatear mm:ss o infinito
   const minutes = Math.floor(secondsLeft / 60);
   const seconds = secondsLeft % 60;
-  const formatted = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  let formatted;
+  if (minutes > 1000) {
+    formatted = <span title="Sesión ilimitada" style={{fontSize:'1.3em'}}>&#8734;</span>; // símbolo infinito
+  } else {
+    formatted = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
 
   // Cambia el borde a rojo si quedan 5 minutos o menos
   const danger = secondsLeft <= 5 * 60;
@@ -80,7 +133,7 @@ export function NuevoPanelWindow({ agregarFeatureLayer }) {
   const tools = [
     {
       imgSrc: logoGeo1,
-      title: <span> Análisis Espacial <span style={{color:'#1ec31e', fontWeight:'bold', marginLeft:6}}>PROXIMAMENTE</span></span>,
+      title: <span> Análisis Espacial <br /><span style={{color:'#1ec31e', fontWeight:'bold', marginLeft:6}}>PROXIMAMENTE</span></span>,
       summary: "Trabaja con archivos en distintos formatos (SHP, GeoJSON, KML, CSV, etc). Realiza operaciones de clip y buffer sobre capas vectoriales. Modifica colores y estilos de capas fácilmente. Agrega y gestiona múltiples capas en el mapa."
     },
     {
@@ -135,18 +188,7 @@ export function NuevoPanelWindow({ agregarFeatureLayer }) {
             </button>
           </div>
           {/* Módulo de usuario debajo del título y logo */}
-          <div style={{ background: '#222', color: '#b6ffb6', borderRadius: 8, padding: '8px 14px', minWidth: 180, fontSize: 13, marginTop: 8, marginBottom: 0, alignSelf: 'stretch', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
-            <div style={{ fontWeight: 'bold', color: '#fff', fontSize: 14, marginBottom: 2 }}>Usuario</div>
-            <div style={{ wordBreak: 'break-all', marginBottom: 2 }}>
-              <span style={{ color: '#b6ffb6' }}>{sessionStorage.getItem('userEmail') || 'Sin email'}</span>
-            </div>
-            <div style={{ fontSize: 12, marginBottom: 2 }}>
-              IP: <span style={{ color: '#b6ffb6' }}>{sessionStorage.getItem('ip_user') || 'Sin IP'}</span>
-            </div>
-            <div style={{ fontSize: 12 }}>
-              Nivel de privilegios: <span style={{ color: '#b6ffb6', fontWeight: 'bold' }}>{sessionStorage.getItem('privilegio') || '0'}</span>
-            </div>  
-          </div>
+          <UserMenu />
         </div>
 
 

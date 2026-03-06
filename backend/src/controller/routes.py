@@ -11,7 +11,7 @@ import logging
 
 from .helpers import send_validation_email, _jwt_encode
 
-BASE_URL = os.environ.get('BASE_URL', 'https://www.apofis.cl')  # Asegúrate de configurar esto en tu entorno
+BASE_URL = os.environ.get('BASE_URL_FRONTEND', 'https://www.apofis.cl')  # Asegúrate de configurar esto en tu entorno
 
 
 # Definiciones globales necesarias
@@ -95,24 +95,84 @@ def create_user():
     _users.append(user)
     return jsonify(user), 201
 
+from flask import g
+import threading
+
+# --- Rate limiting simple en memoria ---
+_rate_limit_data = {}
+_rate_limit_lock = threading.Lock()
+RATE_LIMIT = 20
+RATE_PERIOD = 60  # segundos
+
+def check_rate_limit(ip):
+    now = int(time.time())
+    with _rate_limit_lock:
+        entry = _rate_limit_data.get(ip)
+        if entry:
+            # Limpiar timestamps viejos
+            entry = [t for t in entry if now - t < RATE_PERIOD]
+        else:
+            entry = []
+        if len(entry) >= RATE_LIMIT:
+            return False
+        entry.append(now)
+        _rate_limit_data[ip] = entry
+        return True
+
 @bp.route('/access', methods=['POST'])
 def request_access():
     """Receive JSON with mail:"testing@testing.test", generate JWT token,
     schedule revocation after 30 minutes and return ACCESS true.
     """
     
+    # --- Rate limiting por IP ---
+    ip_addr = request.remote_addr or data.get('ip_user') or 'unknown'
+    if not check_rate_limit(ip_addr):
+        return jsonify({'ACCESS': False, 'error': 'Demasiadas solicitudes. Intenta de nuevo en unos segundos.'}), 429
+
     data = request.get_json() or {}
     mail = data.get('mail') or data.get('email')
-    if not mail:
-        return jsonify({'ACCESS': False, 'error': 'mail field required'}), 400
+    token = data.get('token')
+
+    if not mail and not token:
+        return jsonify({'ACCESS': False, 'error': 'Se requiere mail o token'}), 400
 
     found = False
+    now = int(time.time())
+    db_data = []
     if os.path.isfile(_DB_FILE):
         with open(_DB_FILE, 'r', encoding='utf-8') as f:
-            data = json.load(f) or []
-        for entry in data:
+            db_data = json.load(f) or []
+
+    # 1. Buscar por correo si se proporciona mail
+    if mail:
+        for entry in db_data:
             if entry.get('correo') == mail:
-                now = int(time.time())
+                found = True
+                # Validación de correo_verificado
+                if not entry.get('correo_verificado', False):
+                    return jsonify({
+                        'ACCESS': False,
+                        'error': 'Correo no verificado. Por favor verifica tu correo antes de acceder.'
+                    })
+                if now < entry.get('exp', 0):
+                    validation_token = str(uuid.uuid4())
+                    send_validation_email(mail, validation_token)
+
+                    return jsonify({
+                        'ACCESS': False,
+                        'error': 'Te enviamos un correo de acceso. Por favor revisa tu bandeja de entrada y, si no lo encuentras, revisa también la carpeta de SPAM o correo no deseado para validar tu correo antes de acceder.'
+                    })
+                else:
+                    return jsonify({
+                        'ACCESS': False,
+                        'error': 'Sesión diaria agotada. Vuelve mañana a partir de las 6:00 AM.'
+                    })
+
+    # 2. Buscar por token si no se encontró por correo y se proporciona token
+    if not found and token:
+        for entry in db_data:
+            if entry.get('token') == token:
                 found = True
                 # Validación de correo_verificado
                 if not entry.get('correo_verificado', False):
@@ -123,51 +183,59 @@ def request_access():
                 if now < entry.get('exp', 0):
                     return jsonify({
                         'ACCESS': True,
+                        'userEmail': entry.get('correo'),
                         'token': entry.get('token'),
                         'session_duration': '30 minutes',
-                        'session_remaining': f"{max(0, entry.get('exp', 0) - now)} seconds",
+                        'session_remaining': max(0, entry.get('exp', 0) - now),
                         'privilegio': entry.get('privilegio', 1),
-                        'ip_user': entry.get('ip_user')
+                        'ip_user': entry.get('ip_user'),
+                        'city': entry.get('city'),
+                        'region': entry.get('region'),
+                        'country': entry.get('country')
                     })
                 else:
                     return jsonify({
                         'ACCESS': False,
                         'error': 'Sesión diaria agotada. Vuelve mañana a partir de las 6:00 AM.'
                     })
-    if not found:
-        now = int(time.time())
+
+    # 3. Si no se encontró, crear nuevo usuario temporal y enviar correo de validación
+    if not found and mail:
         exp = now + 1800  # 30 minutos
         payload = {'mail': mail, 'iat': now, 'exp': exp}
-        token = _jwt_encode(payload, SECRET)
-        ip_user = request.remote_addr
+        new_token = _jwt_encode(payload, SECRET)
+        ip_user = data.get('ip_user')
+        print(f"ubicación del usuario: { data.get('city')}, {data.get('country')}")
         entry = {
             'correo': mail,
-            'token': token,
+            'token': new_token,
             'fecha': datetime.datetime.utcfromtimestamp(now).strftime('%Y-%m-%d'),
             'hora': datetime.datetime.utcfromtimestamp(now).strftime('%H:%M:%S'),
             'exp': exp,
             'privilegio': 1,
             'correo_verificado': False,
-            'ip_user': ip_user
+            'ip_user': ip_user,
+            'city': data.get('city'),
+            'region': data.get('region'),
+            'country': data.get('country'),
+            'recaptcha_token': data.get('recaptcha_token')
         }
-        if os.path.isfile(_DB_FILE):
-            with open(_DB_FILE, 'r', encoding='utf-8') as f:
-                data = json.load(f) or []
-        else:
-            data = []
-        data.append(entry)
+        db_data.append(entry)
         with open(_DB_FILE, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
+            json.dump(db_data, f, ensure_ascii=False, indent=2)
 
         # Enviar correo de validación
-        
         validation_token = str(uuid.uuid4())
         send_validation_email(mail, validation_token)
 
         return jsonify({
             'ACCESS': False,
-            'error': 'Te enviamos un correo de validación. Por favor revisa tu bandeja de entrada y valida tu correo antes de acceder.'
+            'error': 'Te enviamos un correo de validación. Por favor revisa tu bandeja de entrada y, si no lo encuentras, revisa también la carpeta de spam o correo no deseado para validar tu correo antes de acceder.'
         })
+
+    # Si no se encontró y no hay mail para crear usuario
+    if not found:
+        return jsonify({'ACCESS': False, 'error': 'No se encontró usuario y no se proporcionó mail para crear uno.'}), 404
 
 
 @site_bp.route('/validar-correo', methods=['GET'])
@@ -183,18 +251,20 @@ def site_validate_mail():
         with open(_DB_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f) or []
         updated = False
+        tokeninterno = ""
         for entry in data:
             if entry.get('correo') == mail:
                 if entry.get('validation_token') != token:
                     return jsonify({'success': False, 'error': 'Token de validación inválido'}), 400
                 entry['correo_verificado'] = True
                 entry['validation_token'] = ""
+                tokeninterno = entry.get('token')
                 updated = True
         if updated:
             with open(_DB_FILE, 'w', encoding='utf-8') as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
 
-            return redirect(f"{BASE_URL}/login?mail={mail}")  # Redirige al frontend con el email como parámetro
+            return redirect(f"{BASE_URL}/login?token={tokeninterno}")  # Redirige al frontend con el token como parámetro
         
         else:
             return jsonify({'success': False, 'error': 'Usuario no encontrado'}), 404

@@ -6,9 +6,13 @@ import MapView from '@arcgis/core/views/MapView';
 import loginImage from '../../assets/logo/logogeo2.svg'; // Imagen del login
 import logoImage from '../../assets/logo/logoL.svg'; // Logo superior izquierda
 import infoImage from '../../assets/logo/info.svg'; // Icono de información
+
+import ReCAPTCHA from 'react-google-recaptcha';
+
 import './Login.css';
 
-const URLDEFAULT = ''; // Reemplaza con la URL de tu backend  
+const URLDEFAULT2 = 'http://127.0.0.1:5000'; // Reemplaza con la URL de tu backend  
+const URLDEFAULT = ''; 
 
 const Login = () => {
     // Función para renderizar el mensaje de emailError
@@ -20,52 +24,95 @@ const Login = () => {
   const [showInfoPopup, setShowInfoPopup] = useState(false);
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [emailSuccess, setEmailSuccess] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
 
+  const [recaptchaToken, setRecaptchaToken] = useState('');
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validar email
     if (!email.trim()) {
       setEmailError('Por favor, ingresa tu correo electrónico.');
       return;
     }
-    
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setEmailError('Por favor, ingresa un correo electrónico válido.');
       return;
     }
-    
+
     // Validar aceptación de términos
     if (!termsAccepted) {
       setEmailError('Debes aceptar los términos y condiciones para continuar.');
       return;
     }
-    
-    // Enviar email al backend
+
+    // Validar reCAPTCHA
+    if (!recaptchaToken) {
+      setEmailError('Por favor, completa el reCAPTCHA para continuar.');
+      return;
+    }
+
     setLoading(true);
     setEmailError('');
-    
-    
+
+    // Obtener la IP pública y luego la ubicación, y enviar todo al backend
     try {
+      const ipRes = await fetch('https://api.ipify.org?format=json');
+      const ipData = await ipRes.json();
+      const userIp = ipData.ip;
+
+      // Obtener ubicación aproximada por IP
+      let city = '', region = '', country = '';
+      try {
+        const locRes = await fetch(`https://ipapi.co/${userIp}/json/`);
+        const locData = await locRes.json();
+        city = locData.city || '';
+        region = locData.region || '';
+        country = locData.country_name || '';
+      } catch (locErr) {
+        console.warn('No se pudo obtener la ubicación por IP', locErr);
+      }
+
       const response = await fetch(`${URLDEFAULT}/api/access`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ mail: email }),
+        body: JSON.stringify({
+          mail: email,
+          ip_user: userIp,
+          city,
+          region,
+          country,
+          recaptchaToken
+        }),
       });
-      
+
       const data = await response.json();
       // Imprimir respuesta del backend en consola
       console.log('Respuesta backend:', data);
 
       if (data.ACCESS) {
-        // Si el acceso es exitoso, navegar al dashboard
-        navigate('/dashboard', { state: { userEmail: email, token: data.token } });
+        sessionStorage.clear();
+
+        if (data.token) sessionStorage.setItem('token', data.token);
+        if (data.mail) sessionStorage.setItem('userEmail', data.mail);
+
+        Object.keys(data).forEach(key => {
+          if (typeof data[key] !== 'object' && key !== 'token') {
+            sessionStorage.setItem(key, data[key]);
+          }
+        });
+        setTimeout(() => {
+          navigate('/dashboard', { state: { userEmail: data.mail, token: data.token } });
+        }, 100);
       } else {
         // Si el acceso es denegado, mostrar error
         setEmailError(data.error || 'Acceso denegado. Verifica tu correo electrónico.');
@@ -76,9 +123,6 @@ const Login = () => {
     } finally {
       setLoading(false);
     }
-      
-
-   
   };
 
   useEffect(() => {
@@ -125,29 +169,30 @@ const Login = () => {
 
 
   useEffect(() => {
-    console.log("TESTING");
-    const mail = searchParams.get("mail");
-    if (mail) {
+    const token = searchParams.get("token");
+    if (token) {
       fetch(`${URLDEFAULT}/api/access`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 'mail': mail })
+        body: JSON.stringify({ 'token': token })
       })
       .then(res => res.json())
       .then(async data => {
+        console.log('Respuesta backend con token:', data);
         // Imprimir respuesta del backend en consola
         if (data.ACCESS) {
-          // Guardar datos en sessionStorage
-          sessionStorage.setItem('userEmail', mail);
+          // Limpiar sessionStorage antes de guardar nuevos datos
+          sessionStorage.clear();
           if (data.token) sessionStorage.setItem('token', data.token);
-          // Puedes guardar otros datos si el backend los retorna
           Object.keys(data).forEach(key => {
             if (typeof data[key] !== 'object' && key !== 'token') {
               sessionStorage.setItem(key, data[key]);
             }
           });
           // Si el acceso es exitoso, navegar al dashboard
-          navigate('/dashboard', { state: { userEmail: mail, token: data.token } });
+          setTimeout(() => {
+            navigate('/dashboard', { state: { userEmail: data.userEmail, token: data.token } });
+          }, 100);
         } else {
           // Si el acceso es denegado, mostrar error
           setEmailError(data.error || 'Acceso denegado. Verifica tu correo electrónico.');
@@ -159,9 +204,15 @@ const Login = () => {
 
    const renderEmailError = () => {
       if (!emailError) return null;
-      const trimmed = emailError.trim(); // Depuración: mostrar el mensaje completo en consola
+      const trimmed = emailError.trim();
       if (trimmed.substring(0, 11) === "Te enviamos") {
-        return <span className="success-message">{emailError}</span>;
+        if (!emailSuccess) {
+          setEmailSuccess(true);
+          setTimeout(() => {
+            window.location.reload();
+          }, 30000);
+        }
+        return <span className="success-message-login">{emailError}</span>;
       }
       return <span className="error-message">{emailError}</span>;
     };
@@ -214,25 +265,35 @@ const Login = () => {
             </div>
             <form className="login-form" onSubmit={handleSubmit}>
               <div className="input-container">
-                <input 
-                  type="email" 
-                  placeholder="Email" 
-                  className={`login-input ${emailError ? 'error' : ''}`}
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    if (emailError) setEmailError('');
-                  }}
-                />
+                {!emailSuccess && (
+                  <input 
+                    type="email" 
+                    placeholder="Email" 
+                    className={`login-input ${emailError ? 'error' : ''}`}
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (emailError) setEmailError('');
+                    }}
+                  />
+                )}
                 {renderEmailError()}
               </div>
-              
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <ReCAPTCHA
+                    sitekey="6LdXeoEsAAAAAFWpDN20QlvtmtqdCGLrUpNb20Ww"
+                    onChange={token => setRecaptchaToken(token)}
+                  />
+                </div>
               <div className="app-info">
                 <p>El uso del aplicativo queda asociado a tu correo electrónico.</p>
                 <p>Límite de sesión: 30 minutos. Después de este tiempo, el mismo correo será bloqueado temporalmente.</p>
               </div>
+              <div>
+                
+              </div>
               
-              <button type="submit" className="login-button" disabled={loading}>
+              <button type="submit" className="login-button" disabled={loading || emailSuccess}>
                 {loading ? 'Conectando...' : 'Acceder al Aplicativo'}
               </button>
               
@@ -249,6 +310,7 @@ const Login = () => {
                   checked={termsAccepted}
                   onChange={(e) => setTermsAccepted(e.target.checked)}
                   className="terms-checkbox"
+                  disabled={emailSuccess}
                 />
                 <span className="terms-checkmark"></span>
                 <span className="terms-checkbox-text">
@@ -280,6 +342,7 @@ const Login = () => {
                   <p>• Implementar el sistema de bloqueo temporal después de 30 minutos de uso.</p>
                   <p>• Prevenir el uso abusivo mediante intentos repetidos de acceso con el mismo correo.</p>
                   <p>• Generar logs de auditoría y estadísticas de uso del sistema.</p>
+                  <p>• <strong>Se obtiene la dirección IP y la ubicación aproximada del usuario</strong> con el fin de mitigar posibles ataques informáticos y proteger la integridad del sistema.</p>
                 </div>
                 <div className="terms-section">
                   <h4>4. Sistema de Bloqueos y Restricciones</h4>

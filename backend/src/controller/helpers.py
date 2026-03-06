@@ -69,7 +69,7 @@ def send_validation_email(to_email, validation_token):
     smtp_pass = os.environ.get('SMTP_PASS')
     from_email = smtp_user
     subject = 'Validación de correo'
-    base_url = os.environ.get('VALIDATION_URL_BASE', 'https://www.apofis.cl')  # Asegúrate de configurar esto en tu entorno
+    base_url = os.environ.get('BASE_URL_BACKEND', 'https://www.apofis.cl')  # Asegúrate de configurar esto en tu entorno
     validation_link = f"{base_url}/api/validar-correo?token={validation_token}&email={to_email}"
     # Mensaje en texto plano
     body = f"Bienvenido a GeoProcesos Apofis!\n\nEste aplicativo te permite realizar análisis geoespaciales avanzados, automatizar procesos y descargar imágenes satelitales.\nLímite de uso: 100 procesos mensuales por usuario.\n\nPara validar tu correo, haz clic en el siguiente enlace:\n{validation_link}\n\nSi no solicitaste este acceso, ignora este mensaje."
