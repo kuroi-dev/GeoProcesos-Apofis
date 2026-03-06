@@ -500,32 +500,98 @@
   z-index: 3000;
 }
 
-
-
-
-.special-layerUp{
+/* === UserMenu Dropdown Styles === */
+.user-menu-root {
+  position: relative;
+  align-self: stretch;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+.user-menu-btn {
+  display: flex;
   align-items: center;
-  gap: 15px;
-  border: rgb(73, 251, 248) solid 3px;
-  
-  margin-top: -3px;
-  padding: 15px;
+  gap: 8px;
+  background: #fff;
+  color: #222;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: background 0.2s;
 }
-  
-.special-layerUp input{
-  margin-bottom: 15px;
-  width: 90%;
+.user-menu-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #f2f2f2;
+  color: #888;
+  font-size: 18px;
 }
-
-
-
-
-
-
-.esri-attribution{
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
+.user-menu-label {
+  flex: 1;
+  text-align: left;
+  color: #222;
+  font-weight: 600;
+}
+.user-menu-arrow {
+  font-size: 18px;
+  color: #888;
+  margin-left: 8px;
+}
+.user-menu-dropdown {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  min-width: 220px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  z-index: 100;
+  padding: 16px 18px 12px 18px;
+  color: #222;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 88%;
+}
+.user-menu-email {
+  font-weight: 700;
+  color: #222;
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+.user-menu-info {
+  font-size: 13px;
+  color: #444;
+  margin-bottom: 2px;
+}
+.user-menu-info span {
+  color: #222;
+}
+.user-menu-priv {
+  font-weight: bold;
+}
+.user-menu-logout {
+  margin-top: 10px;
+  background: #f8f8f8;
+  color: #c00;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 8px 0;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.user-menu-logout:hover {
+  background: #ffeaea;
 }
 
