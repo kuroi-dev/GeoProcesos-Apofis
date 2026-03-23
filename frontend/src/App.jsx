@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/Login/Login'
 import EnConstruccion from './pages/EnConstruccion/EnConstruccion'
 import DashboardGeoPro from './pages/Dashboard/dashboard-geoPro'
-import TestWidgetMap from './pages/TestWidgetMap';
 import './App.css'
 
 // Componente de ruta protegida por parámetro en la URL
@@ -64,10 +63,6 @@ function App() {
           </ProtectedRoute>
         } />
 
-
-        {/* 
-        <Route path="/test-widget-map" element={<TestWidgetMap />} />
-        */}
       </Routes>
     </Router>
   )
