@@ -1,0 +1,254 @@
+/* Home.css - APOFIS Design */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.logo-image-dark {
+  height: 30px;
+}
+.logo-image-center {
+  height: 160px;
+  margin-bottom: 10PX;
+}
+
+.home-container {
+  min-height: 100vh;
+  background: #0a0a0a;
+  background-image: 
+    radial-gradient(circle at 25% 25%, #111111 0%, transparent 20%),
+    radial-gradient(circle at 75% 75%, #0d0d0d 0%, transparent 40%),
+    linear-gradient(45deg, #0a0a0a 25%, #121212 25%, #121212 50%, #0a0a0a 50%, #0a0a0a 75%, #121212 75%);
+  background-size: 60px 60px, 60px 60px, 40px 40px;
+  font-family: 'Inter', sans-serif;
+  color: white;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.home-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(ellipse at top center, rgba(255, 255, 255, 0.02) 0%, transparent 70%),
+    radial-gradient(ellipse at bottom center, rgba(66, 165, 245, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Navigation Bar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 12px 0;
+  background: #FFEDE6;
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.nav-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.nav-link {
+  color: #281810;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  transition: color 0.5s ease;
+}
+
+.nav-link:hover {
+  color: #E27039;
+  font-weight: 600;
+}
+
+.start-project-btn {
+  background: #3F2C23;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.5s ease;
+  text-transform: uppercase;
+}
+
+.start-project-btn:hover {
+  background: #E27039;
+  transform: translateY(-1px);
+}
+
+/* Main Content */
+.main-content {
+  position: relative;
+  z-index: 2;
+  padding-top: 10px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* Hero Section */
+.hero-section {
+  margin-bottom: 10px;
+}
+
+
+
+.brand-subtitle {
+  font-size: 0.8rem;
+  color: #c47047;
+  letter-spacing: 0.7em;
+  margin-bottom: 10px;
+  font-weight: 400;
+}
+
+.main-title {
+  font-size: clamp(3.5rem, 10vw, 7rem);
+  font-weight: 600;
+  line-height: 1;
+  margin-bottom: 20px;
+  color: white;
+  letter-spacing: -0.001em;
+  font-family: 'Newsreader', serif;
+}
+.other-font-weight {
+  font-weight: 100;
+}
+
+.main-title em {
+  font-style: italic;
+  font-weight: 100;
+}
+
+.title-year {
+  font-size: clamp(3.5rem, 9vw, 7rem);
+  font-weight: 100;
+  color: #FFB596;
+}
+
+/* Info Sections */
+.info-sections {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  max-width: 900px;
+  width: 100%;
+  margin-top: 60px;
+}
+
+.info-card {
+  text-align: left;
+}
+
+.info-title {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.2em;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.info-description {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .nav-content {
+    padding: 0 20px;
+  }
+  
+  .main-content {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  .info-sections {
+    gap: 60px;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+  
+  .hero-section {
+    margin-bottom: 80px;
+  }
+  
+  .brand-icon {
+    font-size: 2.5rem;
+  }
+  
+  .brand-name {
+    font-size: 2rem;
+  }
+  
+  .info-sections {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+  
+  .info-card {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-content {
+    padding: 0 15px;
+  }
+  
+  .main-content {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 100px;
+  }
+  
+  .brand-subtitle {
+    font-size: 0.8rem;
+    margin-bottom: 40px;
+  }
+  
+  .info-sections {
+    margin-top: 40px;
+  }
+}
