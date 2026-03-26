@@ -20,10 +20,10 @@ const Home = () => {
             <img src={logoImage} alt="Logo" className="logo-image-dark" />
           </div>
           <div className="nav-links">
-            <a href="#" className="nav-link">IDENTIDAD</a>
+            <a href="#" className="nav-link active">HOME</a>
             <a href="#" className="nav-link" onClick={handleLoginClick} >SERVICIOS</a>
+            <a href="#" className="nav-link">IDENTIDAD</a>
             <a href="#" className="nav-link">TECNOLOGIAS</a>
-            <a href="#" className="nav-link">INNOVACIÓN</a>
             <button 
               className="start-project-btn"
               onClick={handleLoginClick}

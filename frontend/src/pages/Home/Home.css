@@ -85,6 +85,14 @@
   font-weight: 600;
 }
 
+.nav-link.active {
+  color: #E27039;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}
+
 .start-project-btn {
   background: #3F2C23;
   color: white;
