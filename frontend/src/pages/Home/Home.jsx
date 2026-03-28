@@ -49,9 +49,19 @@ const HomeContent = () => (
 
 const ServiciosContent = () => (
   <div className="content-section">
-    <div className="simple-content">
-      <h1>Hola Mundo - Servicios</h1>
-      <p>Contenido de servicios aquí...</p>
+    <div className="servicios-container">
+      <div className="servicios-header">
+        <h1 className="servicios-title">Servicios</h1>
+      </div>
+      <div className="servicios-content">
+        <div className="servicio-item">
+          <h3 className="servicio-name">Geoprocesos en Línea</h3>
+          <p className="servicio-description">
+            Herramientas avanzadas de análisis espacial y procesamiento geográfico 
+            en tiempo real para optimizar tus procesos de toma de decisiones.
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 );
@@ -69,7 +79,7 @@ const TecnologiasContent = () => (
   <div className="content-section">
     <div className="simple-content">
       <h1>Hola Mundo - Tecnologías</h1>
-      <p>Contenido de tecnologías aquí...</p>
+      <p>Contenido de tecnoloías aquí...</p>
     </div>
   </div>
 );

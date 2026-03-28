@@ -88,9 +88,8 @@
 .nav-link.active {
   color: #E27039;
   font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  text-decoration-thickness: 2px;
+  border-bottom: 2px solid #E27039; /* Cambiar a border-bottom */
+  padding-bottom: 2px; /* Espacio para el border */
 }
 
 .start-project-btn {
@@ -302,7 +301,7 @@
   perspective-origin: center center;
   perspective: 1200px;
   overflow: hidden;
-  padding-top: 80px; 
+  /* ELIMINADO padding-top: 80px para sincronizar con panel-principal */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -328,52 +327,39 @@
   position: absolute;
   width: 200px;
   height: 200px;
-  background-color: rgba(0,0,0,0.1);
+  background-color: transparent; /* Eliminado el fondo gris */
   transform: translateX(calc(50vw - 100px)) translateY(calc(100vh - 150px)) rotateX(90deg) translateZ(-50vh);
-  box-shadow: 0 0 100px 200px rgba(0,0,0,0.05);
+  box-shadow: none; /* Eliminado la sombra gris */
   border-radius: 50%;
-  
 }
 
 .cara {
-  margin-left: 20vh;
   position: absolute;
-  width: 80vw;
-  height: 80vh;
+  top: 40px; /* IGUAL que panel-principal */
+  left: 50%; /* IGUAL que panel-principal */
+  transform: translateX(-50%); /* IGUAL que panel-principal - se combinará con las rotaciones */
+  width: 80vw; /* IGUAL que panel-principal */
+  height: 80vh; /* IGUAL que panel-principal */
   background: transparent;
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 80px 20px 20px 20px;
+  padding: 80px 20px 20px 20px; /* IGUAL que panel-principal */
   box-sizing: border-box;
   transition: transform 1s ease-in-out;
 }
 
 /* Solo 2 caras: frontal y derecha */
 .cara-frontal {
-  transform: translateZ(50vh);
+  transform: translateX(-50%) translateZ(50vh); /* Combinar centrado + profundidad */
   opacity: 0; /* Oculta por defecto */
-  background: transparent;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 20px 20px 20px;
-  box-sizing: border-box;
   transition: opacity 0.3s ease; /* Transición suave para eliminar pestañeo */
 }
 
 .cara-derecha {
-  transform: rotateY(90deg) translateZ(50vh);
+  transform: translateX(-50%) rotateY(90deg) translateZ(50vh); /* Combinar centrado + rotación + profundidad */
   opacity: 0; /* Oculta por defecto */
-  background: transparent;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 20px 20px 20px;
-  box-sizing: border-box;
   transition: opacity 0.3s ease; /* Transición suave para eliminar pestañeo */
 }
 
@@ -422,6 +408,81 @@
 .simple-content p {
   font-size: 1.2rem;
   color: rgba(255, 255, 255, 0.8);
+}
+
+/* RESPONSIVE DESIGN - HD/LAPTOP (1080x720, tablets landscape) */
+@media (max-width: 1200px) and (min-width: 769px) {
+  /* Ajustes para pantallas HD intermedias */
+  .panel-principal {
+    top: 80px; /* Margen superior aumentado */
+    width: 85vw;
+    height: 75vh;
+    padding: 70px 15px 15px 15px;
+  }
+  
+  /* Cubo 3D HD */
+  .espacio3D {
+    perspective: 1000px;
+  }
+  
+  .cubo3D {
+    transform: translateZ(-40vh);
+  }
+  
+  .cubo3D.sliding {
+    transform: translateZ(-40vh) rotateY(-90deg);
+  }
+  
+  /* Caras del cubo HD - sincronizadas */
+  .cara {
+    top: 80px; /* IGUAL que panel-principal HD */
+    width: 85vw; /* IGUAL que panel-principal HD */
+    height: 75vh; /* IGUAL que panel-principal HD */
+    padding: 70px 15px 15px 15px; /* IGUAL que panel-principal HD */
+  }
+  
+  .cara-frontal {
+    transform: translateX(-50%) translateZ(40vh);
+  }
+  
+  .cara-derecha {
+    transform: translateX(-50%) rotateY(90deg) translateZ(40vh);
+  }
+  
+  /* Contenido HD */
+  .main-title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    margin-bottom: 15px;
+  }
+  
+  .title-year {
+    font-size: clamp(2.2rem, 5vw, 3.5rem); /* Reducido para HD */
+  }
+  
+  .brand-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.6em;
+  }
+  
+  .logo-image-center {
+    height: 120px;
+    margin-bottom: 8px;
+  }
+  
+  .info-sections {
+    gap: 40px;
+    margin-top: 30px;
+  }
+  
+  .info-title {
+    font-size: 0.8rem;
+    margin-bottom: 15px;
+  }
+  
+  .info-description {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
 }
 
 /* NAVEGACIÓN INFERIOR MÓVIL */
@@ -480,9 +541,8 @@
 }
 
 .bottom-nav-btn.active span {
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  text-decoration-thickness: 1px;
+  border-bottom: 1px solid #E27039; /* Cambiar a border-bottom */
+  padding-bottom: 1px; /* Espacio para el border */
 }
 
 /* RESPONSIVE DESIGN - MOBILE */
@@ -520,7 +580,7 @@
   /* Cubo 3D móvil */
   .espacio3D {
     perspective: 800px;
-    padding-top: 65px;
+    /* ELIMINADO padding-top para sincronizar con panel-principal */
     padding-bottom: 80px; /* Espacio para navegación inferior */
   }
   
@@ -532,14 +592,23 @@
     transform: translateZ(-30vh) rotateY(-90deg);
   }
   
-  /* Caras del cubo móvil */
+  /* Caras del cubo móvil - SINCRONIZADAS con panel principal */
   .cara {
-    width: 95vw;
-    height: auto;
-    margin-left: 0;
-    padding: 65px 15px 80px 15px; /* Padding inferior para nav bottom */
-    top: 0;
-    bottom: 0;
+    top: 15px; /* IGUAL que panel-principal móvil */
+    bottom: 80px; /* IGUAL que panel-principal móvil */
+    left: 50%; /* IGUAL que panel-principal móvil */
+    width: 95vw; /* IGUAL que panel-principal móvil */
+    height: auto; /* IGUAL que panel-principal móvil */
+    padding: 65px 15px 15px 15px; /* IGUAL que panel-principal móvil */
+  }
+  
+  /* Actualizar transformaciones para móviles */
+  .cara-frontal {
+    transform: translateX(-50%) translateZ(30vh); /* Profundidad móvil */
+  }
+  
+  .cara-derecha {
+    transform: translateX(-50%) rotateY(90deg) translateZ(30vh); /* Profundidad móvil */
   }
   
   .cara-frontal {
@@ -638,7 +707,7 @@
   /* Cubo 3D iPhone SE */
   .espacio3D {
     perspective: 600px;
-    padding-top: 50px;
+    /* ELIMINADO padding-top para sincronizar con panel-principal */
     padding-bottom: 70px; /* Espacio para nav inferior */
   }
   
@@ -650,11 +719,22 @@
     transform: translateZ(-25vh) rotateY(-90deg);
   }
   
-  /* Caras del cubo iPhone SE */
+  /* Caras del cubo iPhone SE - SINCRONIZADAS con panel principal */
   .cara {
-    width: 98vw;
-    height: auto;
-    padding: 50px 10px 70px 10px; /* Padding inferior para nav bottom */
+    top: 5px; /* IGUAL que panel-principal iPhone SE */
+    bottom: 70px; /* IGUAL que panel-principal iPhone SE */
+    width: 98vw; /* IGUAL que panel-principal iPhone SE */
+    height: auto; /* IGUAL que panel-principal iPhone SE */
+    padding: 50px 10px 10px 10px; /* IGUAL que panel-principal iPhone SE */
+  }
+  
+  /* Actualizar transformaciones para iPhone SE */
+  .cara-frontal {
+    transform: translateX(-50%) translateZ(25vh); /* Profundidad iPhone SE */
+  }
+  
+  .cara-derecha {
+    transform: translateX(-50%) rotateY(90deg) translateZ(25vh); /* Profundidad iPhone SE */
   }
   
   .cara-frontal {
@@ -707,5 +787,89 @@
   
   .simple-content p {
     font-size: 1rem;
+  }
+}
+
+/* Estilos para la vista de Servicios */
+.servicios-container {
+  min-height: 80vh;
+  background: #FFEDE6;
+  padding: 80px 40px 40px 40px;
+  margin-top: 10vh;
+}
+
+.servicios-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.servicios-title {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.servicios-content {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.servicio-item {
+  background: rgba(255, 255, 255, 0.3);
+  padding: 40px 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+}
+
+.servicio-name {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.servicio-description {
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  color: #333333;
+  line-height: 1.6;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Responsive para la vista de servicios */
+@media (max-width: 768px) {
+  .servicios-container {
+    padding: 60px 20px 20px 20px;
+  }
+  
+  .servicios-header {
+    margin-bottom: 40px;
+  }
+  
+  .servicio-item {
+    padding: 30px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .servicios-container {
+    padding: 50px 15px 15px 15px;
+  }
+  
+  .servicios-header {
+    margin-bottom: 30px;
+  }
+  
+  .servicio-item {
+    padding: 25px 15px;
   }
 }
