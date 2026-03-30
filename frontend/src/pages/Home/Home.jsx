@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import logoImage from '../../assets/logo/logoD.png'; // Logo superior izquierda
 import logoImage2 from '../../assets/logo/iconoL.svg';
+import tela from '../../assets/logo/tela.jpg';
 import servi from '../../assets/logo/servi.png';
 
 
@@ -120,9 +121,31 @@ const ServiciosContent = () => (
 
 const IdentidadContent = () => (
   <div className="content-section">
-    <div className="simple-content">
-      <h1>Hola Mundo - Identidad</h1>
-      <p>Contenido de identidad aquí...</p>
+    <div className="identidad-container">
+      <div className="identidad-hero">
+        <div className="identidad-hero-content">
+          <div className="identidad-hero-text">
+            <div className="identidad-tech-label"> <span className='identidad-line'>----------------</span> MANIFIESTO DEL AUTOR</div>
+            <h1 className="identidad-main-title">
+              Identidad<br/>
+              & Propósito.
+            </h1>
+            <p className="identidad-subtitle">
+              En un mundo saturado de repetición, defendemos la exclusividad del código. 
+              Cada línea es una fibra de un tejido digital irrepetible.
+            </p>
+            <button className="identidad-btn">
+              >
+            </button>
+            <span>
+              DESCIENDA AL TALLER
+            </span>
+          </div>
+          <div className="identidad-hero-image">
+            <img src={tela} alt="Identidad APOFIS" className="identidad-hero-img" />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 );

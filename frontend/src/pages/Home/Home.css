@@ -793,7 +793,7 @@
 /* Estilos para la vista de Servicios */
 .servicios-container {
   min-height: 80vh;
-  background: #FFEDE6;
+  background: transparent;
   padding: 30px;
   font-family: 'Inter', sans-serif;
   margin-top: 80px;
@@ -838,7 +838,7 @@
 .servicios-main-title {
   font-size: clamp(2.5rem, 6vw, 4rem);
   font-weight: 400;
-  color: #2d2d2d;
+  color: white;
   line-height: 1.1;
   margin-bottom: 15px;
   font-style: italic;
@@ -852,7 +852,7 @@
 
 .servicios-subtitle {
   font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-  color: #666666;
+  color: #ffffff;
   line-height: 1.6;
   max-width: 600px;
 }
@@ -866,23 +866,23 @@
 }
 
 .servicio-card {
-  background: rgba(255, 255, 255, 0.767);
+  background: transparent;
   padding: 40px 30px;
   border-radius: 20px;
   text-align: left;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .servicio-icon {
-  color: #333333;
+  color: #ffffff;
   margin-bottom: 16px;
 }
 
 .servicio-tech-label {
   font-size: 0.75rem;
   font-weight: 500;
-  color: #888888;
+  color: #cccccc;
   letter-spacing: 0.1em;
   margin-bottom: 12px;
   text-transform: uppercase;
@@ -891,7 +891,7 @@
 .servicio-title {
   font-size: clamp(1.3rem, 3vw, 1.8rem);
   font-weight: 400;
-  color: #2d2d2d;
+  color: #ffffff;
   margin-bottom: 20px;
   font-style: italic;
   line-height: 1.2;
@@ -899,7 +899,7 @@
 
 .servicio-desc {
   font-size: clamp(0.85rem, 2vw, 0.95rem);
-  color: #555555;
+  color: #cccccc;
   line-height: 1.6;
   margin-bottom: 24px;
 }
@@ -912,25 +912,27 @@
 
 .servicio-features li {
   font-size: 0.8rem;
-  color: #666666;
+  color: #ffffff;
   margin-bottom: 8px;
   font-weight: 500;
 }
 
 .servicio-btn {
   background: none;
-  border: none;
-  color: #333333;
+  border: 1px solid #ffffff;
+  color: #ffffff;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  text-decoration: underline;
-  padding: 0;
+  padding: 8px 16px;
   font-family: 'Inter', sans-serif;
-  transition: color 0.2s ease;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  text-decoration: none;
 }
 
 .servicio-btn:hover {
+  background: #ffffff;
   color: #000000;
 }
 
@@ -1045,5 +1047,172 @@
   
   .servicio-features {
     margin-bottom: 20px;
+  }
+}
+
+/* Estilos para la vista de Identidad */
+.identidad-container {
+  min-height: 80vh;
+  background: transparent;
+  padding: 80px 40px 40px 40px;
+  font-family: 'Inter', sans-serif;
+}
+
+.identidad-hero {
+  margin-bottom: 80px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 40px;
+}
+
+.identidad-hero-content {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+}
+
+.identidad-hero-text {
+  flex: 1;
+  text-align: left;
+}
+.identidad-line{
+  letter-spacing: 0.1em;
+}
+
+.identidad-hero-image {
+  flex: 0 0 420px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.identidad-hero-img {
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  border-radius: 10px;
+  rotate: 3deg;
+  box-shadow: inset 0 0 40px rgba(255, 255, 255, 0.2), 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.identidad-tech-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #888888;
+  letter-spacing: 0.15em;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.identidad-main-title {
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 0.9;
+  margin-bottom: 30px;
+  font-family: 'Newsreader', serif;
+}
+
+.identidad-subtitle {
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  color: #cccccc;
+  line-height: 1.6;
+  margin-bottom: 40px;
+  max-width: 500px;
+}
+
+.identidad-btn {
+  background: none;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 12px 14px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  margin-right: 20px;
+  rotate: 90deg;
+  font-size: 1.5rem;
+}
+
+.identidad-btn:hover {
+  background: #ffffff;
+  color: #000000;
+}
+
+/* Responsive para la vista de identidad */
+@media (max-width: 968px) {
+  .identidad-hero-content {
+    gap: 40px;
+  }
+  
+  .identidad-hero-image {
+    flex: 0 0 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .identidad-container {
+    padding: 60px 20px 20px 20px;
+  }
+  
+  .identidad-hero {
+    margin-bottom: 50px;
+    padding: 0 20px;
+  }
+  
+  .identidad-hero-content {
+    flex-direction: column;
+    gap: 30px;
+    text-align: center;
+  }
+  
+  .identidad-hero-text {
+    text-align: center;
+  }
+  
+  .identidad-hero-image {
+    flex: none;
+    order: -1;
+  }
+  
+  .identidad-hero-img {
+    max-width: 280px;
+  }
+}
+
+@media (max-width: 480px) {
+  .identidad-container {
+    padding: 50px 15px 15px 15px;
+  }
+  
+  .identidad-hero {
+    margin-bottom: 40px;
+    padding: 0 15px;
+  }
+  
+  .identidad-hero-content {
+    gap: 25px;
+  }
+  
+  .identidad-hero-img {
+    max-width: 220px;
+  }
+  
+  .identidad-tech-label {
+    margin-bottom: 15px;
+  }
+  
+  .identidad-main-title {
+    margin-bottom: 20px;
+  }
+  
+  .identidad-subtitle {
+    margin-bottom: 30px;
   }
 }
