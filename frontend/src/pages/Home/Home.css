@@ -852,7 +852,7 @@
 
 .servicios-subtitle {
   font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-  color: #ffffff;
+  color: #FFEDE7;
   line-height: 1.6;
   max-width: 600px;
 }
@@ -875,7 +875,7 @@
 }
 
 .servicio-icon {
-  color: #ffffff;
+  color: #FFEDE7;
   margin-bottom: 16px;
 }
 
@@ -891,7 +891,7 @@
 .servicio-title {
   font-size: clamp(1.3rem, 3vw, 1.8rem);
   font-weight: 400;
-  color: #ffffff;
+  color: #FFEDE7;
   margin-bottom: 20px;
   font-style: italic;
   line-height: 1.2;
@@ -912,15 +912,15 @@
 
 .servicio-features li {
   font-size: 0.8rem;
-  color: #ffffff;
+  color: #FFEDE7;
   margin-bottom: 8px;
   font-weight: 500;
 }
 
 .servicio-btn {
   background: none;
-  border: 1px solid #ffffff;
-  color: #ffffff;
+  border: 1px solid #FFEDE7;
+  color: #FFEDE7;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
@@ -932,7 +932,7 @@
 }
 
 .servicio-btn:hover {
-  background: #ffffff;
+  background: #FFEDE7;
   color: #000000;
 }
 
@@ -1108,7 +1108,7 @@
 .identidad-main-title {
   font-size: clamp(3rem, 8vw, 5.5rem);
   font-weight: 900;
-  color: #ffffff;
+  color: #FFEDE7;
   line-height: 0.9;
   margin-bottom: 30px;
   font-family: 'Newsreader', serif;
@@ -1124,8 +1124,8 @@
 
 .identidad-btn {
   background: none;
-  border: 1px solid #ffffff;
-  color: #ffffff;
+  border: 1px solid #FFEDE7;
+  color: #FFEDE7;
   font-size: 0.9rem;
   font-weight: 500;
   padding: 12px 14px;
@@ -1141,7 +1141,7 @@
 }
 
 .identidad-btn:hover {
-  background: #ffffff;
+  background: #FFEDE7;
   color: #000000;
 }
 
