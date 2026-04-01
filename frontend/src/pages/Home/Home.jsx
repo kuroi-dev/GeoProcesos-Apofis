@@ -5,6 +5,10 @@ import logoImage from '../../assets/logo/logoD.png'; // Logo superior izquierda
 import logoImage2 from '../../assets/logo/iconoL.svg';
 import tela from '../../assets/logo/tela.jpg';
 import servi from '../../assets/logo/servi.png';
+import logoGeoProcesos from '../../assets/logo/logoGeo.svg';
+import conviveEdu from '../../assets/logo/conviveedu.png';
+import logopdf from '../../assets/logo/logoPDF.png';
+import webpayIn from '../../assets/logo/webpayIn.png';
 
 
 // Componentes de contenido para cada cara
@@ -61,8 +65,9 @@ const ServiciosContent = () => (
               Nuestros <br/> <span>Servicios</span>
             </h1>
             <p className="servicios-subtitle">
-              Dividimos nuestra maestría en dos pilares fundamentales que definen el ecosistema APOFIS.
+              Dividimos nuestra maestría en cuatro pilares fundamentales que definen el ecosistema APOFIS.
             </p>
+            <div className="servicio-tech-label">PYTHON & REACT ENGINEER</div>
           </div>
           <div className="servicios-hero-image">
             <img src={servi} alt="APOFIS Services" className="servicios-hero-img" />
@@ -71,49 +76,73 @@ const ServiciosContent = () => (
       </div>
       
       <div className="servicios-grid">
+
+
         <div className="servicio-card">
-          <div className="servicio-icon">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+          <div className="servicio-card-inner">
+            <div className="servicio-icon">
+              <img src={logoGeoProcesos} alt="" className='imgLogoServi'/>
+            </div>
+
+            <div className="servicio-btn-wrapper">
+              <h2 className="servicio-title">Geoprocesos en Línea</h2>
+              <button className="servicio-btn">
+                Ver Especificaciones →
+              </button>
+            </div>
           </div>
-          <div className="servicio-tech-label">PYTHON & REACT ENGINEER</div>
-          <h2 className="servicio-title">Geoprocesos en Línea</h2>
-          <p className="servicio-desc">
-            Implementamos algoritmos de precisión espacial integrando motores Python avanzados. 
-            Transformamos datos geográficos masivos en decisiones estratégicas visualizadas en tiempo real.
-          </p>
-          <ul className="servicio-features">
-            <li>• ANÁLISIS ESPACIAL VECTORIAL</li>
-            <li>• INTEGRACIÓN GIS EN LA NUBE</li>
-          </ul>
-          <button className="servicio-btn">
-            Ver Especificaciones →
-          </button>
         </div>
 
         <div className="servicio-card">
-          <div className="servicio-icon">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M20.84 4.61A5.5 5.5 0 0 0 16.5 2.03A5.5 5.5 0 0 0 12 5.96A5.5 5.5 0 0 0 7.5 2.03A5.5 5.5 0 0 0 3.16 4.61C1.9 6.64 1.9 9.56 3.16 11.59L12 21L20.84 11.59C22.1 9.56 22.1 6.64 20.84 4.61Z" fill="currentColor"/>
-            </svg>
+          <div className="servicio-card-inner">
+            <div className="servicio-icon">
+              <img src={conviveEdu} alt="" className='imgLogoServi'/>
+            </div>
+
+            <div className="servicio-btn-wrapper">
+              <h2 className="servicio-title">ConviveEdu</h2>
+              <button className="servicio-btn">
+                Ver Especificaciones →
+              </button>
+            </div>
           </div>
-          <div className="servicio-tech-label">PYTHON & REACT ENGINEER</div>
-          <h2 className="servicio-title">ConviveEdu</h2>
-          <p className="servicio-desc">
-            Una interfaz humana y fluida diseñada para priorizar el bienestar. 
-            Utilizamos React para crear experiencias reactivas que acompañan al estudiante en cada etapa de su desarrollo.
-          </p>
-          <ul className="servicio-features">
-            <li>• INTERFACES HUMAN-CENTRIC</li>
-            <li>• MÉTRICAS DE BIENESTAR</li>
-          </ul>
-          <button className="servicio-btn">
-            Ver Experiencia →
-          </button>
         </div>
+
+
+        <div className="servicio-card">
+          <div className="servicio-card-inner">
+            <div className="servicio-icon">
+              <img src={webpayIn} alt="" className='imgLogoServi'/>
+            </div>
+  
+            <div className="servicio-btn-wrapper">
+              <h2 className="servicio-title">Integracion WebPay</h2>
+              <button className="servicio-btn">
+                Ver Especificaciones →
+              </button>
+            </div>
+          </div>
+        </div>
+
+
+        <div className="servicio-card">
+          <div className="servicio-card-inner">
+            <div className="servicio-icon">
+              <img src={logopdf} alt="" className='imgLogoServi'/>
+            </div>
+  
+            <div className="servicio-btn-wrapper">
+              <h2 className="servicio-title">Edicion de PDF</h2>
+              <button className="servicio-btn">
+                Ver Especificaciones →
+              </button>
+            </div>
+          </div>
+        </div>
+
+    
+
+
       </div>
     </div>
   </div>
@@ -127,7 +156,7 @@ const IdentidadContent = () => (
           <div className="identidad-hero-text">
             <div className="identidad-tech-label"> <span className='identidad-line'>----------------</span> MANIFIESTO DEL AUTOR</div>
             <h1 className="identidad-main-title">
-              Identidad<br/>
+              <span>Identidad</span><br/>
               & Propósito.
             </h1>
             <p className="identidad-subtitle">
@@ -291,7 +320,27 @@ const Home = () => {
           </button>
         </div>
       </nav>
+
+
+      {currentSection === 'identidad' && (
+        <div>
+          <div className="parallax"></div>
+          <div className="contenido">
+            <h1>Texto de ejemplo</h1>
+            <p>Esta es una sección normal debajo del parallax.</p>
+          </div>
+          <div className="parallax"></div>
+          <div className="contenido">
+            <h1>Texto de ejemplo</h1>
+            <p>Esta es una sección normal debajo del parallax.</p>
+          </div>
+        </div>
+      )}
+      
+
+
     </div>
+    
   );
 };
 

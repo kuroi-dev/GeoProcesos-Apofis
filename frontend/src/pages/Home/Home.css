@@ -8,7 +8,7 @@
 }
 
 .logo-image-dark {
-  height: 25px;
+  height: 29px;
 }
 .logo-image-center {
   height: 160px;
@@ -794,7 +794,7 @@
 .servicios-container {
   min-height: 80vh;
   background: transparent;
-  padding: 30px;
+  padding: 20px 70px;
   font-family: 'Inter', sans-serif;
   margin-top: 80px;
   border-radius: 50px;
@@ -860,31 +860,122 @@
 .servicios-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  max-width: 1200px;
+  gap: 50px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
 .servicio-card {
-  background: transparent;
-  padding: 40px 30px;
+  background: rgba(141, 141, 141, 0.192);
+  padding: 20px 18px;
   border-radius: 20px;
   text-align: left;
   backdrop-filter: none;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #E27039;
+  height: 130px;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  overflow: hidden;
+}
+
+.servicio-card-inner {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  height: 100%;
+  width: 100%;
+}
+
+.servicio-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 70px;
+  margin-right: 12px;
+}
+
+.servicio-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1 1 0%;
+  min-width: 0;
+}
+
+.servicio-title {
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.servicio-desc {
+  font-size: 0.85rem;
+  color: #cccccc;
+  line-height: 1.3;
+  margin-bottom: 4px;
+  max-height: 2.6em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+.servicio-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 0;
+  list-style: none;
+  padding: 0;
+}
+
+.servicio-features li {
+  font-size: 0.7rem;
+  color: #FFEDE7;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.servicio-btn-wrapper {
+  display: block;
+  align-items: flex-end;
+  margin-left: 10px;
+}
+
+.servicio-btn {
+  background: none;
+  border: 1px solid #FFEDE7;
+  color: #FFEDE7;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 10px;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
 .servicio-icon {
   color: #FFEDE7;
   margin-bottom: 16px;
 }
+.imgLogoServi{
+  width: 70px;
+  height: 70px;
+}
 
 .servicio-tech-label {
   font-size: 0.75rem;
   font-weight: 500;
-  color: #cccccc;
+  color: #E27039;
   letter-spacing: 0.1em;
   margin-bottom: 12px;
+  margin-top: 10px;
   text-transform: uppercase;
 }
 
@@ -895,6 +986,7 @@
   margin-bottom: 20px;
   font-style: italic;
   line-height: 1.2;
+  font-size: 1.2rem;
 }
 
 .servicio-desc {
@@ -902,12 +994,14 @@
   color: #cccccc;
   line-height: 1.6;
   margin-bottom: 24px;
+  display: none;
 }
 
 .servicio-features {
   list-style: none;
   padding: 0;
   margin: 0 0 30px 0;
+  display: none;
 }
 
 .servicio-features li {
@@ -932,8 +1026,7 @@
 }
 
 .servicio-btn:hover {
-  background: #FFEDE7;
-  color: #000000;
+  background: #E27039;
 }
 
 /* Responsive para la vista de servicios */
@@ -1054,7 +1147,8 @@
 .identidad-container {
   min-height: 80vh;
   background: transparent;
-  padding: 80px 40px 40px 40px;
+  padding: 80px;
+  margin-top: 40px;
   font-family: 'Inter', sans-serif;
 }
 
@@ -1112,6 +1206,11 @@
   line-height: 0.9;
   margin-bottom: 30px;
   font-family: 'Newsreader', serif;
+}
+.identidad-main-title span {
+  font-weight: 400;
+  font-style: italic;
+  color: #E27039;
 }
 
 .identidad-subtitle {
@@ -1216,3 +1315,26 @@
     margin-bottom: 30px;
   }
 }
+
+
+
+
+
+/* Sección con efecto parallax */
+    .parallax {
+      background-image: url('/resources/servi.png'); /* imagen de fondo */
+      height: 500px;                          /* altura de la sección */
+      background-attachment: fixed;           /* clave para el efecto */
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    /* Sección normal para contraste */
+    .contenido {
+      height: 300px;
+      background-color: #f2f2f2;
+      text-align: center;
+      padding: 50px;
+      color: black;
+    }
