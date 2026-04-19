@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Map from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
 import loginImage from '../../assets/logo/logogeo2.svg'; // Imagen del login
+import loginImagePDF from '../../assets/logo/logoPDFB.png'; // Imagen del login
 import logoImage from '../../assets/logo/logoL.svg'; // Logo superior izquierda
 import infoImage from '../../assets/logo/info.svg'; // Icono de información
 
@@ -11,8 +12,8 @@ import infoImage from '../../assets/logo/info.svg'; // Icono de información
 
 import './Login.css';
 
-const URLDEFAULT2 = 'http://127.0.0.1:5000'; // Reemplaza con la URL de tu backend  
-const URLDEFAULT = ''; 
+const URLDEFAULT = 'http://127.0.0.1:5000'; // Reemplaza con la URL de tu backend  
+const URLDEFAULT2 = ''; 
 
 const Login = () => {
     // Función para renderizar el mensaje de emailError
@@ -29,7 +30,9 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
 
-  const [recaptchaToken, setRecaptchaToken] = useState('');
+  const [termsAcceptedPDF, setTermsAcceptedPDF] = useState(false);
+  const [emailSuccessPDF, setEmailSuccessPDF] = useState(false);
+  const [showTermsPDF, setShowTermsPDF] = useState(false);
 
 
   const handleSubmit = async (e) => {
@@ -53,6 +56,10 @@ const Login = () => {
       return;
     }
 
+    //if (!termsAcceptedPDF) {
+    //  setEmailError('Debes aceptar los términos y condiciones del PDF para continuar.');
+    //  return;
+    //}
 
     setLoading(true);
     setEmailError('');
@@ -245,11 +252,14 @@ const Login = () => {
               </div>
             </div>
           )}
+
+  {/* ################################################################################################# Geoprocesos*/}
+
           <div className={`login-box ${showTerms ? 'expanded' : ''}`}>
             <div className="login-content">
               <div className="login-header">
               <div className="login-image-placeholder">
-                {/* <div className="image-placeholder">📷</div> */}
+              
                 <img src={loginImage} alt="Login" className="login-image" />
               </div>
               <div className="login-text">
@@ -363,7 +373,131 @@ const Login = () => {
               </div>
             )}
           </div>
-   
+
+
+
+  {/* ################################################################################################# Editor PDF
+
+
+          <div className={`login-box ${showTermsPDF ? 'expanded' : ''}`}>
+            <div className="login-content">
+              <div className="login-header">
+              <div className="login-image-placeholder">
+                <img src={loginImagePDF} alt="Login" className="login-image" />
+              </div>
+              <div className="login-text">
+                <h1>Editor de PDF</h1>
+                <p className="login-description">Plataforma especializada en edición y gestión de documentos PDF de manera eficiente y segura.</p>
+              </div>
+            </div>
+            <form className="login-form" onSubmit={handleSubmit}>
+              <div className="input-container">
+                {!emailSuccess && (
+                  <input 
+                    type="email" 
+                    placeholder="Email" 
+                    className={`login-input ${emailError ? 'error' : ''}`}
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (emailError) setEmailError('');
+                    }}
+                  />
+                )}
+                {renderEmailError()}
+              </div>
+             
+              <div className="app-info">
+                <p>El uso del aplicativo queda asociado a tu correo electrónico.</p>
+                <p>Límite de sesión: 30 minutos. Después de este tiempo, el mismo correo será bloqueado temporalmente.</p>
+              </div>
+              <div>
+                
+              </div>
+              
+              <button type="submit" className="login-button" disabled={loading || emailSuccessPDF}>
+                {loading ? 'Conectando...' : 'Acceder al Aplicativo'}
+              </button>
+              
+              <button 
+                type="button" 
+                className="terms-button"
+                onClick={() => setShowTermsPDF(!showTermsPDF)}
+              >
+                📋 Términos y Condiciones
+              </button>
+              <label className="terms-checkbox-container-inline">
+                <input 
+                  type="checkbox" 
+                  checked={termsAcceptedPDF}
+                  onChange={(e) => setTermsAcceptedPDF(e.target.checked)}
+                  className="terms-checkbox"
+                  disabled={emailSuccessPDF}
+                />
+                <span className="terms-checkmark"></span>
+                <span className="terms-checkbox-text">
+                  Acepto los <strong>Términos y Condiciones de Uso</strong>
+                </span>
+              </label>
+            </form>
+            </div>
+            
+            {showTermsPDF && (
+              <div className="terms-content">
+                <h3>Términos y Condiciones de Uso</h3>
+                <div className="terms-section">
+                  <h4>1. Aceptación de Términos</h4>
+                  <p>Al utilizar este aplicativo, usted acepta estar sujeto a estos términos y condiciones de uso completos.</p>
+                  <p>El uso del servicio constituye la aceptación automática de todas las políticas aquí establecidas.</p>
+                </div>
+                <div className="terms-section">
+                  <h4>2. Uso del Servicio</h4>
+                  <p>• El acceso está limitado a 30 minutos por sesión por correo electrónico.</p>
+                  <p>• Prohibido el uso comercial no autorizado o redistribución de datos.</p>
+                  <p>• El usuario es responsable de mantener la confidencialidad de su cuenta.</p>
+                  <p>• No se permite el uso automatizado o mediante bots del servicio.</p>
+                </div>
+                <div className="terms-section">
+                  <h4>3. Registro y Almacenamiento de Datos</h4>
+                  <p><strong>Su dirección de correo electrónico será registrada y almacenada</strong> en nuestra base de datos del backend con los siguientes propósitos:</p>
+                  <p>• Controlar el tiempo de acceso y uso del aplicativo.</p>
+                  <p>• Implementar el sistema de bloqueo temporal después de 30 minutos de uso.</p>
+                  <p>• Prevenir el uso abusivo mediante intentos repetidos de acceso con el mismo correo.</p>
+                  <p>• Generar logs de auditoría y estadísticas de uso del sistema.</p>
+                  <p>• <strong>Se obtiene la dirección IP y la ubicación aproximada del usuario</strong> con el fin de mitigar posibles ataques informáticos y proteger la integridad del sistema.</p>
+                </div>
+                <div className="terms-section">
+                  <h4>4. Sistema de Bloqueos y Restricciones</h4>
+                  <p>Al superar el límite de 30 minutos de uso, su correo electrónico será marcado como <strong>"bloqueado temporalmente"</strong> en nuestro sistema backend.</p>
+                  <p>Los intentos posteriores de acceso con el mismo correo resultarán en denegación automática de acceso.</p>
+                  <p>El tiempo de bloqueo y las condiciones de reactivación están sujetos a políticas internas del sistema.</p>
+                </div>
+                <div className="terms-section">
+                  <h4>5. Tecnología de Mapas</h4>
+                  <p>Este aplicativo utiliza tecnología de mapas proporcionada por <strong>Esri</strong> para la generación y visualización cartográfica. Los datos geoespaciales y servicios de mapas están sujetos a las condiciones de licencia de Esri.</p>
+                  <p>El usuario acepta cumplir con los términos de uso de servicios de terceros integrados en la plataforma.</p>
+                </div>
+                <div className="terms-section">
+                  <h4>6. Protección de Datos Personales</h4>
+                  <p>Sus datos son procesados conforme a las normativas de protección de datos aplicables.</p>
+                  <p>No compartimos su información con terceros salvo lo requerido por las tecnologías integradas (Esri).</p>
+                  <p>Los datos se mantienen el tiempo necesario para cumplir con el propósito del control de acceso.</p>
+                </div>
+                <div className="terms-section">
+                  <h4>7. Limitación de Responsabilidad</h4>
+                  <p>El servicio se proporciona "tal como está" sin garantías de ningún tipo.</p>
+                  <p>No nos responsabilizamos por interrupciones del servicio, pérdida de datos o problemas técnicos.</p>
+                </div>
+                <div className="terms-section">
+                  <h4>8. Modificaciones</h4>
+                  <p>Nos reservamos el derecho de modificar estos términos en cualquier momento.</p>
+                  <p>El uso continuado del servicio constituye aceptación de las modificaciones.</p>
+                </div>
+              </div>
+            )}
+          </div>
+   */}
+
         </div>
       </div>
     </div>

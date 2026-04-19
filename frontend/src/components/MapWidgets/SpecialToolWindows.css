@@ -343,7 +343,7 @@
   display: block;
   align-items: flex-start;
   justify-content: flex-start;
-  padding: 10px 14px 10px 14px;
+  padding: 10px 14px 40px 14px;
   z-index: 3000;
   transition: right 0.5s ease-in-out;
   backdrop-filter: blur(5px);
@@ -539,6 +539,7 @@
   text-align: left;
   color: #222;
   font-weight: 600;
+  font-size: 1.1rem;
 }
 .user-menu-arrow {
   font-size: 18px;
@@ -546,7 +547,7 @@
   margin-left: 8px;
 }
 .user-menu-dropdown {
-  position: absolute;
+  margin-top: 10px;
   top: 44px;
   left: 0;
   min-width: 220px;
@@ -560,7 +561,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  width: 88%;
+  width: 89%;
 }
 .user-menu-email {
   font-weight: 700;
@@ -572,12 +573,15 @@
   font-size: 13px;
   color: #444;
   margin-bottom: 2px;
+   font-size: 0.95rem;
 }
 .user-menu-info span {
   color: #222;
+   font-size: 0.95rem;
 }
 .user-menu-priv {
   font-weight: bold;
+  font-size: 0.95rem;
 }
 .user-menu-logout {
   margin-top: 10px;
@@ -595,3 +599,6 @@
   background: #ffeaea;
 }
 
+.menuTool-container{
+  width: 100%;
+}

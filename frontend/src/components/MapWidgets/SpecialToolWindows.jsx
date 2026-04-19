@@ -127,13 +127,13 @@ export function NuevoPanelWindow({ agregarFeatureLayer }) {
   React.useEffect(() => {
     let timer = setTimeout(() => {
       setVisible(false);
-    }, 5000);
+    }, 1000);
     return () => clearTimeout(timer);
   }, []);
   const tools = [
     {
       imgSrc: logoGeo1,
-      title: <span> Análisis Espacial <br /><span style={{color:'#1ec31e', fontWeight:'bold', marginLeft:6}}>PROXIMAMENTE</span></span>,
+      title: <span> Análisis Espacial </span>,
       summary: "Trabaja con archivos en distintos formatos (SHP, GeoJSON, KML, CSV, etc). Realiza operaciones de clip y buffer sobre capas vectoriales. Modifica colores y estilos de capas fácilmente. Agrega y gestiona múltiples capas en el mapa."
     },
     {
@@ -148,7 +148,7 @@ export function NuevoPanelWindow({ agregarFeatureLayer }) {
     },
     {
       imgSrc: logoGeo4,
-      title: <span> Automatización (Solo empresas) <span style={{color:'#1ec31e', fontWeight:'bold', marginLeft:6}}>PROXIMAMENTE</span></span>,
+      title: <span> Automatización <span style={{color:'#1ec31e', fontWeight:'bold', marginLeft:6}}>PROXIMAMENTE</span></span>,
       summary: "Carga tus propios scripts de Python para realizar cálculos avanzados (soporte para numpy, math, etc). Automatiza el ingreso de datos a distintas entidades. (Funcionalidad solo para empresas: requiere conexión directa a SharePoint, bases de datos o directorios específicos)."
     }
   ];
@@ -196,9 +196,9 @@ export function NuevoPanelWindow({ agregarFeatureLayer }) {
         {/* Ocultar el contenido del panel principal cuando la ventana está activa */}
         <div style={{ display: selectedIndex === -1 ? 'block' : 'none' }}>
           {tools.map((tool, idx) => (
-            idx === 7? (
+            idx === 0? (
               <SpecialToolCard
-                key={tool.title}
+                key={idx}
                 imgSrc={tool.imgSrc}
                 title={tool.title}
                 summary={tool.summary}
@@ -206,7 +206,7 @@ export function NuevoPanelWindow({ agregarFeatureLayer }) {
                 onSelect={() => setSelectedIndex(idx)}
               />
             ) : (
-              <div className="disabled-tool-menu" key={tool.title}>
+              <div className="disabled-tool-menu" key={idx}>
                 <SpecialToolCard
                   imgSrc={tool.imgSrc}
                   title={tool.title}
@@ -219,22 +219,22 @@ export function NuevoPanelWindow({ agregarFeatureLayer }) {
           ))}
         </div>
         {selectedIndex === 0 && (
-          <div className="">
+          <div className="menuTool-container">
             <AnalisisEspacialMenu onBack={() => setSelectedIndex(-1)} />
           </div>
         )}
         {selectedIndex === 1 && (
-          <div className="disabled-tool-menu">
+          <div className="menuTool-container disabled-tool-menu">
             <VisualizacionAvanzadaMenu onBack={() => setSelectedIndex(-1)} />
           </div>
         )}
         {selectedIndex === 2 && (
-          <div className="disabled-tool-menu">
+          <div className="menuTool-container disabled-tool-menu">
             <ImagenesSatelitalesMenu onBack={() => setSelectedIndex(-1)} />
           </div>
         )}
         {selectedIndex === 3 && (
-          <div className="disabled-tool-menu">
+          <div className="menuTool-container disabled-tool-menu">
             <AutomatizacionMenu onBack={() => setSelectedIndex(-1)} />
           </div>
         )}

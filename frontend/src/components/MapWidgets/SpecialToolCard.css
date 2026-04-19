@@ -54,17 +54,18 @@
 
 
 .special-tool-title {
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 300;
   color: #ffffff;
+  font-weight: 600;
 }
 
 .special-tool-summary {
-  font-size: 12px;
+  font-size: 1rem;
   color: #d7d7d7;
   margin-bottom: 5px;
   text-align: left;
-
+  font-weight: 500;
 }
 
 /* Utility: divider for card sections */

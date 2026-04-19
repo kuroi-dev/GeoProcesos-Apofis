@@ -1,0 +1,711 @@
+/* Home.css - APOFIS Design */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.logo-image-dark {
+  height: 30px;
+}
+.logo-image-center {
+  height: 160px;
+  margin-bottom: 10PX;
+}
+
+.home-container {
+  min-height: 100vh;
+  background: #0a0a0a;
+  background-image: 
+    radial-gradient(circle at 25% 25%, #111111 0%, transparent 20%),
+    radial-gradient(circle at 75% 75%, #0d0d0d 0%, transparent 40%),
+    linear-gradient(45deg, #0a0a0a 25%, #121212 25%, #121212 50%, #0a0a0a 50%, #0a0a0a 75%, #121212 75%);
+  background-size: 60px 60px, 60px 60px, 40px 40px;
+  font-family: 'Inter', sans-serif;
+  color: white;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.home-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(ellipse at top center, rgba(255, 255, 255, 0.02) 0%, transparent 70%),
+    radial-gradient(ellipse at bottom center, rgba(66, 165, 245, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Navigation Bar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; /* Por encima de todo */
+  padding: 12px 0;
+  background: #FFEDE6;
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.nav-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.nav-link {
+  color: #281810;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  transition: color 0.5s ease;
+}
+
+.nav-link:hover {
+  color: #E27039;
+  font-weight: 600;
+}
+
+.nav-link.active {
+  color: #E27039;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+}
+
+.start-project-btn {
+  background: #3F2C23;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.5s ease;
+  text-transform: uppercase;
+}
+
+.start-project-btn:hover {
+  background: #E27039;
+  transform: translateY(-1px);
+}
+
+/* Main Content - Ahora dentro del cubo */
+.main-content {
+  position: relative;
+  z-index: 2;
+  padding-top: 0;
+  min-height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 10px;
+  padding-right: 10px;
+  width: 100%;
+  height: 100%;
+}
+
+/* Hero Section - Ajustado para el cubo */
+.hero-section {
+  margin-bottom: 40px;
+}
+
+
+
+.brand-subtitle {
+  font-size: 0.8rem;
+  color: #c47047;
+  letter-spacing: 0.7em;
+  margin-bottom: 10px;
+  font-weight: 400;
+}
+
+.main-title {
+  font-size: clamp(3.5rem, 10vw, 7rem);
+  font-weight: 600;
+  line-height: 1;
+  margin-bottom: 20px;
+  color: white;
+  letter-spacing: -0.001em;
+  font-family: 'Newsreader', serif;
+}
+.other-font-weight {
+  font-weight: 100;
+}
+
+.main-title em {
+  font-style: italic;
+  font-weight: 100;
+}
+
+.title-year {
+  font-size: clamp(3.5rem, 9vw, 7rem);
+  font-weight: 100;
+  color: #FFB596;
+}
+
+/* Info Sections - Ajustado para el cubo */
+.info-sections {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  max-width: 800px;
+  width: 100%;
+  margin-top: 40px;
+}
+
+.info-card {
+  text-align: left;
+}
+
+.info-title {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.2em;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.info-description {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .nav-content {
+    padding: 0 20px;
+  }
+  
+  .main-content {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  .info-sections {
+    gap: 60px;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+  
+  .hero-section {
+    margin-bottom: 80px;
+  }
+  
+  .brand-icon {
+    font-size: 2.5rem;
+  }
+  
+  .brand-name {
+    font-size: 2rem;
+  }
+  
+  .info-sections {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+  
+  .info-card {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-content {
+    padding: 0 15px;
+  }
+  
+  .main-content {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 100px;
+  }
+  
+  .brand-subtitle {
+    font-size: 0.8rem;
+    margin-bottom: 40px;
+  }
+  
+.info-sections {
+  margin-top: 40px;
+}
+
+}
+
+/* PANEL FRONTAL PRINCIPAL - ESTÁTICO */
+.panel-principal {
+  position: absolute;
+  top: 40px; /* Ajustado para dejar espacio al navbar */
+  left: 50%; /* Centrar horizontalmente */
+  transform: translateX(-50%); /* Ajuste para centrar perfectamente */
+  width: 80vw;
+  height: 80vh;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px 20px 20px;
+  box-sizing: border-box;
+  background: transparent;
+  pointer-events: none; /* Para que el navbar sea clickeable */
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.panel-principal * {
+  pointer-events: auto; /* Restaurar eventos para el contenido */
+}
+
+/* Ocultar panel principal durante animación */
+.panel-principal.hidden-during-animation {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* CUBO 3D STYLES - Solo para animaciones */
+.espacio3D {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  perspective-origin: center center;
+  perspective: 1200px;
+  overflow: hidden;
+  padding-top: 80px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5; /* Por debajo del panel principal */
+}
+
+.cubo3D {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transform-style: preserve-3d;
+  transform: translateZ(-50vh);
+  /* NO transition por defecto */
+}
+
+/* Solo aplicar transición cuando está activamente animando */
+.cubo3D.sliding {
+  transform: translateZ(-50vh) rotateY(-90deg);
+  transition: transform 1s ease-in-out;
+}
+
+.base {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background-color: rgba(0,0,0,0.1);
+  transform: translateX(calc(50vw - 100px)) translateY(calc(100vh - 150px)) rotateX(90deg) translateZ(-50vh);
+  box-shadow: 0 0 100px 200px rgba(0,0,0,0.05);
+  border-radius: 50%;
+  
+}
+
+.cara {
+  margin-left: 20vh;
+  position: absolute;
+  width: 80vw;
+  height: 80vh;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px 20px 20px;
+  box-sizing: border-box;
+  transition: transform 1s ease-in-out;
+}
+
+/* Solo 2 caras: frontal y derecha */
+.cara-frontal {
+  transform: translateZ(50vh);
+  opacity: 0; /* Oculta por defecto */
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px 20px 20px;
+  box-sizing: border-box;
+  transition: opacity 0.3s ease; /* Transición suave para eliminar pestañeo */
+}
+
+.cara-derecha {
+  transform: rotateY(90deg) translateZ(50vh);
+  opacity: 0; /* Oculta por defecto */
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px 20px 20px;
+  box-sizing: border-box;
+  transition: opacity 0.3s ease; /* Transición suave para eliminar pestañeo */
+}
+
+/* Durante la animación, hacer visibles las caras con contenido */
+.cubo3D.sliding .cara-frontal {
+  opacity: 1; /* Mostrar contenido saliente */
+}
+
+.cubo3D.sliding .cara-derecha {
+  opacity: 1; /* Mostrar contenido entrante */
+}
+
+.cubo3D {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transform-style: preserve-3d;
+  transform: translateZ(-50vh);
+}
+
+/* Contenido de las secciones */
+.content-section {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.simple-content {
+  color: white;
+  text-align: center;
+}
+
+.simple-content h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #E27039;
+}
+
+.simple-content p {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* NAVEGACIÓN INFERIOR MÓVIL */
+.bottom-nav-mobile {
+  display: none; /* Oculta por defecto en desktop */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001; /* Por encima del header */
+  background: rgba(255, 237, 230, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 0;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.bottom-nav-content {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+.bottom-nav-btn {
+  background: transparent;
+  border: none;
+  color: #281810;
+  padding: 8px 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 60px;
+  border-radius: 8px;
+}
+
+.bottom-nav-btn span {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+.bottom-nav-btn:hover {
+  color: #E27039;
+  background: rgba(226, 112, 57, 0.1);
+}
+
+.bottom-nav-btn.active {
+  color: #E27039;
+  background: rgba(226, 112, 57, 0.15);
+}
+
+.bottom-nav-btn.active span {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+
+/* RESPONSIVE DESIGN - MOBILE */
+@media (max-width: 768px) {
+  /* Mostrar navegación inferior en móviles */
+  .bottom-nav-mobile {
+    display: block;
+  }
+  
+  /* Simplificar header móvil - solo logo */
+  .nav-links {
+    display: none; /* Ocultar navegación del header */
+  }
+  
+  .navbar {
+    padding: 8px 0;
+  }
+  
+  .nav-content {
+    padding: 0 20px;
+    justify-content: center; /* Centrar solo el logo */
+  }
+  
+  /* Panel principal móvil - con espacio para nav inferior */
+  .panel-principal {
+    top: 15px;
+    bottom: 80px; /* Espacio para navegación inferior */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95vw;
+    height: auto;
+    padding: 65px 15px 15px 15px;
+  }
+  
+  /* Cubo 3D móvil */
+  .espacio3D {
+    perspective: 800px;
+    padding-top: 65px;
+    padding-bottom: 80px; /* Espacio para navegación inferior */
+  }
+  
+  .cubo3D {
+    transform: translateZ(-30vh);
+  }
+  
+  .cubo3D.sliding {
+    transform: translateZ(-30vh) rotateY(-90deg);
+  }
+  
+  /* Caras del cubo móvil */
+  .cara {
+    width: 95vw;
+    height: auto;
+    margin-left: 0;
+    padding: 65px 15px 80px 15px; /* Padding inferior para nav bottom */
+    top: 0;
+    bottom: 0;
+  }
+  
+  .cara-frontal {
+    transform: translateZ(30vh);
+  }
+  
+  .cara-derecha {
+    transform: rotateY(90deg) translateZ(30vh);
+  }
+  
+  /* Contenido móvil */
+  .content-section {
+    padding: 0 20px;
+  }
+  
+  .main-title {
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    margin-bottom: 15px;
+  }
+  
+  .brand-subtitle {
+    font-size: 0.7rem;
+    letter-spacing: 0.5em;
+    margin-bottom: 8px;
+  }
+  
+  .logo-image-center {
+    height: 100px;
+    margin-bottom: 8px;
+  }
+  
+  .info-sections {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    margin-top: 30px;
+  }
+  
+  .info-card {
+    text-align: center;
+  }
+  
+  .info-title {
+    font-size: 0.75rem;
+    margin-bottom: 15px;
+  }
+  
+  .info-description {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+}
+
+/* RESPONSIVE DESIGN - iPhone SE y móviles pequeños */
+@media (max-width: 375px) {
+  /* Header iPhone SE - solo logo centrado */
+  .navbar {
+    padding: 6px 0;
+  }
+  
+  .nav-content {
+    padding: 0 10px;
+    justify-content: center; /* Solo centrar el logo */
+  }
+  
+  .nav-links {
+    display: none; /* Usar navegación inferior */
+  }
+  
+  .logo-image-dark {
+    height: 24px;
+  }
+  
+  /* Navegación inferior más compacta */
+  .bottom-nav-mobile {
+    padding: 6px 0; /* Más compacta */
+  }
+  
+  .bottom-nav-btn {
+    padding: 6px 2px;
+    min-width: 50px;
+  }
+  
+  .bottom-nav-btn span {
+    font-size: 0.6rem;
+  }
+  
+  /* Panel principal iPhone SE */
+  .panel-principal {
+    top: 5px;
+    bottom: 70px; /* Espacio para nav inferior más compacta */
+    width: 98vw;
+    height: auto;
+    padding: 50px 10px 10px 10px;
+  }
+  
+  /* Cubo 3D iPhone SE */
+  .espacio3D {
+    perspective: 600px;
+    padding-top: 50px;
+    padding-bottom: 70px; /* Espacio para nav inferior */
+  }
+  
+  .cubo3D {
+    transform: translateZ(-25vh);
+  }
+  
+  .cubo3D.sliding {
+    transform: translateZ(-25vh) rotateY(-90deg);
+  }
+  
+  /* Caras del cubo iPhone SE */
+  .cara {
+    width: 98vw;
+    height: auto;
+    padding: 50px 10px 70px 10px; /* Padding inferior para nav bottom */
+  }
+  
+  .cara-frontal {
+    transform: translateZ(25vh);
+  }
+  
+  .cara-derecha {
+    transform: rotateY(90deg) translateZ(25vh);
+  }
+  
+  /* Contenido iPhone SE */
+  .content-section {
+    padding: 0 15px;
+  }
+  
+  .main-title {
+    font-size: clamp(1.8rem, 7vw, 2.8rem);
+    margin-bottom: 12px;
+  }
+  
+  .brand-subtitle {
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    margin-bottom: 6px;
+  }
+  
+  .logo-image-center {
+    height: 80px;
+    margin-bottom: 6px;
+  }
+  
+  .info-sections {
+    gap: 25px;
+    margin-top: 25px;
+  }
+  
+  .info-title {
+    font-size: 0.7rem;
+    margin-bottom: 12px;
+  }
+  
+  .info-description {
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+  
+  .simple-content h1 {
+    font-size: 2rem;
+  }
+  
+  .simple-content p {
+    font-size: 1rem;
+  }
+}
