@@ -153,10 +153,3 @@ david.riquelme.sb@gmail.com
 
 ---
 
-## Licencia
-
-MIT
-
-<p align="center">
-  <em>Transformando datos geoespaciales en decisiones inteligentes</em>
-</p>
